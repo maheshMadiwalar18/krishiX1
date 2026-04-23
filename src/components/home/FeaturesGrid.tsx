@@ -1,10 +1,10 @@
 import React from 'react';
-import { Camera, CloudRain, Sparkles, Bot, BookOpen } from 'lucide-react';
+import { Camera, CloudRain, Sparkles, Bot, BookOpen, Brain, Droplet } from 'lucide-react';
 import FeatureCard from '../FeatureCard';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface FeaturesGridProps {
-  onNavigate: (view: 'disease' | 'weather' | 'assistant' | 'knowledge') => void;
+  onNavigate: (view: 'disease' | 'weather' | 'assistant' | 'knowledge' | 'planning' | 'irrigation') => void;
 }
 
 export default function FeaturesGrid({ onNavigate }: FeaturesGridProps) {
@@ -16,7 +16,7 @@ export default function FeaturesGrid({ onNavigate }: FeaturesGridProps) {
         <p className="text-text/60 max-w-xl mx-auto font-light">{t('features_subtitle')}</p>
       </div>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <FeatureCard 
           icon={Camera} 
           title={t('feat_disease')} 
@@ -34,12 +34,20 @@ export default function FeaturesGrid({ onNavigate }: FeaturesGridProps) {
           onClick={() => onNavigate('weather')}
         />
         <FeatureCard 
-          icon={Sparkles} 
-          title={t('feat_crop_rec')} 
-          description={t('feat_crop_rec_desc')}
+          icon={Brain} 
+          title={t('nav_decision_system')} 
+          description={t('decision_subtitle')}
           color="bg-primary"
           delay={0.3}
-          onClick={() => onNavigate('weather')}
+          onClick={() => onNavigate('planning')}
+        />
+        <FeatureCard 
+          icon={Droplet} 
+          title={t('irrigation_title')} 
+          description="Smart watering schedules for your crops."
+          color="bg-primary"
+          delay={0.35}
+          onClick={() => onNavigate('irrigation')}
         />
         <FeatureCard 
           icon={Bot} 
@@ -61,3 +69,4 @@ export default function FeaturesGrid({ onNavigate }: FeaturesGridProps) {
     </section>
   );
 }
+

@@ -145,7 +145,36 @@ const translations: Translations = {
   'dash_quick_actions': { en: 'Quick Actions', kn: 'ತ್ವರಿತ ಕ್ರಮಗಳು' },
   'dash_quick_stats': { en: 'Quick Stats', kn: 'ತ್ವರಿತ ಮಾಹಿತಿ' },
   'dash_explore_knowledge': { en: 'Explore Knowledge Hub', kn: 'ಮಾಹಿತಿ ಕೇಂದ್ರ ನೋಡಿ' },
-  'dash_profile': { en: 'Farmer Profile', kn: 'ರೈತ ಪ್ರೊಫೈಲ್' }
+  'dash_profile': { en: 'Farmer Profile', kn: 'ರೈತ ಪ್ರೊಫೈಲ್' },
+
+  // Decision System
+  'nav_decision_system': { en: 'Crop Recommendation', kn: 'ಬೆಳೆ ಶಿಫಾರಸು' },
+  'decision_title': { en: 'AI Crop Recommendation', kn: 'AI ಬೆಳೆ ಶಿಫಾರಸು' },
+  'decision_subtitle': { en: 'Complete strategy for what to grow and how to profit.', kn: 'ಉತ್ತಮ ಲಾಭಕ್ಕಾಗಿ ಬೆಳೆ ಮತ್ತು ಯೋಜನೆಯ ಸಂಪೂರ್ಣ ಮಾಹಿತಿ.' },
+  'input_location': { en: 'Location', kn: 'ಸ್ಥಳ' },
+  'input_soil': { en: 'Soil Type', kn: 'ಮಣ್ಣಿನ ವಿಧ' },
+  'input_land': { en: 'Land Size (Acres)', kn: 'ಜಮೀನಿನ ಗಾತ್ರ (ಎಕರೆ)' },
+  'input_irrigation': { en: 'Irrigation Method', kn: 'ನೀರಾವರಿ ವಿಧಾನ' },
+  'input_season': { en: 'Current Season', kn: 'ಈಗಿನ ಹಂಗಾಮು' },
+  'btn_generate_strategy': { en: 'Generate Strategy', kn: 'ಯೋಜನೆ ಸಿದ್ಧಪಡಿಸಿ' },
+  'label_profit': { en: 'Estimated Profit', kn: 'ಅಂದಾಜು ಲಾಭ' },
+  'label_yield': { en: 'Expected Yield', kn: 'ನಿರೀಕ್ಷಿತ ಇಳುವರಿ' },
+  'label_risk': { en: 'Risk Level', kn: 'ಅಪಾಯದ ಮಟ್ಟ' },
+  'label_insight': { en: 'AI Insight', kn: 'AI ಸಲಹೆ' },
+  'label_action_plan': { en: 'Action Plan', kn: 'ಕಾರ್ಯ ಯೋಜನೆ' },
+  'label_expenses': { en: 'Expense Breakdown', kn: 'ಖರ್ಚಿನ ವಿವರ' },
+  'tag_most_profitable': { en: 'Most Profitable', kn: 'ಹೆಚ್ಚು ಲಾಭದಾಯಕ' },
+  'tag_lowest_risk': { en: 'Lowest Risk', kn: 'ಕಡಿಮೆ ಅಪಾಯ' },
+  'tag_water_efficient': { en: 'Best for Low Water', kn: 'ಕಡಿಮೆ ನೀರಿಗೆ ಸೂಕ್ತ' },
+  'input_prev_crop': { en: 'Previous Crop Grown', kn: 'ಹಿಂದೆ ಬೆಳೆದ ಬೆಳೆ' },
+  'label_rotation_benefit': { en: 'Rotation Benefit', kn: 'ಬೆಳೆ ಬದಲಾವಣೆಯ ಲಾಭ' },
+  'irrigation_title': { en: 'Smart Irrigation Plan', kn: 'ಚತುರ ನೀರಾವರಿ ಯೋಜನೆ' },
+  'label_when_water': { en: 'When to Water', kn: 'ಯಾವಾಗ ನೀರು ಹಾಕಬೇಕು' },
+  'label_how_much': { en: 'How Much Water', kn: 'ನೀರಿನ ಪ್ರಮಾಣ' },
+  'label_frequency': { en: 'Frequency', kn: 'ಎಷ್ಟು ಬಾರಿ' },
+  'label_warning': { en: 'Critical Warning', kn: 'ಮುನ್ನೆಚ್ಚರಿಕೆ' },
+  'label_simple_tips': { en: 'Simple Tips', kn: 'ಸರಳ ಸಲಹೆಗಳು' },
+  'irrigation_ai_insight': { en: 'Why this plan is good?', kn: 'ಈ ಯೋಜನೆ ಏಕೆ ಉತ್ತಮ?' }
 };
 
 interface LanguageContextType {

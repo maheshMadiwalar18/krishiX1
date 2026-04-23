@@ -419,27 +419,7 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
-      {/* Security Note */}
-      <div className="bg-[#F9FBF9] rounded-2xl p-4 border border-border flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-xl text-primary shrink-0">
-            <ShieldCheck size={20} />
-          </div>
-          <p className="text-[11px] text-text/60 leading-relaxed text-center md:text-left">
-            {t('security_note')} <span className="font-black text-primary">{t('security_note_bold')}</span>
-          </p>
-        </div>
-        <div className="flex -space-x-2">
-          {[1, 2, 3, 4, 5].map(i => (
-            <div key={i} className="w-7 h-7 rounded-full border-2 border-white bg-bg flex items-center justify-center overflow-hidden shadow-sm">
-              <img src={`https://i.pravatar.cc/100?img=${i+20}`} alt="Farmer" />
-            </div>
-          ))}
-          <div className="pl-4 text-[10px] font-black text-primary uppercase tracking-widest flex items-center">
-            + 2,400 farmers helped today
-          </div>
-        </div>
-      </div>
+
     </div>
   );
 }

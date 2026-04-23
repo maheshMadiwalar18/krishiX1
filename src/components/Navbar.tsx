@@ -1,4 +1,5 @@
-import { Sprout, Bell, User, LogIn, Bug, CloudSun, BookOpen } from 'lucide-react';
+import React from 'react';
+import { Sprout, Bell, User, LogIn, Bug, CloudSun, BookOpen, Sparkles, Droplet } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -7,7 +8,7 @@ interface NavbarProps {
   onLogin: () => void;
   onLogout: () => void;
   onHome: () => void;
-  onNavigate: (view: 'home' | 'disease' | 'weather' | 'assistant' | 'knowledge' | 'dashboard') => void;
+  onNavigate: (view: 'home' | 'disease' | 'weather' | 'assistant' | 'knowledge' | 'dashboard' | 'planning' | 'irrigation') => void;
 }
 
 export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNavigate }: NavbarProps) {
@@ -19,7 +20,8 @@ export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNaviga
   const navItems = [
     { label: t('nav_disease'), icon: Bug, view: 'disease', path: '/disease-detection' },
     { label: t('nav_weather'), icon: CloudSun, view: 'weather', path: '/weather' },
-
+    { label: t('nav_decision_system'), icon: Sparkles, view: 'planning', path: '/planning' },
+    { label: t('irrigation_title'), icon: Droplet, view: 'irrigation', path: '/irrigation' },
     { label: t('nav_knowledge'), icon: BookOpen, view: 'knowledge', path: '/knowledge' },
   ] as const;
 

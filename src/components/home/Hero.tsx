@@ -17,11 +17,11 @@ export default function Hero({ isLoggedIn, onLogin, onDashboard, onAssistant }: 
     <section className="relative h-[650px] -mt-24 flex items-center overflow-hidden">
       <div className="absolute inset-0">
         <img 
-          src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=2000" 
-          className="w-full h-full object-cover"
+          src="/hero-bg.png" 
+          className="w-full h-full object-cover scale-105 animate-slow-zoom"
           alt="Farmland background"
         />
-        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80" />
       </div>
       
       <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-8 w-full text-center">

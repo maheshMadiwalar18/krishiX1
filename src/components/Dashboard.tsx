@@ -14,7 +14,8 @@ import {
   Phone,
   MapPin,
   Wheat,
-  Calendar
+  Calendar,
+  Brain
 } from 'lucide-react';
 import FeatureCard from './FeatureCard';
 import StatCard from './StatCard';
@@ -33,7 +34,7 @@ interface UserData {
   createdAt: string;
 }
 
-export default function Dashboard({ onStartView }: { onStartView: (view: 'disease' | 'weather' | 'assistant' | 'knowledge') => void }) {
+export default function Dashboard({ onStartView }: { onStartView: (view: 'disease' | 'weather' | 'assistant' | 'knowledge' | 'planning' | 'irrigation') => void }) {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
   const { t } = useLanguage();
@@ -188,13 +189,23 @@ export default function Dashboard({ onStartView }: { onStartView: (view: 'diseas
             delay={0}
           />
         </div>
-        <div onClick={() => onStartView('weather')} className="cursor-pointer">
+        <div onClick={() => onStartView('planning')} className="cursor-pointer">
           <FeatureCard 
-            icon={Sparkles} 
-            title="Advisory" 
-            description="Soil health based suggestions."
+            icon={Brain} 
+            title={t('nav_decision_system')} 
+            description={t('decision_subtitle')}
             color="bg-[#66BB6A]"
             delay={0}
+          />
+        </div>
+
+        <div onClick={() => onStartView('irrigation')} className="cursor-pointer">
+          <FeatureCard 
+            icon={Droplet} 
+            title={t('irrigation_title')} 
+            description="Smart watering schedules."
+            color="bg-[#42A5F5]"
+            delay={0.1}
           />
         </div>
         <div onClick={() => onStartView('assistant')} className="cursor-pointer">
@@ -256,8 +267,7 @@ export default function Dashboard({ onStartView }: { onStartView: (view: 'diseas
             <div className="divide-y divide-border">
               {[
                 { icon: Camera, title: "Crop Scan Completed", time: "2 hours ago", desc: "No diseases found in Wheat-01." },
-                { icon: Shovel, title: "Soil Report Updated", time: "5 hours ago", desc: "Nitrogen levels slightly low in Plot B." },
-                { icon: Sparkles, title: "Recommendation Applied", time: "Yesterday", desc: "Scheduled organic fertilizer for Rice." }
+                { icon: Shovel, title: "Soil Report Updated", time: "5 hours ago", desc: "Nitrogen levels slightly low in Plot B." }
               ].map((item, i) => (
                 <div key={i} className="p-5 flex items-start gap-4 hover:bg-bg/40 transition-colors group cursor-pointer">
                   <div className="mt-1 p-2 bg-bg rounded-xl text-primary group-hover:scale-110 transition-transform">

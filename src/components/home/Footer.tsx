@@ -31,7 +31,6 @@ export default function Footer({ onNavigate }: FooterProps) {
           <ul className="space-y-3 text-sm text-text/60 font-medium">
             <li onClick={() => onNavigate('disease')} className="hover:text-primary cursor-pointer transition-colors">{t('footer_disease')}</li>
             <li onClick={() => onNavigate('weather')} className="hover:text-primary cursor-pointer transition-colors">{t('footer_weather_alerts')}</li>
-            <li onClick={() => onNavigate('weather')} className="hover:text-primary cursor-pointer transition-colors">{t('footer_crop_rec')}</li>
             <li onClick={() => onNavigate('assistant')} className="hover:text-primary cursor-pointer transition-colors">{t('footer_voice')}</li>
           </ul>
         </div>
