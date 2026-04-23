@@ -314,6 +314,11 @@ export default function Community({ onBack }: { onBack: () => void }) {
     }
   };
 
+  const handleDelete = (postId: number) => {
+    setPosts(posts.filter(p => p.id !== postId));
+    if (selectedPost?.id === postId) setSelectedPost(null);
+  };
+
   return (
     <div className="max-w-4xl mx-auto pb-20">
       <AnimatePresence mode="wait">
@@ -396,11 +401,12 @@ export default function Community({ onBack }: { onBack: () => void }) {
             {/* Feed */}
             <div className="space-y-4">
               {filteredPosts.map(post => (
-                <PostCard
-                  key={post.id}
-                  post={post}
+                <PostCard 
+                  key={post.id} 
+                  post={post} 
                   onClick={() => setSelectedPost(post)}
                   onUpvote={() => handleUpvote(post.id)}
+                  onDelete={() => handleDelete(post.id)}
                 />
               ))}
             </div>
@@ -412,10 +418,11 @@ export default function Community({ onBack }: { onBack: () => void }) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
           >
-            <PostDetail
-              post={selectedPost}
+            <PostDetail 
+              post={selectedPost} 
               onBack={() => setSelectedPost(null)}
               onUpvote={() => handleUpvote(selectedPost.id)}
+              onDelete={() => handleDelete(selectedPost.id)}
             />
           </motion.div>
         )}
@@ -424,7 +431,27 @@ export default function Community({ onBack }: { onBack: () => void }) {
   );
 }
 
-function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void, onUpvote: (e: any) => void }) {
+function PostCard({ post, onClick, onUpvote, onDelete }: { 
+  post: Post, 
+  onClick: () => void, 
+  onUpvote: (e: any) => void,
+  onDelete: () => void
+}) {
+  const [showMore, setShowMore] = useState(false);
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (navigator.share) {
+      navigator.share({
+        title: `KrishiX: Problem with ${post.crop}`,
+        text: post.text,
+        url: window.location.href,
+      }).catch(console.error);
+    } else {
+      alert("Link copied to clipboard!");
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ y: -2, shadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05)" }}
@@ -443,12 +470,46 @@ function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void
             </p>
           </div>
         </div>
-        <div className={cn(
-          "px-3 py-1 rounded-[8px] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5",
-          post.status === 'Resolved' ? "bg-green-50 text-green-700 border border-green-100" : "bg-blue-50 text-blue-700 border border-blue-100"
-        )}>
-          {post.status === 'Resolved' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
-          {post.status}
+        <div className="flex items-center gap-2">
+          <div className={cn(
+            "px-3 py-1 rounded-[8px] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5",
+            post.status === 'Resolved' ? "bg-green-50 text-green-700 border border-green-100" : "bg-blue-50 text-blue-700 border border-blue-100"
+          )}>
+            {post.status === 'Resolved' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
+            {post.status}
+          </div>
+          
+          <div className="relative">
+            <button 
+              onClick={(e) => { e.stopPropagation(); setShowMore(!showMore); }}
+              className="w-8 h-8 rounded-full hover:bg-bg flex items-center justify-center text-text/40 transition-colors"
+            >
+              <MoreVertical size={16} />
+            </button>
+            <AnimatePresence>
+              {showMore && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="absolute right-0 top-full mt-1 bg-white border border-border rounded-xl shadow-xl z-50 py-1 min-w-[160px]"
+                >
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setShowMore(false); onDelete(); }}
+                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 font-medium"
+                  >
+                    Delete from feed
+                  </button>
+                  <button 
+                    onClick={handleShare}
+                    className="w-full text-left px-4 py-2 text-sm text-text/70 hover:bg-bg transition-colors flex items-center gap-2 font-medium"
+                  >
+                    Share Post
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
 
@@ -509,9 +570,27 @@ function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void
   );
 }
 
-function PostDetail({ post, onBack, onUpvote }: { post: Post, onBack: () => void, onUpvote: () => void }) {
+function PostDetail({ post, onBack, onUpvote, onDelete }: { 
+  post: Post, 
+  onBack: () => void, 
+  onUpvote: () => void,
+  onDelete: () => void 
+}) {
   const aiAnswer = post.comments.find(c => c.isAI);
   const otherComments = post.comments.filter(c => !c.isAI);
+  const [showMore, setShowMore] = useState(false);
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: `KrishiX: Problem with ${post.crop}`,
+        text: post.text,
+        url: window.location.href,
+      }).catch(console.error);
+    } else {
+      alert("Link copied to clipboard!");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -536,12 +615,40 @@ function PostDetail({ post, onBack, onUpvote }: { post: Post, onBack: () => void
             </div>
           </div>
           <div className="flex gap-2">
-            <button className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-text/40 hover:bg-bg transition-all">
+            <button 
+              onClick={handleShare}
+              className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-text/40 hover:bg-bg transition-all"
+            >
               <Share2 size={18} />
             </button>
-            <button className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-text/40 hover:bg-bg transition-all">
-              <MoreVertical size={18} />
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setShowMore(!showMore)}
+                className="w-10 h-10 rounded-full border border-border flex items-center justify-center text-text/40 hover:bg-bg transition-all"
+              >
+                <MoreVertical size={18} />
+              </button>
+              <AnimatePresence>
+                {showMore && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="absolute right-0 top-full mt-2 bg-white border border-border rounded-xl shadow-2xl z-50 py-1 min-w-[180px]"
+                  >
+                    <button 
+                      onClick={() => { setShowMore(false); onDelete(); }}
+                      className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 font-bold"
+                    >
+                      Delete from feed
+                    </button>
+                    <button className="w-full text-left px-4 py-3 text-sm text-text/70 hover:bg-bg transition-colors flex items-center gap-2 font-bold">
+                      Report Problem
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 
