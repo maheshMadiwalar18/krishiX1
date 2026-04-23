@@ -358,9 +358,30 @@ export default function Community({ onBack }: { onBack: () => void }) {
                 >
                   <AskQuestionForm 
                     onClose={() => setShowAskForm(false)} 
-                    onSubmit={(newPost) => {
+                    onSubmit={async (newPost) => {
                       setPosts([newPost, ...posts]);
                       setShowAskForm(false);
+                      
+                      try {
+                        const response = await fetch('/api/community/ai-reply', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            crop: newPost.crop,
+                            issue: newPost.issue,
+                            text: newPost.text
+                          })
+                        });
+                        const aiReply = await response.json();
+                        
+                        setPosts(prev => prev.map(p => 
+                          p.id === newPost.id 
+                            ? { ...p, comments: [aiReply, ...p.comments] }
+                            : p
+                        ));
+                      } catch (error) {
+                        console.error('Failed to get AI reply:', error);
+                      }
                     }}
                   />
                 </motion.div>
