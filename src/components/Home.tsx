@@ -3,7 +3,6 @@ import Hero from './home/Hero';
 import InstantTry from './home/QuickActions';
 import FeaturesGrid from './home/FeaturesGrid';
 import SmartPreview from './home/DashboardPreview';
-import VoiceCTA from './home/VoiceCTA';
 import Footer from './home/Footer';
 
 interface HomeProps {
@@ -35,10 +34,6 @@ export default function Home({ isLoggedIn, onLogin, onNavigate }: HomeProps) {
         isLoggedIn={isLoggedIn} 
         onLogin={onLogin} 
         onViewDashboard={() => onNavigate('disease')} 
-      />
-      
-      <VoiceCTA 
-        onTryAssistant={() => onNavigate('assistant')} 
       />
       
       <Footer onNavigate={(v) => {
