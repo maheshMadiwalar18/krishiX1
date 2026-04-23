@@ -58,31 +58,31 @@ export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNaviga
                 )}
               </button>
             ))}
+            
+            {/* Language Toggle */}
+            <div className="flex items-center bg-bg rounded-full p-1 border border-border shadow-inner ml-4">
+              <button 
+                onClick={() => setLanguage('en')}
+                className={`px-3 py-1 rounded-full text-[10px] font-black tracking-tight transition-all ${
+                  language === 'en' ? 'bg-primary text-white shadow-md' : 'text-text/40 hover:text-text/60'
+                }`}
+              >
+                EN
+              </button>
+              <button 
+                onClick={() => setLanguage('kn')}
+                className={`px-3 py-1 rounded-full text-[11px] font-black transition-all ${
+                  language === 'kn' ? 'bg-primary text-white shadow-md' : 'text-text/40 hover:text-text/60'
+                }`}
+              >
+                ಕನ್ನಡ
+              </button>
+            </div>
           </div>
         )}
       </div>
 
       <div className="flex items-center gap-3 md:gap-6">
-        {/* Language Toggle */}
-        <div className="flex items-center bg-bg rounded-full p-1 border border-border shadow-inner scale-90 md:scale-100">
-          <button 
-            onClick={() => setLanguage('en')}
-            className={`px-3 py-1 rounded-full text-[10px] font-black tracking-tight transition-all ${
-              language === 'en' ? 'bg-primary text-white shadow-md' : 'text-text/40 hover:text-text/60'
-            }`}
-          >
-            EN
-          </button>
-          <button 
-            onClick={() => setLanguage('kn')}
-            className={`px-3 py-1 rounded-full text-[11px] font-black transition-all ${
-              language === 'kn' ? 'bg-primary text-white shadow-md' : 'text-text/40 hover:text-text/60'
-            }`}
-          >
-            ಕನ್ನಡ
-          </button>
-        </div>
-
         {isLoggedIn ? (
           <>
             <button className="hidden sm:flex p-2 text-text/40 hover:text-primary transition-colors relative">
