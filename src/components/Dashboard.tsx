@@ -37,42 +37,11 @@ interface UserData {
   createdAt: string;
 }
 
+import { useUser } from '../contexts/UserContext';
+
 export default function Dashboard({ onStartView }: { onStartView: (view: 'disease' | 'weather' | 'assistant' | 'knowledge' | 'planning' | 'irrigation' | 'community') => void }) {
-  const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const { userData, loading } = useUser();
   const { t } = useLanguage();
-
-  useEffect(() => {
-    if (!auth.currentUser) {
-      setLoading(false);
-      return;
-    }
-
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    
-    // Use onSnapshot for real-time updates and faster cached reads
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        setUserData(docSnap.data() as UserData);
-      } else {
-        // Fallback if document doesn't exist yet
-        setUserData({
-          name: auth.currentUser?.displayName || 'Farmer',
-          email: auth.currentUser?.email || '',
-          phone: 'Not Set',
-          location: 'Not Set',
-          primaryCrop: 'Not Set',
-          createdAt: auth.currentUser?.metadata.creationTime || new Date().toISOString()
-        });
-      }
-      setLoading(false);
-    }, (error) => {
-      console.error("Error fetching user data:", error);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },

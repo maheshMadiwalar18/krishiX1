@@ -33,10 +33,26 @@ router.post('/login', (req, res) => {
   res.json({ message: 'Login successful', user: { id: user.id, name: user.name, email } });
 });
 
-// Get Current User Profile
+// ✅ GET PROFILE LOGIC
 router.get('/profile', (req, res) => {
-  // In a real app, you would verify a JWT token here
-  res.json({ message: 'Profile data', user: { name: 'Farmer Rajesh', fields: 3 } });
+  console.log("👤 Fetching profile data...");
+  
+  // In a real app, you would fetch from DB using user ID from token
+  const mockUser = {
+    name: 'Farmer Rajesh',
+    email: 'rajesh@farm.com',
+    phone: '+91 98765 43210',
+    location: 'Bhopal, Madhya Pradesh',
+    primaryCrop: 'Wheat',
+    createdAt: new Date().toISOString()
+  };
+
+  if (!mockUser) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  console.log("✅ Profile sent successfully");
+  res.json(mockUser);
 });
 
 export default router;

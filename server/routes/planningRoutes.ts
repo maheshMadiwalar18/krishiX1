@@ -1,55 +1,126 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { generateGeminiText, toGeminiError } from '../gemini.ts';
+import { generateGeminiText } from '../gemini.ts';
 
 dotenv.config();
 
 const router = express.Router();
 
-router.post('/generate-strategy', async (req, res) => {
-  const { crop, soil, landSize, season } = req.body;
+const OLLAMA_URL = 'http://127.0.0.1:11434/api/generate';
+const USE_OLLAMA = process.env.USE_OLLAMA === 'true';
+const OLLAMA_MODEL = 'phi3'; // ⚡ Forced fast model
 
-  if (!process.env.GEMINI_API_KEY) {
-    return res.json([]);
+// ⚡ Simple In-Memory Cache
+const strategyCache: Record<string, any> = {};
+
+router.post('/strategy', async (req, res) => {
+  const { location, soilType, landSize, season, previousCrop } = req.body;
+  console.log("🤖 AI Crop Recommendation Triggered:", { location, soilType, landSize, season, previousCrop });
+
+  const prompt = `
+    As a professional agricultural advisor, suggest 3 to 5 different crops for a farmer.
+    Inputs: Location: ${location}, Soil: ${soilType}, Land: ${landSize} acres, Season: ${season}, Previous Crop: ${previousCrop}.
+    
+    Return ONLY a JSON object with a "success": true flag and a "crops" array. 
+    Each crop object must have:
+    - "name": String (Crop name)
+    - "yield": String (e.g. "2.5 Tons/Acre")
+    - "profit": Number (Estimated profit in INR for ${landSize} acres)
+    - "risk": "Low" | "Medium" | "High"
+    - "waterNeed": "Low" | "Moderate" | "High"
+    - "insight": "Why this crop is good."
+    - "rotationBenefit": "How it helps after ${previousCrop}."
+    - "tag": "most_profitable" | "lowest_risk" | "water_efficient"
+    - "expense": { "seeds": "₹...", "fertilizer": "₹...", "labor": "₹...", "water": "₹..." }
+    - "plan": { "sowing": "Month/Season", "tips": ["...", "..."] }
+
+    Format: {"success": true, "crops": [{"name": "...", "profit": 50000, "expense": {"seeds": "₹2000", ...}, ...}]}
+  `;
+
+  let results: any = null;
+
+  // 1. Try Gemini (Priority)
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      console.log("💎 Calling Gemini (gemini-1.5-flash)...");
+      const text = await generateGeminiText(prompt, 'gemini-1.5-flash');
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        results = JSON.parse(jsonMatch[0]);
+        console.log("✅ AI Response Parsed successfully");
+      }
+    } catch (err: any) {
+      console.error("🔥 Gemini failed:", err.message);
+    }
   }
 
-  try {
-    const prompt = `
-      As an expert agricultural planner, generate a 12-month crop strategy and financial projection.
-      Crop: ${crop}
-      Soil: ${soil}
-      Land Size: ${landSize} acres
-      Current Season: ${season}
-
-      Return ONLY a JSON array of 12 objects. Each object should have:
-      - month: String (e.g. "Month 1: Sowing")
-      - activity: String (Description of work)
-      - cost: Number (Estimated cost in INR)
-      - revenue: Number (Estimated revenue in INR)
-      - status: "Completed" | "In Progress" | "Planned" (Set first 2 to Completed, next 2 to In Progress, rest to Planned)
-
-      Ensure numerical values are realistic for the region.
-    `;
-
-    const text = await generateGeminiText(prompt, 'gemini-1.5-flash');
-    
-    // Extract JSON from potential markdown code blocks
-    const jsonMatch = text.match(/\[[\s\S]*\]/);
-    const results = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
-
-    res.json(results);
-  } catch (error: any) {
-    const gemErr = toGeminiError(error);
-    console.error('Planning AI Error:', gemErr.message);
-    
-    // Provide high-quality mock data as fallback during quota limits
-    res.json([
-      { month: "Month 1: Preparation", activity: "Soil testing and deep plowing to improve aeration.", cost: 5000, revenue: 0, status: "Completed" },
-      { month: "Month 2: Sowing", activity: "Seed treatment and precision sowing with optimal spacing.", cost: 8000, revenue: 0, status: "In Progress" },
-      { month: "Month 3: Irrigation", activity: "First irrigation and application of basal fertilizers.", cost: 3000, revenue: 0, status: "Planned" },
-      { month: "Month 12: Harvest", activity: "Mechanical harvesting and sorting for market delivery.", cost: 4000, revenue: 85000, status: "Planned" }
-    ]);
+  // 2. Try Ollama Fallback
+  if (!results && USE_OLLAMA) {
+    try {
+      console.log("🧠 Falling back to Ollama (phi3)...");
+      const response = await fetch(OLLAMA_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'phi3',
+          prompt: prompt,
+          stream: false,
+          format: 'json'
+        })
+      });
+      if (response.ok) {
+        const data = await response.json() as any;
+        results = JSON.parse(data.response);
+        console.log("✅ Ollama Response Parsed");
+      }
+    } catch (err: any) {
+      console.error("❌ Ollama failed:", err.message);
+    }
   }
+
+  // 3. Last resort Mock Data
+  if (!results || !results.crops) {
+    console.log("⚠️ Using internal fallback data");
+    results = {
+      success: true,
+      crops: [
+        {
+          name: "Tomato",
+          yield: "15-20 Tons/Acre",
+          profit: 128000 * (parseFloat(landSize) || 1),
+          risk: "Medium",
+          waterNeed: "Moderate",
+          insight: "Thrives in red soil and Kharif season.",
+          rotationBenefit: "Fixes nitrogen after Maize.",
+          tag: "most_profitable",
+          expense: { seeds: "₹4,500", fertilizer: "₹8,000", labor: "₹15,000", water: "₹2,500" },
+          plan: { sowing: "June - July", tips: ["Regular staking required", "Monitor for early blight"] }
+        },
+        {
+          name: "Ragi",
+          yield: "1.2 Tons/Acre",
+          profit: 30000 * (parseFloat(landSize) || 1),
+          risk: "Low",
+          waterNeed: "Low",
+          insight: "Drought resistant.",
+          rotationBenefit: "Breaks pest cycles.",
+          tag: "water_efficient",
+          expense: { seeds: "₹800", fertilizer: "₹2,500", labor: "₹6,000", water: "₹1,000" },
+          plan: { sowing: "July", tips: ["Seed treatment with Azospirillum", "Row planting for better yield"] }
+        }
+      ]
+    };
+  }
+
+  res.json(results);
+});
+
+// Alias for older endpoint
+router.post('/generate-strategy', (req, res) => {
+  // Redirect to new logic but wrap it in recommendations to maintain compatibility if needed
+  // Actually, let's just make it call the same logic.
+  req.url = '/strategy';
+  router.handle(req, res, () => {});
 });
 
 export default router;

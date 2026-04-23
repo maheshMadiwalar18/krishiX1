@@ -338,13 +338,13 @@ export default function Community({ onBack }: { onBack: () => void }) {
                 >
                   <ChevronLeft size={20} />
                 </button>
-                <h1 className="text-2xl font-display font-bold text-text">Farmer Community</h1>
+                <h1 className="text-2xl font-display font-bold text-text">{t('comm_title')}</h1>
               </div>
               <button
                 onClick={() => setShowAskForm(true)}
                 className="bg-primary text-white px-6 py-3 rounded-[12px] font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:bg-primary/90 transition-all active:scale-95"
               >
-                <Plus size={20} /> Ask Question
+                <Plus size={20} /> {t('comm_ask_btn')}
               </button>
             </div>
 
@@ -394,7 +394,7 @@ export default function Community({ onBack }: { onBack: () => void }) {
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text/40" size={18} />
                 <input
                   type="text"
-                  placeholder="Search farming problems, crops, or pests..."
+                  placeholder={t('comm_search_placeholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-11 pr-4 py-3.5 bg-white border border-border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary shadow-sm transition-all text-sm"
@@ -413,7 +413,7 @@ export default function Community({ onBack }: { onBack: () => void }) {
                         : "bg-white border-border text-text/60 hover:border-primary/30"
                     )}
                   >
-                    {f}
+                    {f === 'All' ? t('comm_all') : f === 'Resolved' ? t('comm_resolved') : f}
                   </button>
                 ))}
               </div>
@@ -459,6 +459,7 @@ const PostCard = ({ post, onClick, onUpvote, onDelete }: {
   onDelete: () => void,
   key?: any
 }) => {
+  const { t } = useLanguage();
   const [showMore, setShowMore] = useState(false);
 
   const handleShare = (e: React.MouseEvent) => {
@@ -520,13 +521,13 @@ const PostCard = ({ post, onClick, onUpvote, onDelete }: {
                     onClick={(e) => { e.stopPropagation(); setShowMore(false); onDelete(); }}
                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 font-medium"
                   >
-                    Delete from feed
+                    {t('comm_delete')}
                   </button>
                   <button 
                     onClick={handleShare}
                     className="w-full text-left px-4 py-2 text-sm text-text/70 hover:bg-bg transition-colors flex items-center gap-2 font-medium"
                   >
-                    Share Post
+                    {t('comm_share')}
                   </button>
                 </motion.div>
               )}
@@ -585,7 +586,7 @@ const PostCard = ({ post, onClick, onUpvote, onDelete }: {
           </div>
         </div>
         <button className="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 hover:gap-2.5 transition-all">
-          View Detail <ArrowLeft size={14} className="rotate-180" />
+          {t('comm_view_detail')} <ArrowLeft size={14} className="rotate-180" />
         </button>
       </div>
     </motion.div>
@@ -598,6 +599,7 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
   onUpvote: () => void,
   onDelete: () => void 
 }) {
+  const { t } = useLanguage();
   const aiAnswer = post.comments.find(c => c.isAI);
   const otherComments = post.comments.filter(c => !c.isAI);
   const [showMore, setShowMore] = useState(false);
@@ -620,7 +622,7 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
         onClick={onBack}
         className="flex items-center gap-2.5 text-text/40 hover:text-text transition-colors font-bold text-sm mb-6 active:scale-95 w-fit"
       >
-        <ArrowLeft size={16} /> Back to Feed
+        <ArrowLeft size={16} /> {t('comm_back_feed')}
       </button>
 
       <div className="bg-white rounded-[12px] border border-border p-7 shadow-md">
@@ -662,10 +664,10 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
                       onClick={() => { setShowMore(false); onDelete(); }}
                       className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 font-bold"
                     >
-                      Delete from feed
+                      {t('comm_delete')}
                     </button>
                     <button className="w-full text-left px-4 py-3 text-sm text-text/70 hover:bg-bg transition-colors flex items-center gap-2 font-bold">
-                      Report Problem
+                      {t('comm_report')}
                     </button>
                   </motion.div>
                 )}
@@ -703,14 +705,14 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
             </div>
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4 bg-white/10 w-fit px-3 py-1.5 rounded-[8px] text-[10px] font-bold uppercase tracking-widest border border-white/10">
-                <Brain size={14} /> AI Solution
+                <Brain size={14} /> {t('comm_ai_solution')}
               </div>
               <p className="text-lg font-medium leading-relaxed mb-6">
                 {aiAnswer.text}
               </p>
               <div className="flex items-center gap-5 text-white/70 text-xs">
                 <button className="flex items-center gap-1.5 hover:text-white transition-colors">
-                  <ThumbsUp size={14} /> Helpful ({aiAnswer.upvotes})
+                  <ThumbsUp size={14} /> {t('comm_helpful')} ({aiAnswer.upvotes})
                 </button>
                 <span className="opacity-30">•</span>
                 <span>Verified by KrushiX AI</span>
@@ -723,7 +725,7 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
         <div className="border-t border-border/60 pt-8 mt-4">
           <h4 className="font-display font-bold text-xl mb-8 flex items-center gap-2.5">
             <MessageSquare className="text-primary" size={22} />
-            Replies ({otherComments.length})
+            {t('comm_replies')} ({otherComments.length})
           </h4>
 
           <div className="space-y-8 mb-10">
@@ -793,7 +795,7 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
                 </button>
               </div>
               <button className="bg-primary text-white px-6 py-2.5 rounded-[10px] font-bold text-xs flex items-center gap-2 shadow-sm hover:shadow-md hover:bg-primary/90 transition-all active:scale-95">
-                <Send size={14} /> Post Reply
+                <Send size={14} /> {t('comm_post_reply')}
               </button>
             </div>
           </div>
@@ -804,12 +806,26 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
 }
 
 function AskQuestionForm({ onClose, onSubmit }: { onClose: () => void, onSubmit: (post: Post) => void }) {
+  const { t } = useLanguage();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     crop: '',
     issue: 'Pest',
     text: '',
-    location: 'Unknown'
+    location: 'Unknown',
+    image: ''
   });
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, image: reader.result as string });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -822,6 +838,7 @@ function AskQuestionForm({ onClose, onSubmit }: { onClose: () => void, onSubmit:
       crop: formData.crop,
       issue: formData.issue,
       text: formData.text,
+      image: formData.image,
       status: "Open",
       upvotes: 0,
       tags: [`#${formData.crop}`, `#${formData.issue}`],
@@ -838,7 +855,7 @@ function AskQuestionForm({ onClose, onSubmit }: { onClose: () => void, onSubmit:
       <div className="absolute top-0 left-0 w-full h-1 bg-primary/20" />
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-display font-bold text-lg text-text flex items-center gap-2">
-          <Plus size={20} className="text-primary" /> Ask the Community
+          <Plus size={20} className="text-primary" /> {t('comm_ask_btn')}
         </h3>
         <button onClick={onClose} className="text-text/40 hover:text-text transition-colors">
           <Plus size={20} className="rotate-45" />
@@ -846,48 +863,75 @@ function AskQuestionForm({ onClose, onSubmit }: { onClose: () => void, onSubmit:
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          className="hidden" 
+          accept="image/*" 
+          onChange={handleImageUpload} 
+        />
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-text/60 ml-1">Crop Type</label>
+            <label className="text-xs font-bold text-text/60 ml-1">{t('comm_form_crop')}</label>
             <input 
               type="text"
-              placeholder="e.g. Tomato, Rice..."
+              placeholder={t('comm_form_crop_ph')}
               className="w-full px-4 py-2.5 bg-bg border border-border rounded-[10px] text-sm focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none"
               value={formData.crop}
               onChange={e => setFormData({ ...formData, crop: e.target.value })}
             />
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-text/60 ml-1">Problem Category</label>
+            <label className="text-xs font-bold text-text/60 ml-1">{t('comm_form_issue')}</label>
             <select 
               className="w-full px-4 py-2.5 bg-bg border border-border rounded-[10px] text-sm focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none"
               value={formData.issue}
               onChange={e => setFormData({ ...formData, issue: e.target.value })}
             >
-              <option>Pest</option>
-              <option>Disease</option>
-              <option>Soil</option>
-              <option>Water</option>
-              <option>Yield</option>
-              <option>Weather</option>
-              <option>Market</option>
+              <option value="Pest">Pest</option>
+              <option value="Disease">Disease</option>
+              <option value="Soil">Soil</option>
+              <option value="Water">Water</option>
+              <option value="Market">Market</option>
+              <option value="Planning">Planning</option>
             </select>
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-bold text-text/60 ml-1">Describe the Problem</label>
+          <label className="text-xs font-bold text-text/60 ml-1">{t('comm_form_desc')}</label>
           <textarea 
-            placeholder="Tell us what's happening with your crop..."
+            placeholder={t('comm_form_desc_ph')}
             className="w-full px-4 py-3 bg-bg border border-border rounded-[10px] text-sm focus:border-primary focus:ring-1 focus:ring-primary/10 outline-none min-h-[120px] resize-none"
             value={formData.text}
             onChange={e => setFormData({ ...formData, text: e.target.value })}
           />
         </div>
 
+        {formData.image && (
+          <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border group">
+            <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+            <button 
+              type="button"
+              onClick={() => setFormData({ ...formData, image: '' })}
+              className="absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <Plus size={14} className="rotate-45" />
+            </button>
+          </div>
+        )}
+
         <div className="flex items-center justify-between pt-2">
           <div className="flex gap-2">
-            <button type="button" className="p-2.5 rounded-[10px] bg-bg border border-border text-text/40 hover:text-primary hover:border-primary/20 transition-all">
+            <button 
+              type="button" 
+              onClick={() => fileInputRef.current?.click()}
+              className={cn(
+                "p-2.5 rounded-[10px] bg-bg border border-border transition-all",
+                formData.image ? "text-primary border-primary/20" : "text-text/40 hover:text-primary hover:border-primary/20"
+              )}
+            >
               <ImageIcon size={20} />
             </button>
             <button type="button" className="p-2.5 rounded-[10px] bg-bg border border-border text-text/40 hover:text-primary hover:border-primary/20 transition-all">

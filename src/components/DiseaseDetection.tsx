@@ -47,6 +47,37 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
     reader.readAsDataURL(file);
   };
 
+  const compressImage = (base64Str: string): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = base64Str;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.7)); // 0.7 quality is plenty for AI
+      };
+    });
+  };
+
   const handleScan = async () => {
     if (!image) {
       addNotification('info', 'Please upload or capture an image first.');
@@ -54,10 +85,13 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
     }
     setIsScanning(true);
     try {
+      // ⚡ COMPRESSION: Shrink image before sending (Massive Speed Boost)
+      const compressedImage = await compressImage(image);
+      
       const response = await fetch('/api/disease/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image, dataType })
+        body: JSON.stringify({ image: compressedImage, dataType })
       });
       const data = await response.json();
       setResult(data);
@@ -279,10 +313,30 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
                   <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                     <Bug size={120} />
                   </div>
+
+                  {/* AI Visual Observation (New) */}
+                  {result.observation && (
+                    <div className="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100 flex gap-3 items-start">
+                      <div className="shrink-0 w-8 h-8 rounded-lg bg-white flex items-center justify-center text-slate-400 shadow-sm border border-slate-100">
+                        <Info size={16} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">AI Visual Assessment</p>
+                        <p className="text-xs font-bold text-slate-600 italic leading-relaxed">"{result.observation}"</p>
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                     <div>
-                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-2">AI Analysis Result</h3>
+                      <h3 className={cn(
+                        "text-[10px] font-black uppercase tracking-[0.2em] mb-2",
+                        result.status === 'HEALTHY' ? "text-green-600" : 
+                        result.status === 'PEST' ? "text-purple-600" :
+                        result.status === 'NOT SURE' ? "text-orange-600" : "text-primary"
+                      )}>
+                        AI Analysis: {result.status}
+                      </h3>
                       <div className="flex items-center gap-3">
                         <h2 className="text-3xl md:text-4xl font-display font-black text-text tracking-tight">{result.name}</h2>
                         <button 
@@ -295,117 +349,161 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-3">
-                      <div className="px-4 py-2 bg-primary text-white rounded-2xl flex items-center gap-2 shadow-md">
-                        <ShieldCheck size={18} />
-                        <span className="text-sm font-black">{result.confidence} {t('result_confidence')}</span>
-                      </div>
-                      <div className={cn(
-                        "px-4 py-2 rounded-2xl border-2 flex items-center gap-2 font-black text-sm",
-                        result.actionLevel === 'High' ? "bg-red-50 text-red-600 border-red-100" :
-                        result.actionLevel === 'Medium' ? "bg-orange-50 text-orange-600 border-orange-100" :
-                        "bg-blue-50 text-blue-600 border-blue-100"
-                      )}>
-                        <AlertCircle size={18} />
-                        <span>{t('result_action_level')}: {result.actionLevel}</span>
-                      </div>
+                      {result.status === 'HEALTHY' ? (
+                        <div className="px-4 py-2 bg-green-500 text-white rounded-2xl flex items-center gap-2 shadow-md">
+                          <CheckCircle2 size={18} />
+                          <span className="text-sm font-black">All Good!</span>
+                        </div>
+                      ) : (
+                        <div className="px-4 py-2 bg-primary text-white rounded-2xl flex items-center gap-2 shadow-md">
+                          <ShieldCheck size={18} />
+                          <span className="text-sm font-black">{result.confidence} {t('result_confidence')}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
-                  {/* Severity Warning Box */}
+                  {/* Status Message Box */}
                   <div className={cn(
                     "p-4 rounded-2xl border-l-4 mb-2 flex gap-4 items-center",
-                    result.actionLevel === 'High' ? "bg-red-50/50 border-red-500 text-red-800" :
-                    result.actionLevel === 'Medium' ? "bg-orange-50/50 border-orange-500 text-orange-800" :
-                    "bg-blue-50/50 border-blue-500 text-blue-800"
+                    result.status === 'HEALTHY' ? "bg-green-50/50 border-green-500 text-green-800" :
+                    result.status === 'PEST' ? "bg-purple-50/50 border-purple-500 text-purple-800" :
+                    result.status === 'NOT SURE' ? "bg-orange-50/50 border-orange-500 text-orange-800" :
+                    result.actionLevel === 'High' ? "bg-red-50/50 border-red-500 text-red-800" : "bg-blue-50/50 border-blue-500 text-blue-800"
                   )}>
                     <div className="shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
-                      <AlertCircle size={20} className={cn(
-                         result.actionLevel === 'High' ? "text-red-500" :
-                         result.actionLevel === 'Medium' ? "text-orange-500" :
-                         "text-blue-500"
-                      )} />
+                      {result.status === 'PEST' ? (
+                        <Bug size={20} className="text-purple-500" />
+                      ) : (
+                        <AlertCircle size={20} className={cn(
+                           result.status === 'HEALTHY' ? "text-green-500" :
+                           result.status === 'NOT SURE' ? "text-orange-500" :
+                           result.actionLevel === 'High' ? "text-red-500" : "text-blue-500"
+                        )} />
+                      )}
                     </div>
                     <p className="text-sm font-bold leading-snug">
-                      {result.actionLevel === 'High' ? "CRITICAL: Immediate action required to prevent total crop loss. Spread risk is extremely high." :
-                       result.actionLevel === 'Medium' ? "WARNING: Moderate infection detected. Apply treatment within 48 hours to prevent further spread." :
-                       "ADVISORY: Early symptoms detected. Monitor closely and apply preventive measures."}
+                      {result.message || (
+                        result.status === 'HEALTHY' ? "Plant looks healthy. No disease or pests detected." :
+                        result.status === 'PEST' ? "Pest Attack Detected! Visible damage from insects found on the plant." :
+                        result.status === 'NOT SURE' ? "Image unclear. Please upload a closer or clearer image." :
+                        "Disease detected. Please follow the treatment steps below."
+                      )}
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                   <h3 className="text-xl font-black text-text flex items-center gap-2 pl-2">
-                     <div className="w-2 h-6 bg-primary rounded-full" />
-                     Treatment & Recommendations
-                   </h3>
+                {(result.status === 'DISEASED' || result.status === 'PEST') && (
+                  <>
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-black text-text flex items-center gap-2 pl-2">
+                        <div className="w-2 h-6 bg-primary rounded-full" />
+                        Treatment & Recommendations
+                      </h3>
 
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* 2. Medicine Recommendation */}
-                      <div className="bg-white border border-border rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col">
-                        <div className="flex items-center gap-3 mb-6">
-                          <div className="w-12 h-12 bg-[#F1F8E9] rounded-2xl flex items-center justify-center text-2xl shadow-inner">💊</div>
-                          <div>
-                            <h4 className="font-black text-text">{t('medicine_title')}</h4>
-                            <p className="text-[10px] font-bold text-text/40 uppercase tracking-widest">Chemical Control</p>
-                          </div>
-                        </div>
-
-                        <div className="space-y-5 flex-1">
-                          <div className="bg-[#F9FBF9] p-4 rounded-2xl border border-primary/10">
-                            <p className="text-[10px] font-black text-text/30 uppercase tracking-widest mb-1">{t('med_name')}</p>
-                            <p className="font-black text-primary text-xl tracking-tight">{result.medicine.name}</p>
-                          </div>
-
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-bg/50 p-4 rounded-2xl border border-border/50">
-                              <p className="text-[10px] font-black text-text/30 uppercase tracking-widest mb-1">{t('med_dosage')}</p>
-                              <p className="font-bold text-text/80 text-sm">{result.medicine.dosage}</p>
-                            </div>
-                            <div className="bg-bg/50 p-4 rounded-2xl border border-border/50">
-                              <p className="text-[10px] font-black text-text/30 uppercase tracking-widest mb-1">{t('med_method')}</p>
-                              <p className="font-bold text-text/80 text-sm">{result.medicine.method}</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* 2. Medicine Recommendation */}
+                        <div className="bg-white border border-border rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                          <div className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-12 bg-[#F1F8E9] rounded-2xl flex items-center justify-center text-2xl shadow-inner">💊</div>
+                            <div>
+                              <h4 className="font-black text-text">{t('medicine_title')}</h4>
+                              <p className="text-[10px] font-bold text-text/40 uppercase tracking-widest">Chemical Control</p>
                             </div>
                           </div>
-                          
-                          <div className="bg-bg/50 p-4 rounded-2xl border border-border/50">
-                            <p className="text-[10px] font-black text-text/30 uppercase tracking-widest mb-1">{t('med_frequency')}</p>
-                            <p className="font-bold text-text/80 text-sm">{result.medicine.frequency}</p>
-                          </div>
-                        </div>
-                      </div>
 
-                      {/* 3. Prevention Tips */}
-                      <div className="bg-white border border-border rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col">
-                        <div className="flex items-center gap-3 mb-6">
-                          <div className="w-12 h-12 bg-[#F1F8E9] rounded-2xl flex items-center justify-center text-2xl shadow-inner">🌱</div>
-                          <div>
-                            <h4 className="font-black text-text">{t('prevention_title')}</h4>
-                            <p className="text-[10px] font-bold text-text/40 uppercase tracking-widest">Future Protection</p>
-                          </div>
-                        </div>
+                          <div className="space-y-5 flex-1">
+                            <div className="bg-[#F9FBF9] p-4 rounded-2xl border border-primary/10">
+                              <p className="text-[10px] font-black text-text/30 uppercase tracking-widest mb-1">{t('med_name')}</p>
+                              <p className="font-black text-primary text-xl tracking-tight">{result.medicine.name}</p>
+                            </div>
 
-                        <div className="space-y-3 flex-1">
-                          {result.prevention.map((tip: string, i: number) => (
-                            <div key={i} className="flex gap-3 items-start p-3 bg-[#F9FBF9] rounded-xl border border-primary/5 hover:border-primary/20 transition-all group">
-                              <div className="w-6 h-6 bg-white rounded-lg flex items-center justify-center text-primary shadow-sm border border-border/50 group-hover:bg-primary group-hover:text-white transition-all">
-                                <CheckCircle2 size={14} />
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="bg-bg/50 p-4 rounded-2xl border border-border/50">
+                                <p className="text-[10px] font-black text-text/30 uppercase tracking-widest mb-1">{t('med_dosage')}</p>
+                                <p className="font-bold text-text/80 text-sm">{result.medicine.dosage}</p>
                               </div>
-                              <p className="text-sm text-text/70 font-bold leading-snug">{tip}</p>
+                              <div className="bg-bg/50 p-4 rounded-2xl border border-border/50">
+                                <p className="text-[10px] font-black text-text/30 uppercase tracking-widest mb-1">{t('med_method')}</p>
+                                <p className="font-bold text-text/80 text-sm">{result.medicine.method}</p>
+                              </div>
                             </div>
-                          ))}
+                            
+                            <div className="bg-bg/50 p-4 rounded-2xl border border-border/50">
+                              <p className="text-[10px] font-black text-text/30 uppercase tracking-widest mb-1">{t('med_frequency')}</p>
+                              <p className="font-bold text-text/80 text-sm">{result.medicine.frequency}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* AI Insights: Symptoms & Causes */}
+                        {result.details && (
+                          <div className="bg-white border border-border rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col md:col-span-2">
+                            <div className="flex items-center gap-3 mb-6">
+                              <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl shadow-inner">🔍</div>
+                              <div>
+                                <h4 className="font-black text-text text-lg">AI Field Observations</h4>
+                                <p className="text-[10px] font-bold text-text/40 uppercase tracking-widest">Symptoms & Causes</p>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div className="space-y-2">
+                                <p className="text-[11px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-2">
+                                  <span className="w-2 h-2 bg-blue-500 rounded-full" />
+                                  Symptoms Identified
+                                </p>
+                                <p className="text-sm font-bold text-text/70 bg-blue-50/30 p-4 rounded-2xl border border-blue-100/50 leading-relaxed">
+                                  {result.details.symptoms}
+                                </p>
+                              </div>
+                              <div className="space-y-2">
+                                <p className="text-[11px] font-black text-orange-600 uppercase tracking-widest flex items-center gap-2">
+                                  <span className="w-2 h-2 bg-orange-500 rounded-full" />
+                                  Possible Causes
+                                </p>
+                                <p className="text-sm font-bold text-text/70 bg-orange-50/30 p-4 rounded-2xl border border-orange-100/50 leading-relaxed">
+                                  {result.details.causes}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 3. Prevention Tips */}
+                        <div className="bg-white border border-border rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                          <div className="flex items-center gap-3 mb-6">
+                            <div className="w-12 h-12 bg-[#F1F8E9] rounded-2xl flex items-center justify-center text-2xl shadow-inner">🌱</div>
+                            <div>
+                              <h4 className="font-black text-text">{t('prevention_title')}</h4>
+                              <p className="text-[10px] font-bold text-text/40 uppercase tracking-widest">Future Protection</p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-3 flex-1">
+                            {result.prevention.map((tip: string, i: number) => (
+                              <div key={i} className="flex gap-3 items-start p-3 bg-[#F9FBF9] rounded-xl border border-primary/5 hover:border-primary/20 transition-all group">
+                                <div className="w-6 h-6 bg-white rounded-lg flex items-center justify-center text-primary shadow-sm border border-border/50 group-hover:bg-primary group-hover:text-white transition-all">
+                                  <CheckCircle2 size={14} />
+                                </div>
+                                <p className="text-sm text-text/70 font-bold leading-snug">{tip}</p>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                   </div>
-                </div>
+                    </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                  <button className="flex-1 py-5 bg-[#F1F8E9] text-primary font-black rounded-[1.5rem] hover:bg-[#E8F5E9] transition-all active:scale-95 border-2 border-primary/10 shadow-sm flex items-center justify-center gap-2">
-                    {t('btn_export')}
-                  </button>
-                  <button className="flex-1 py-5 bg-primary text-white font-black rounded-[1.5rem] hover:bg-primary/90 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2">
-                    {t('btn_save_log')}
-                  </button>
-                </div>
+                    <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                      <button className="flex-1 py-5 bg-[#F1F8E9] text-primary font-black rounded-[1.5rem] hover:bg-[#E8F5E9] transition-all active:scale-95 border-2 border-primary/10 shadow-sm flex items-center justify-center gap-2">
+                        {t('btn_export')}
+                      </button>
+                      <button className="flex-1 py-5 bg-primary text-white font-black rounded-[1.5rem] hover:bg-primary/90 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2">
+                        {t('btn_save_log')}
+                      </button>
+                    </div>
+                  </>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Send } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -8,10 +9,11 @@ interface Message {
 }
 
 export default function AIAssistant() {
+  const { t } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Namaste! I've analyzed your wheat field data. Soil moisture is optimal, but there is a 30% chance of yellow rust in the northern block. Would you like a treatment plan?"
+      content: t('assistant_greeting')
     }
   ]);
   const [input, setInput] = useState('');
@@ -35,38 +37,38 @@ export default function AIAssistant() {
       setMessages(prev => [...prev, { role: 'assistant', content: data.reply }]);
     } catch (error) {
       console.error('Chat error:', error);
-      setMessages(prev => [...prev, { role: 'assistant', content: "I'm sorry, I'm having trouble connecting right now." }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: "Error connecting to AI." }]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl card-shadow border border-white/50 flex flex-col h-full min-h-[400px]">
+    <div className="bg-white p-6 rounded-xl border border-border flex flex-col h-full min-h-[400px] shadow-sm">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-          <Sparkles size={18} className="text-nature-text" />
+        <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+          <Sparkles size={18} />
         </div>
         <div>
-          <h3 className="font-bold">Krishi AI Assistant</h3>
-          <p className="text-xs text-nature-text/50">Online • Always helpful</p>
+          <h3 className="font-bold text-text">{t('feat_ai')}</h3>
+          <p className="text-[10px] text-text/40 font-bold uppercase tracking-widest">Online • AI Expert</p>
         </div>
       </div>
 
-      <div className="flex-1 space-y-4 mb-6 overflow-y-auto pr-2">
+      <div className="flex-1 space-y-4 mb-6 overflow-y-auto pr-2 scrollbar-hide">
         {messages.map((msg, i) => (
           <motion.div 
             key={i}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${msg.role === 'assistant' ? 'bg-nature-bg rounded-tl-none' : 'bg-primary text-white rounded-tr-none self-end ml-auto'} p-4 rounded-xl max-w-[85%]`}
+            className={`${msg.role === 'assistant' ? 'bg-bg rounded-tl-none text-text border border-border' : 'bg-primary text-white rounded-tr-none self-end ml-auto'} p-4 rounded-xl max-w-[85%] shadow-sm`}
           >
             <p className="text-sm leading-relaxed">{msg.content}</p>
           </motion.div>
         ))}
         {loading && (
-          <div className="bg-nature-bg p-4 rounded-xl rounded-tl-none max-w-[85%] animate-pulse">
-            <p className="text-sm">Thinking...</p>
+          <div className="bg-bg p-4 rounded-xl rounded-tl-none max-w-[85%] animate-pulse border border-border">
+            <p className="text-xs text-text/40 font-bold italic">Thinking...</p>
           </div>
         )}
       </div>
@@ -77,8 +79,8 @@ export default function AIAssistant() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-          placeholder="Ask Krishi AI..." 
-          className="w-full bg-nature-bg border-2 border-transparent focus:border-primary/20 rounded-xl px-4 py-3 text-sm focus:outline-none transition-all pr-12 text-nature-text"
+          placeholder={t('assistant_placeholder')} 
+          className="w-full bg-bg border border-border focus:border-primary/20 rounded-xl px-4 py-3 text-sm focus:outline-none transition-all pr-12 text-text"
         />
         <button 
           onClick={handleSend}

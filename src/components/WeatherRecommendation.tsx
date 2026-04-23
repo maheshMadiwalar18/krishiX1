@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { cn } from '../lib/utils';
 
 const forecast = [
   { day: 'Mon', temp: 32, icon: Sun, condition: 'Sunny' },
@@ -36,25 +37,20 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
   React.useEffect(() => {
     const fetchWeatherAndAdvice = async () => {
       try {
-        // 1. Fetch Live Weather
+        // 1. Fetch Live Weather (which now includes Smart AI Prediction)
         const weatherRes = await fetch('/api/weather/live');
+        if (!weatherRes.ok) throw new Error("Weather API failed");
+        
         const weather = await weatherRes.json();
         setWeatherData(weather);
 
-        // 2. Fetch AI Advice based on Live Weather
-        const adviceRes = await fetch('/api/weather/ai-advice', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            location: weather.location,
-            weatherData: weather
-          })
-        });
-        const advice = await adviceRes.json();
-        setAiAdvice(advice.advice);
+        // 2. Use the prediction reason as the "AI Advice" summary
+        if (weather.prediction) {
+          setAiAdvice(weather.prediction.reason || "Weather conditions are optimal for crop growth.");
+        }
       } catch (error) {
         console.error("Weather error:", error);
-        setAiAdvice("Focus on irrigation during early morning or late evening to minimize evaporation loss.");
+        setAiAdvice("Unable to fetch live AI advice. Focus on standard irrigation and pest monitoring.");
       } finally {
         setLoading(false);
       }
@@ -87,6 +83,93 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
           </p>
         </div>
       </div>
+
+      {/* ✅ SMART CLIMATE ALERT & DISEASE PREDICTION SECTION */}
+      {weatherData?.prediction && (
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={cn(
+            "p-6 rounded-[2rem] border-2 shadow-sm flex flex-col gap-4",
+            weatherData.prediction.risk === 'High' ? "bg-red-50 border-red-200 text-red-900" :
+            weatherData.prediction.risk === 'Medium' ? "bg-orange-50 border-orange-200 text-orange-900" :
+            "bg-green-50 border-green-200 text-green-900"
+          )}
+        >
+          {/* 1. Risk Level & Alert Header */}
+          <div className="flex items-start justify-between">
+            <div className="flex gap-4">
+              <div className={cn(
+                "w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-inner shrink-0",
+                weatherData.prediction.risk === 'High' ? "bg-red-100" :
+                weatherData.prediction.risk === 'Medium' ? "bg-orange-100" :
+                "bg-green-100"
+              )}>
+                {weatherData.prediction.risk === 'High' ? '🚨' : weatherData.prediction.risk === 'Medium' ? '⚠️' : '✅'}
+              </div>
+              <div>
+                <h3 className="text-xl font-black tracking-tight leading-tight">{weatherData.prediction.alert}</h3>
+                <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mt-1">
+                  Climate Risk Status: {weatherData.prediction.risk}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Why this risk? */}
+          <div className="bg-white/40 p-4 rounded-2xl backdrop-blur-sm border border-white/20">
+            <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mb-2 flex items-center gap-2">
+              <span className="w-4 h-4 bg-white rounded-full flex items-center justify-center text-[8px]">❓</span>
+              Why this risk?
+            </p>
+            <p className="text-sm font-bold leading-relaxed">
+              {weatherData.prediction.reason}
+            </p>
+          </div>
+
+          {/* 3. Possible Problems */}
+          {weatherData.prediction.problems?.length > 0 && (
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mb-2 flex items-center gap-2">
+                <span className="w-4 h-4 bg-white rounded-full flex items-center justify-center text-[8px]">🐛</span>
+                Possible Problems
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {weatherData.prediction.problems.map((d: string, i: number) => (
+                  <span key={i} className={cn(
+                    "px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider border",
+                    weatherData.prediction.risk === 'High' ? "bg-red-200/50 border-red-300" :
+                    weatherData.prediction.risk === 'Medium' ? "bg-orange-200/50 border-orange-300" :
+                    "bg-green-200/50 border-green-300"
+                  )}>
+                    {d}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 4. What should you do? (Precautions) */}
+          {weatherData.prediction.precautions?.length > 0 && (
+            <div className="space-y-3">
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-50 mb-1 flex items-center gap-2">
+                <span className="w-4 h-4 bg-white rounded-full flex items-center justify-center text-[8px]">🛠️</span>
+                What should you do?
+              </p>
+              <div className="grid grid-cols-1 gap-2">
+                {weatherData.prediction.precautions.map((p: string, i: number) => (
+                  <div key={i} className="flex items-center gap-3 bg-white/30 p-3 rounded-xl border border-white/10 group hover:bg-white/50 transition-all">
+                    <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center text-[10px] font-black shadow-sm group-hover:scale-110 transition-transform">
+                      {i + 1}
+                    </div>
+                    <p className="text-xs font-bold">{p}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </motion.div>
+      )}
 
       <div className="space-y-6">
         {/* Current Weather Card */}

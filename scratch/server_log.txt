@@ -1,0 +1,307 @@
+
+> react-example@0.0.0 server
+> tsx server/index.ts
+
+◇ injected env (6) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+◇ injected env (0) from .env // tip: ◈ secrets for agents [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌘ enable debugging { debug: true }
+◇ injected env (0) from .env // tip: ⌘ suppress logs { quiet: true }
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+◇ injected env (0) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+🚀 Server ready on http://0.0.0.0:5001
+🔗 Local access: http://localhost:5001
+📡 [3:57:38 am] POST /api/irrigation/strategy
+🌊 [Irrigation API] Incoming Request: {
+  crop: 'Maize',
+  soilType: 'Red Soil',
+  irrigationType: 'Borewell',
+  plantStage: 'Vegetative',
+  landSize: '2'
+}
+🤖 Using Ollama (phi3) for Irrigation...
+✅ Ollama success
+✅ Sending irrigation strategy: {
+  recommendedMethod: 'Drip Irrigation',
+  reason: 'Efficient water usage and localized delivery to prevent soil erosion, which is crucial in red soils with low permeability.',
+  plan: 'Install a drip irrigation system ensuring uniform distribution of borewell water. Set programmable timers for early morning or late evening hours when evaporation rates are minimal.'
+}
+📡 [3:57:53 am] POST /api/irrigation/strategy?v=1776983272960
+🌊 [Irrigation API] Incoming Request: {
+  crop: 'Maize',
+  soilType: 'Black Soil',
+  irrigationType: 'Borewell',
+  plantStage: 'Vegetative',
+  landSize: '2'
+}
+🤖 Using Ollama (phi3) for Irrigation...
+✅ Ollama success
+✅ Sending irrigation strategy: {
+  recommendedMethod: 'Drip irrigation, supplemented with borewell watering as needed.',
+  reason: 'This method maximizes water efficiency and ensures deep root penetration suitable for maize grown in black soil during its vegetative stage. It provides precise moisture control which is critical at this growth phase.',
+  plan: {
+    frequency: 'Twice a week',
+    volume: 'Approximately 25 gallons per minute of water flow for each borewell application, with supplemental drip irrigation as needed based on soil moisture levels.'
+  }
+}
+📡 [3:58:19 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [3:58:20 am] POST /api/irrigation/strategy?v=1776983300908
+🌊 [Irrigation API] Incoming Request: {
+  crop: 'Maize',
+  soilType: 'Red Soil',
+  irrigationType: 'Borewell',
+  plantStage: 'Vegetative',
+  landSize: '2'
+}
+🤖 Using Ollama (phi3) for Irrigation...
+✅ Ollama success
+✅ Sending irrigation strategy: {
+  recommendedMethod: 'Drip irrigation with a fertigation system',
+  reason: 'Optimized water use and nutrient delivery to young plants, reducing evaporation losses.',
+  plan: 'Install drip lines spaced every half meter between rows; set the timer for early morning or late evening hours.'
+}
+📡 [3:58:30 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [3:58:51 am] POST /api/irrigation/strategy?v=1776983331682
+🌊 [Irrigation API] Incoming Request: {
+  crop: 'Maize',
+  soilType: 'Red Soil',
+  irrigationType: 'Borewell',
+  plantStage: 'Vegetative',
+  landSize: '2'
+}
+🤖 Using Ollama (phi3) for Irrigation...
+✅ Ollama success
+✅ Sending irrigation strategy: {
+  recommendedMethod: 'Drip Irrigation System',
+  reason: 'Efficient water use, reduces evaporation and leaching in sandy red soil.',
+  plan: 'Install subsurface drip irrigation lines with emitters spaced every 30 cm along the rows at a rate of one liter per hour.'
+}
+📡 [3:59:40 am] POST /api/irrigation/strategy?v=1776983379915
+🌊 [Irrigation API] Incoming Request: {
+  crop: 'Maize',
+  soilType: 'Red Soil',
+  irrigationType: 'Borewell',
+  plantStage: 'Vegetative',
+  landSize: '1'
+}
+🤖 Using Ollama (phi3) for Irrigation...
+✅ Ollama success
+✅ Sending irrigation strategy: {
+  recommendedMethod: 'Drip Irrigation with Soaker Hoses',
+  reason: 'Efficient water usage and direct root application, which is suitable for vegetative maize on red soil in borewell-irrigated fields.',
+  plan: 'Install drip lines spaced every meter across the field. Water at a rate that ensures saturation without runoff.'
+}
+📡 [4:00:48 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:00:55 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:01:40 am] POST /api/irrigation/strategy?v=1776983500115
+🌊 [Irrigation API] Incoming Request: {
+  crop: 'Maize',
+  soilType: 'Red Soil',
+  irrigationType: 'Borewell',
+  plantStage: 'Vegetative',
+  landSize: '2'
+}
+🤖 Using Ollama (phi3) for Irrigation...
+✅ Ollama success
+✅ Sending irrigation strategy: {
+  recommendedMethod: 'Drip Irrigation under the borewell water system',
+  reason: "To reduce evaporation, ensure deep and uniform soil wetting suitable for maize'self-growth in red soils.",
+  plan: 'Install drip emitters at depth of about 15cm below ground level every 3m across the field. Irrigate deeply once a week during vegetative stage.'
+}
+📡 [4:02:10 am] POST /api/irrigation/strategy?v=1776983530465
+🌊 [Irrigation API] Incoming Request: {
+  crop: 'Maize',
+  soilType: 'Red Soil',
+  irrigationType: 'Borewell',
+  plantStage: 'Seedling',
+  landSize: '2'
+}
+🤖 Using Ollama (phi3) for Irrigation...
+✅ Ollama success
+✅ Sending irrigation strategy: {
+  recommendedMethod: 'Drip Irrigation Borewell Water Supply',
+  reason: 'Efficient water usage and deep penetration for maize in red soil, reducing evaporation losses.',
+  plan: 'Water borewell twice daily during peak sunlight hours to minimize transpiration.'
+}
+📡 [4:10:06 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:10:36 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:10:39 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:10:58 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:11:05 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:17:45 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:17:54 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:23:03 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:24:24 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:30:12 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:33:18 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:36:54 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:37:31 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:37:58 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:38:34 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:38:36 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:40:33 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:42:36 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:44:30 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:46:42 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:47:19 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:47:23 am] GET /api/weather/live
+📡 [4:47:43 am] GET /api/weather/live
+📡 [4:47:46 am] GET /api/weather/live
+📡 [4:47:46 am] GET /api/weather/live
+📡 [4:48:37 am] GET /api/weather/live
+📡 [4:48:58 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:48:58 am] GET /api/weather/live
+📡 [4:49:12 am] GET /api/weather/live
+📡 [4:51:15 am] POST /api/crop/strategy
+🤖 AI Crop Recommendation Triggered: {
+  location: 'Karnataka, India',
+  soilType: 'Red Soil',
+  landSize: '1.5',
+  season: 'Kharif',
+  previousCrop: 'green gram'
+}
+💎 Calling Gemini (gemini-1.5-flash)...
+🔥 Gemini failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+🧠 Falling back to Ollama (phi3)...
+✅ Ollama Response Parsed
+📡 [4:52:30 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:52:33 am] POST /api/crop/strategy
+🤖 AI Crop Recommendation Triggered: {
+  location: 'Karnataka, India',
+  soilType: 'Red Soil',
+  landSize: '2',
+  season: 'Kharif',
+  previousCrop: 'Maize'
+}
+💎 Calling Gemini (gemini-1.5-flash)...
+🔥 Gemini failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+🧠 Falling back to Ollama (phi3)...
+📡 [4:53:09 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:53:11 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:53:27 am] POST /api/crop/strategy
+🤖 AI Crop Recommendation Triggered: {
+  location: 'Karnataka, India',
+  soilType: 'Red Soil',
+  landSize: '1.5',
+  season: 'Kharif',
+  previousCrop: 'peanut'
+}
+💎 Calling Gemini (gemini-1.5-flash)...
+🔥 Gemini failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+🧠 Falling back to Ollama (phi3)...
+📡 [4:53:44 am] GET /api/weather/live
+📡 [4:54:00 am] POST /api/disease/scan
+📸 Analyzing image locally with Ollama (llava)...
+📡 [4:54:04 am] GET /api/weather/live
+✅ Ollama Response Parsed
+📡 [4:55:51 am] POST /api/assistant/chat
+🤖 Using Ollama (phi3)...
+❌ Ollama failed/timeout: This operation was aborted
+💎 Falling back to Gemini...
+🔥 Gemini failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+Please retry in 58.520046408s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"58s"}]
+📡 [4:56:14 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:56:23 am] POST /api/assistant/chat
+🤖 Using Ollama (phi3)...
+❌ Ollama failed/timeout: This operation was aborted
+💎 Falling back to Gemini...
+🔥 Gemini failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+Please retry in 26.974926358s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"26s"}]
+📡 [4:57:27 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+✅ Ollama Response Parsed
+📡 [4:58:33 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:58:52 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [4:58:55 am] POST /api/assistant/chat
+🤖 Using Ollama (phi3)...
+❌ Ollama failed/timeout: This operation was aborted
+💎 Falling back to Gemini...
+🔥 Gemini failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+Please retry in 54.500657416s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"location":"global","model":"gemini-2.0-flash"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"54s"}]
+📡 [4:59:46 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [5:00:35 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [5:00:42 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully
+📡 [5:00:53 am] GET /api/auth/profile
+👤 Fetching profile data...
+✅ Profile sent successfully

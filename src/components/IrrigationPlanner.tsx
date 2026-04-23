@@ -43,50 +43,65 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
   });
   const [plan, setPlan] = useState<IrrigationPlan | null>(null);
 
-  const handleGeneratePlan = async () => {
+  const handleGenerateStrategy = async () => {
+    console.log("🌊 Generating irrigation strategy...");
+    
+    // 1. VALIDATE INPUTS
+    const { crop, soil: soilType, irrigation: irrigationType, stage: plantStage, land: landSize } = formData;
+    console.log("DEBUG - Plant Stage:", plantStage);
+
+    if (!crop.trim() || !soilType || !irrigationType || !plantStage || !landSize) {
+      alert(t('alert_fill_fields') || "Please fill all required fields before generating the strategy.");
+      return;
+    }
+
     setLoading(true);
     try {
-      const response = await fetch('/api/irrigation', {
+      // 2. SEND DATA TO BACKEND
+      const response = await fetch(`/api/irrigation/strategy?v=${Date.now()}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          crop: formData.crop,
-          soil: formData.soil,
-          stage: formData.stage,
-          weather: 'Sunny', // Fallback or dynamic weather can be added later
-          location: userLocation
+          crop,
+          soilType,
+          irrigationType,
+          plantStage,
+          landSize
         })
       });
 
-      if (!response.ok) throw new Error('Failed to get AI advice');
+      if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
+      // 3. HANDLE RESPONSE
       const data = await response.json();
+      console.log("✅ Response Received:", data);
       
       const newPlan: IrrigationPlan = {
-        when: "Early Morning (5:00 AM - 7:00 AM)",
-        amount: formData.irrigation === 'Drip' ? "25 - 35 mins (Drip)" : 
-                formData.irrigation === 'Sprinkler' ? "45 - 60 mins (Sprinkler)" : 
-                formData.irrigation === 'Borewell' ? "2 - 3 hours (Borewell)" : "1 - 2 hours (Manual)",
-        frequency: "Once every 2 days",
-        warning: "High UV levels expected tomorrow. Do not water in the afternoon.",
+        when: plantStage === 'Seedling' ? "Early Morning (5:00 AM - 6:30 AM)" : "Early Morning or Evening",
+        amount: irrigationType === 'Drip' ? `15-25 Liters per acre` : 
+                irrigationType === 'Sprinkler' ? "30-45 mins runtime" : 
+                "Standard soaking",
+        frequency: soilType === 'Sandy' ? "Daily" : "Every 2-3 days",
+        warning: "Avoid watering during peak sunlight (11 AM - 3 PM) to prevent evaporation loss.",
         tips: [
-          "Check soil moisture 2 inches deep",
-          "Water directly at root zone",
-          "Avoid leaf wetness"
+          `Monitor ${crop} leaf health for moisture stress`,
+          "Ensure no water stagnation near root zone",
+          "Check soil moisture 2 inches deep before watering"
         ],
         insight: {
-          method: data.method,
-          reason: data.reason,
-          plan: data.plan
+          method: data.recommendedMethod || data.method || "Not Available",
+          reason: data.reason || "No reason generated",
+          plan: data.plan || "No plan available"
         }
       };
       
       setPlan(newPlan);
       setView('result');
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error("❌ Irrigation Strategy Failed:", error.message);
       alert('Failed to generate plan. Please try again.');
     } finally {
+      console.log("🔄 Loading finished.");
       setLoading(false);
     }
   };
@@ -122,7 +137,7 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div className="space-y-2">
                 <label className="text-xs font-bold text-text/40 uppercase tracking-widest flex items-center gap-2">
-                  <Sprout size={14} /> Crop <span className="text-red-500">*</span>
+                  <Sprout size={14} /> {t('irr_label_crop')} <span className="text-red-500">*</span>
                 </label>
                 <input 
                   type="text" 
@@ -133,37 +148,37 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-text/40 uppercase tracking-widest flex items-center gap-2">
-                  <Waves size={14} /> Soil Type <span className="text-red-500">*</span>
+                  <Waves size={14} /> {t('irr_label_soil')} <span className="text-red-500">*</span>
                 </label>
                 <select 
                   value={formData.soil}
                   onChange={(e) => setFormData({...formData, soil: e.target.value})}
                   className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
                 >
-                  <option>Red Soil</option>
-                  <option>Black Soil</option>
-                  <option>Sandy Soil</option>
-                  <option>Loamy Soil</option>
+                  <option value="Red Soil">Red Soil</option>
+                  <option value="Black Soil">Black Soil</option>
+                  <option value="Sandy Soil">Sandy Soil</option>
+                  <option value="Loamy Soil">Loamy Soil</option>
                 </select>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-text/40 uppercase tracking-widest flex items-center gap-2">
-                  <Droplet size={14} /> Irrigation Type <span className="text-red-500">*</span>
+                  <Droplet size={14} /> {t('irr_label_type')} <span className="text-red-500">*</span>
                 </label>
                 <select 
                   value={formData.irrigation}
                   onChange={(e) => setFormData({...formData, irrigation: e.target.value})}
                   className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
                 >
-                  <option>Borewell</option>
-                  <option>Drip</option>
-                  <option>Sprinkler</option>
-                  <option>Manual</option>
+                  <option value="Borewell">Borewell</option>
+                  <option value="Drip">Drip</option>
+                  <option value="Sprinkler">Sprinkler</option>
+                  <option value="Manual">Manual</option>
                 </select>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-text/40 uppercase tracking-widest flex items-center gap-2">
-                  <LandPlot size={14} /> Land Size (Acres) <span className="text-red-500">*</span>
+                  <LandPlot size={14} /> {t('irr_label_land')} <span className="text-red-500">*</span>
                 </label>
                 <input 
                   type="number" 
@@ -174,7 +189,7 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-text/40 uppercase tracking-widest flex items-center gap-2">
-                  <Clock size={14} /> Plant Stage <span className="text-red-500">*</span>
+                  <Clock size={14} /> {t('irr_label_stage')} <span className="text-red-500">*</span>
                 </label>
                 <select 
                   value={formData.stage}
@@ -191,12 +206,15 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
             </div>
 
             <button 
-              onClick={handleGeneratePlan}
+              onClick={handleGenerateStrategy}
               disabled={loading}
               className="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-lg disabled:opacity-50"
             >
               {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  Generating...
+                </>
               ) : (
                 <>
                   <Brain size={20} />

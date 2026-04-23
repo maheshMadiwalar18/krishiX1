@@ -14,7 +14,7 @@ const translations: Translations = {
   'nav_disease': { en: 'Disease', kn: 'ರೋಗ ಪತ್ತೆ' },
   'nav_weather': { en: 'Weather', kn: 'ಹವಾಮಾನ' },
 
-  'nav_knowledge': { en: 'Knowledge', kn: 'ಮಾಹಿತಿ' },
+  'nav_knowledge': { en: 'Earthworm', kn: 'ಅರ್ಥ್‌ವರ್ಮ್' },
   'nav_my_account': { en: 'My Account', kn: 'ನನ್ನ ಖಾತೆ' },
   'nav_logout': { en: 'Logout', kn: 'ಹೊರಹೋಗಿ' },
 
@@ -88,8 +88,8 @@ const translations: Translations = {
   'feat_crop_rec_desc': { en: 'Best crop advice for your soil', kn: 'ನಿಮ್ಮ ಮಣ್ಣಿಗೆ ಸೂಕ್ತ ಬೆಳೆ ಸಲಹೆ' },
   'feat_ai': { en: 'AI Assistant', kn: 'ಕೃಷಿ ಸಹಾಯಕ' },
   'feat_ai_desc': { en: '24/7 expert farm support', kn: '24/7 ಕೃಷಿ ತಜ್ಞರ ಸಹಾಯ' },
-  'feat_knowledge': { en: 'Knowledge Hub', kn: 'ಮಾಹಿತಿ ಕೇಂದ್ರ' },
-  'feat_knowledge_desc': { en: 'Learn farming simply', kn: 'ಸುಲಭವಾಗಿ ಕೃಷಿ ಕಲಿಯಿರಿ' },
+  'feat_knowledge': { en: 'Earthworm Intelligence', kn: 'ಅರ್ಥ್‌ವರ್ಮ್ ಜ್ಞಾನ' },
+  'feat_knowledge_desc': { en: 'Sustainable farming wisdom', kn: 'ಸುಸ್ಥಿರ ಕೃಷಿ ಮಾಹಿತಿ' },
 
   // Home - DashboardPreview
   'preview_title': { en: 'Live Farm Status', kn: 'ನಿಮ್ಮ ಹೊಲದ ಸ್ಥಿತಿ' },
@@ -174,7 +174,40 @@ const translations: Translations = {
   'label_frequency': { en: 'Frequency', kn: 'ಎಷ್ಟು ಬಾರಿ' },
   'label_warning': { en: 'Critical Warning', kn: 'ಮುನ್ನೆಚ್ಚರಿಕೆ' },
   'label_simple_tips': { en: 'Simple Tips', kn: 'ಸರಳ ಸಲಹೆಗಳು' },
-  'irrigation_ai_insight': { en: 'Why this plan is good?', kn: 'ಈ ಯೋಜನೆ ಏಕೆ ಉತ್ತಮ?' }
+  'irrigation_ai_insight': { en: 'Why this plan is good?', kn: 'ಈ ಯೋಜನೆ ಏಕೆ ಉತ್ತಮ?' },
+  
+  // Community
+  'comm_title': { en: 'Farmer Community', kn: 'ರೈತ ಸಮುದಾಯ' },
+  'comm_ask_btn': { en: 'Ask Question', kn: 'ಪ್ರಶ್ನೆ ಕೇಳಿ' },
+  'comm_search_placeholder': { en: 'Search problems, crops, or pests...', kn: 'ರೋಗ, ಬೆಳೆ ಅಥವಾ ಕೀಟಗಳ ಬಗ್ಗೆ ಹುಡುಕಿ...' },
+  'comm_all': { en: 'All', kn: 'ಎಲ್ಲವೂ' },
+  'comm_resolved': { en: 'Resolved', kn: 'ಪರಿಹರಿಸಲಾಗಿದೆ' },
+  'comm_open': { en: 'Open', kn: 'ಪರಿಹಾರ ಬಾಕಿ' },
+  'comm_replies': { en: 'Replies', kn: 'ಪ್ರತಿಕ್ರಿಯೆಗಳು' },
+  'comm_view_detail': { en: 'View Detail', kn: 'ವಿವರ ನೋಡಿ' },
+  'comm_post_reply': { en: 'Post Reply', kn: 'ಉತ್ತರ ನೀಡಿ' },
+  'comm_ai_solution': { en: 'AI Solution', kn: 'AI ಪರಿಹಾರ' },
+  'comm_helpful': { en: 'Helpful', kn: 'ಸಹಾಯಕವಾಗಿದೆ' },
+  'comm_back_feed': { en: 'Back to Feed', kn: 'ವೇದಿಕೆಗೆ ಮರಳಿ' },
+  'comm_form_crop': { en: 'Crop Type', kn: 'ಬೆಳೆಯ ವಿಧ' },
+  'comm_form_crop_ph': { en: 'e.g. Tomato, Rice...', kn: 'ಉದಾ: ಟೊಮೆಟೊ, ಭತ್ತ...' },
+  'comm_form_issue': { en: 'Problem Type', kn: 'ಸಮಸ್ಯೆಯ ವಿಧ' },
+  'comm_form_desc': { en: 'Explain your problem', kn: 'ನಿಮ್ಮ ಸಮಸ್ಯೆಯನ್ನು ವಿವರಿಸಿ' },
+  'comm_form_desc_ph': { en: 'Tell us exactly what is happening...', kn: 'ನಿಮ್ಮ ಬೆಳೆಗೆ ಏನಾಗುತ್ತಿದೆ ಎಂದು ವಿವರಿಸಿ...' },
+  'comm_delete': { en: 'Delete from feed', kn: 'ವೇದಿಕೆಯಿಂದ ತೆಗೆದುಹಾಕಿ' },
+  'comm_share': { en: 'Share Post', kn: 'ಹಂಚಿಕೊಳ್ಳಿ' },
+  'comm_report': { en: 'Report Problem', kn: 'ದೂರು ನೀಡಿ' },
+  
+  // Irrigation Extra
+  'irr_label_crop': { en: 'Crop', kn: 'ಬೆಳೆ' },
+  'irr_label_soil': { en: 'Soil Type', kn: 'ಮಣ್ಣಿನ ವಿಧ' },
+  'irr_label_type': { en: 'Irrigation Type', kn: 'ನೀರಾವರಿ ವಿಧ' },
+  'irr_label_land': { en: 'Land Size (Acres)', kn: 'ಜಮೀನಿನ ಗಾತ್ರ (ಎಕರೆ)' },
+  'irr_label_stage': { en: 'Plant Stage', kn: 'ಬೆಳೆಯ ಹಂತ' },
+  'irr_method': { en: 'Recommended Method', kn: 'ಶಿಫಾರಸು ಮಾಡಿದ ವಿಧಾನ' },
+  'irr_reason': { en: 'Reason', kn: 'ಕಾರಣ' },
+  'irr_plan': { en: 'Watering Plan', kn: 'ನೀರಾವರಿ ಯೋಜನೆ' },
+  'alert_fill_fields': { en: 'Please fill all required fields before generating the strategy.', kn: 'ಯೋಜನೆ ಸಿದ್ಧಪಡಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು ಎಲ್ಲಾ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.' }
 };
 
 interface LanguageContextType {

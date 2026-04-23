@@ -9,7 +9,7 @@ import CropDecisionSystem from './components/CropDecisionSystem';
 import IrrigationPlanner from './components/IrrigationPlanner';
 import VoiceAssistant from './components/VoiceAssistant';
 
-import KnowledgeHub from './components/KnowledgeHub';
+import Earthworm from './components/Earthworm';
 import Community from './components/Community';
 import Dashboard from './components/Dashboard';
 import { NotificationProvider, useNotification } from './components/ui/Notification';
@@ -204,7 +204,7 @@ function AppContent() {
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <KnowledgeHub onBack={() => handleNavigate('home')} />
+                  <Earthworm onBack={() => handleNavigate('home')} />
                 </motion.div>
               </ProtectedRoute>
             } />
@@ -237,11 +237,15 @@ function AppContent() {
   );
 }
 
+import { UserProvider } from './contexts/UserContext';
+
 export default function App() {
   return (
     <BrowserRouter>
       <NotificationProvider>
-        <AppContent />
+        <UserProvider>
+          <AppContent />
+        </UserProvider>
       </NotificationProvider>
     </BrowserRouter>
   );
