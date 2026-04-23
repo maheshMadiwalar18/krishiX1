@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Lock, User, Leaf, ArrowRight, Sprout, Phone, MapPin, Wheat } from 'lucide-react';
+import { Mail, Lock, User, Leaf, ArrowRight, Sprout, Phone, MapPin, Wheat, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface AuthProps {
   onLoginSuccess: () => void;
 }
 
 export default function Auth({ onLoginSuccess }: AuthProps) {
+  const { t, language } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   
   // Login fields
@@ -37,12 +39,12 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
     "Simple tools to help you grow healthy crops."
   ];
 
-  React.useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       setQuoteIndex((prev) => (prev + 1) % inspiringQuotes.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [inspiringQuotes.length]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -165,7 +167,9 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
           <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20">
             <Sprout size={48} className="text-[#81C784]" />
           </div>
-          <h2 className="text-4xl font-black tracking-tight mb-6 text-white">Join KrushiX</h2>
+          
+          <h2 className="text-4xl font-black tracking-tight mb-6 text-white">{t('auth_title')}</h2>
+          
           <div className="h-24 flex items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.p 
@@ -188,175 +192,133 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md bg-white rounded-[12px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-neutral-100 my-8 flex-shrink-0"
+          className="w-full max-w-md bg-white rounded-[2rem] p-8 shadow-2xl border border-neutral-100 my-8 flex-shrink-0"
         >
-          <div className="text-center mb-6">
-            <div className="flex justify-center mb-4 md:hidden">
-              <div className="w-12 h-12 bg-[#2E7D32] rounded-[12px] flex items-center justify-center text-white">
-                <Sprout size={24} />
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-6">
+               <img src="/logo.png" alt="KrushiX Logo" className="h-12 w-auto object-contain" />
+            </div>
+            <button 
+              onClick={handleDemoLogin}
+              disabled={isLoading}
+              className="w-full py-3.5 bg-[#E8F5E9] text-[#2E7D32] rounded-xl font-black text-sm hover:bg-[#C8E6C9] transition-all mb-4 border border-[#2E7D32]/10 flex items-center justify-center gap-2 shadow-sm active:scale-95"
+            >
+              <LogIn size={18} />
+              {t('auth_demo_btn')}
+            </button>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-gray-100"></span>
+              </div>
+              <div className="relative flex justify-center text-[10px] uppercase tracking-widest font-black text-gray-300">
+                <span className="bg-white px-4">{t('or_separator')}</span>
               </div>
             </div>
-            <h3 className="text-2xl font-bold text-neutral-900 mb-2">
-              {isLogin ? 'Welcome Back' : 'Create an Account'}
-            </h3>
-            <p className="text-sm text-neutral-500">
-              {isLogin ? 'Sign in to access your farmer dashboard.' : 'Sign up to start optimizing your crop yields.'}
-            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <AnimatePresence mode="popLayout">
-              {error && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }} 
-                  animate={{ opacity: 1, height: 'auto' }} 
-                  exit={{ opacity: 0, height: 0 }}
-                  className="bg-red-50 text-red-600 p-3 rounded-[12px] text-sm font-medium border border-red-100 flex items-center gap-2 overflow-hidden"
-                >
-                  <div className="w-1 h-full bg-red-500 rounded-full" />
-                  {error}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <AnimatePresence mode="popLayout">
-              {!isLogin && (
-                <motion.div 
-                  initial={{ opacity: 0, x: -20, height: 0 }} 
-                  animate={{ opacity: 1, x: 0, height: 'auto' }} 
-                  exit={{ opacity: 0, x: 20, height: 0 }}
-                  className="space-y-4 block"
-                >
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest pl-1">Name</label>
-                    <div className="relative group">
-                      <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#2E7D32] transition-colors" size={18} />
-                      <input 
-                        type="text" 
-                        placeholder="e.g. Rajesh Sharma"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-[#81C784]/50 focus:border-[#2E7D32] transition-all text-sm font-medium"
-                      />
-                    </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {!isLogin && (
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-[10px] font-black text-text/30 uppercase tracking-widest mb-1.5 ml-1">Full Name</label>
+                  <div className="relative group">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-text/30 group-focus-within:text-primary transition-colors" size={18} />
+                    <input
+                      type="text"
+                      placeholder="e.g. Ramesh Kumar"
+                      className="w-full pl-12 pr-4 py-3.5 bg-bg border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-sm"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
                   </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest pl-1">Phone Number</label>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-text/30 uppercase tracking-widest mb-1.5 ml-1">Phone</label>
                     <div className="relative group">
-                      <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#2E7D32] transition-colors" size={18} />
-                      <input 
-                        type="tel" 
-                        placeholder="+91 98765 43210"
+                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-text/30 group-focus-within:text-primary transition-colors" size={18} />
+                      <input
+                        type="tel"
+                        placeholder="Number"
+                        className="w-full pl-12 pr-4 py-3.5 bg-bg border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-sm"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-[#81C784]/50 focus:border-[#2E7D32] transition-all text-sm font-medium"
                       />
                     </div>
                   </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest pl-1">Location</label>
+                  <div>
+                    <label className="block text-[10px] font-black text-text/30 uppercase tracking-widest mb-1.5 ml-1">Location</label>
                     <div className="relative group">
-                      <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#2E7D32] transition-colors" size={18} />
-                      <input 
-                        type="text" 
-                        placeholder="e.g. Bhopal, Madhya Pradesh"
+                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-text/30 group-focus-within:text-primary transition-colors" size={18} />
+                      <input
+                        type="text"
+                        placeholder="City"
+                        className="w-full pl-12 pr-4 py-3.5 bg-bg border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-sm"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-[#81C784]/50 focus:border-[#2E7D32] transition-all text-sm font-medium"
                       />
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest pl-1 flex justify-between">
-                      Primary Crop
-                      <span className="text-neutral-400 text-[10px] normal-case tracking-normal">Optional</span>
-                    </label>
-                    <div className="relative group">
-                      <Wheat className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#2E7D32] transition-colors" size={18} />
-                      <input 
-                        type="text" 
-                        placeholder="e.g. Wheat, Sugarcane"
-                        value={primaryCrop}
-                        onChange={(e) => setPrimaryCrop(e.target.value)}
-                        className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-[#81C784]/50 focus:border-[#2E7D32] transition-all text-sm font-medium"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest pl-1">
-                {isLogin ? 'Email Address' : 'Email Address (For Secure Login)'}
-              </label>
+            <div>
+              <label className="block text-[10px] font-black text-text/30 uppercase tracking-widest mb-1.5 ml-1">{t('auth_email_label')}</label>
               <div className="relative group">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#2E7D32] transition-colors" size={18} />
-                <input 
-                  type="email" 
-                  placeholder="farmer@example.com"
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-text/30 group-focus-within:text-primary transition-colors" size={18} />
+                <input
+                  type="email"
+                  placeholder="yourname@gmail.com"
+                  className="w-full pl-12 pr-4 py-3.5 bg-bg border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-sm"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-[#81C784]/50 focus:border-[#2E7D32] transition-all text-sm font-medium"
                 />
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest pl-1 flex justify-between">
-                Password
-                {isLogin && <button type="button" className="text-[#2E7D32] hover:underline normal-case tracking-normal font-medium">Forgot?</button>}
-              </label>
+            <div>
+              <label className="block text-[10px] font-black text-text/30 uppercase tracking-widest mb-1.5 ml-1">{t('auth_password_label')}</label>
               <div className="relative group">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-[#2E7D32] transition-colors" size={18} />
-                <input 
-                  type="password" 
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-text/30 group-focus-within:text-primary transition-colors" size={18} />
+                <input
+                  type="password"
                   placeholder="••••••••"
+                  className="w-full pl-12 pr-4 py-3.5 bg-bg border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-bold text-sm"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-neutral-50 border border-neutral-200 rounded-[12px] focus:outline-none focus:ring-2 focus:ring-[#81C784]/50 focus:border-[#2E7D32] transition-all text-sm font-medium"
                 />
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 pt-2">
-              <button 
-                type="submit"
-                disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#2E7D32] text-white rounded-[12px] font-bold shadow-md hover:bg-[#1B5E20] hover:shadow-lg transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="p-3.5 bg-red-50 border border-red-100 text-red-600 rounded-xl text-[11px] font-black flex items-center gap-2"
               >
-                {isLoading ? 'Processing...' : isLogin ? 'Sign In to Dashboard' : 'Create Free Account'}
-                {!isLoading && <ArrowRight size={18} />}
-              </button>
-              
-              {isLogin && (
-                <button 
-                  type="button"
-                  disabled={isLoading}
-                  onClick={handleDemoLogin}
-                  className="w-full flex items-center justify-center gap-2 py-3.5 bg-[#81C784]/20 text-[#2E7D32] rounded-[12px] font-bold hover:bg-[#81C784]/30 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed border border-[#81C784]/30"
-                >
-                  Quick Demo Login
-                </button>
-              )}
-            </div>
+                <div className="w-1.5 h-1.5 bg-red-600 rounded-full" />
+                {error}
+              </motion.div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-4 bg-primary text-white rounded-xl font-black text-sm hover:bg-primary/90 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {isLoading ? 'Please wait...' : (isLogin ? t('auth_login_btn') : t('auth_signup_btn'))}
+              {!isLoading && <ArrowRight size={18} />}
+            </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-neutral-100 text-center">
-            <p className="text-sm text-neutral-500">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
-              {' '}
-              <button 
-                onClick={() => { setIsLogin(!isLogin); setError(''); }}
-                disabled={isLoading}
-                className="text-[#2E7D32] font-bold hover:underline py-1 disabled:opacity-50"
-              >
-                {isLogin ? 'Sign up for free' : 'Sign in here'}
-              </button>
-            </p>
+          <div className="mt-8 text-center">
+            <button
+              onClick={() => { setIsLogin(!isLogin); setError(''); }}
+              className="text-xs font-black text-text/30 hover:text-primary transition-all underline underline-offset-4 decoration-2"
+            >
+              {isLogin ? t('auth_signup_link') : 'Already have an account? Login'}
+            </button>
           </div>
         </motion.div>
       </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface HeroProps {
   isLoggedIn: boolean;
@@ -10,6 +11,8 @@ interface HeroProps {
 }
 
 export default function Hero({ isLoggedIn, onLogin, onDashboard, onAssistant }: HeroProps) {
+  const { t } = useLanguage();
+
   return (
     <section className="relative h-[650px] -mt-24 flex items-center overflow-hidden">
       <div className="absolute inset-0">
@@ -32,11 +35,11 @@ export default function Hero({ isLoggedIn, onLogin, onDashboard, onAssistant }: 
             <Sparkles size={12} className="text-primary-light" />
             Your AI Farming Expert
           </div>
-          <h1 className="text-white mb-6 text-5xl lg:text-6xl tracking-tight leading-[1.1]">
-            Cultivating the Future of Bharat.<br />One Yield at a Time.
+          <h1 className="text-white mb-6 text-5xl lg:text-6xl tracking-tight leading-[1.1] font-display font-black">
+            {t('home_hero_title')}
           </h1>
           <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Empower your farming journey with AI-driven insights and localized recommendations designed for maximum yield.
+            {t('home_hero_subtitle')}
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -44,13 +47,13 @@ export default function Hero({ isLoggedIn, onLogin, onDashboard, onAssistant }: 
               onClick={() => onDashboard()} 
               className="w-full sm:w-auto px-10 py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg group"
             >
-              Scan Crop Now
+              {t('btn_scan_now')}
             </button>
             <button 
               onClick={() => onAssistant()}
               className="w-full sm:w-auto px-10 py-4 bg-white text-primary rounded-xl font-bold hover:bg-neutral-50 transition-all flex items-center justify-center gap-2 shadow-lg"
             >
-              Ask AI
+              {t('btn_ask_ai')}
             </button>
           </div>
         </motion.div>
@@ -58,3 +61,4 @@ export default function Hero({ isLoggedIn, onLogin, onDashboard, onAssistant }: 
     </section>
   );
 }
+

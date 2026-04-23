@@ -9,38 +9,34 @@ import {
   LogOut,
   ChevronRight
 } from 'lucide-react';
-
-const navItems = [
-  { icon: Home, label: 'Dashboard', active: true },
-  { icon: Sprout, label: 'Crops' },
-  { icon: CloudSun, label: 'Weather' },
-  { icon: Bug, label: 'Pest Detection' },
-  { icon: MessageSquare, label: 'AI Support' },
-];
+import { useLanguage } from '../contexts/LanguageContext';
 
 export default function Sidebar() {
+  const { t } = useLanguage();
+
+  const navItems = [
+    { icon: Home, label: t('nav_disease'), active: true },
+    { icon: Sprout, label: 'Crops' },
+    { icon: CloudSun, label: t('nav_weather'), active: false },
+    { icon: Bug, label: t('nav_disease'), active: false },
+    { icon: MessageSquare, label: 'AI Support', active: false },
+  ];
+
   return (
     <div className="w-[240px] bg-white border-r border-border h-screen flex flex-col fixed left-0 top-0 z-20">
       <div className="p-6 flex items-center gap-3 mb-2">
-        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white">
-          <Sprout size={24} />
-        </div>
-        <span className="text-3xl font-display font-black flex items-center">
-          <span className="text-primary tracking-tighter">Krushi</span>
-          <span className="text-primary-light">X</span>
-        </span>
+        <img src="/logo.png" alt="KrushiX Logo" className="h-10 w-auto object-contain" />
       </div>
 
       <nav className="flex-1 space-y-0">
         {navItems.map((item) => (
           <button
             key={item.label}
-            id={`nav-${item.label.toLowerCase().replace(' ', '-')}`}
             className={cn(
-              "w-full flex items-center gap-3 px-6 py-3 transition-all duration-200 font-medium",
+              "w-full flex items-center gap-3 px-6 py-4 transition-all duration-200 font-black text-xs uppercase tracking-widest",
               item.active 
-                ? "bg-[#E8F5E9] text-primary border-r-4 border-primary" 
-                : "text-[#555] hover:bg-bg hover:text-primary"
+                ? "bg-primary/5 text-primary border-r-4 border-primary" 
+                : "text-text/40 hover:bg-bg hover:text-primary"
             )}
           >
             <item.icon size={20} />
@@ -50,11 +46,12 @@ export default function Sidebar() {
       </nav>
 
       <div className="p-4 border-t border-border">
-        <button className="flex items-center gap-3 w-full px-4 py-3 text-[#777] hover:text-red-600 transition-colors">
+        <button className="flex items-center gap-3 w-full px-4 py-3 text-red-500 hover:text-red-600 transition-colors font-black text-xs uppercase tracking-widest">
           <LogOut size={20} />
-          <span className="font-medium">Sign Out</span>
+          <span>{t('nav_logout')}</span>
         </button>
       </div>
     </div>
   );
 }
+
