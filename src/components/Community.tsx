@@ -43,63 +43,243 @@ interface Post {
   comments: Comment[];
   tags: string[];
   timestamp: string;
+  image_query?: string;
 }
 
 const MOCK_POSTS: Post[] = [
   {
     id: 1,
-    author: "Ramesh Kumar",
-    location: "Mandya, KA",
-    crop: "Rice",
+    author: "Ramesh Patel",
+    location: "Nashik, MH",
+    crop: "Onion",
     issue: "Pest",
-    text: "My rice crop is showing yellow spots on the lower leaves. It's spreading fast. Is this a pest or nutrient deficiency?",
+    text: "Small white insects are eating my onion leaves. The leaves are drying up. What spray should I use?",
     status: "Open",
-    upvotes: 12,
-    tags: ["#Rice", "#Pest", "#Yellowing"],
+    upvotes: 15,
+    tags: ["#Onion", "#Pest", "#WhiteInsects"],
     timestamp: "2 hours ago",
+    image_query: "onion leaves thrips damage",
+    image: "https://images.unsplash.com/photo-1628350565513-23e57bc02f2b?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 101,
         author: "Krishi AI",
-        text: "Based on your description, this looks like Brown Plant Hopper (BPH) damage. Check the base of the plants for small brown insects. Apply Imidacloprid if infestation is high.",
-        upvotes: 24,
+        text: "This looks like Thrips. Spray Neem oil or Imidacloprid if the attack is heavy.",
+        upvotes: 20,
         isAI: true
-      },
-      {
-        id: 102,
-        author: "Suresh P.",
-        text: "I had this last year. Make sure you don't over-fertilize with Nitrogen, it makes it worse.",
-        upvotes: 5,
-        replies: [
-          { id: 103, author: "Ramesh Kumar", text: "Thanks Suresh, I did add urea recently. That might be it.", upvotes: 2 }
-        ]
       }
     ]
   },
   {
     id: 2,
-    author: "Somanna B.",
-    location: "Tumakuru, KA",
-    crop: "Tomato",
+    author: "Siddaramaiah",
+    location: "Hassan, KA",
+    crop: "Potato",
     issue: "Disease",
-    text: "White powdery substance on tomato stems. The fruits are looking fine for now but stems are weak.",
+    text: "Black spots are appearing on potato leaves. The spots are growing fast. Is my crop dying?",
     status: "Resolved",
     upvotes: 8,
-    tags: ["#Tomato", "#Fungal", "#Resolved"],
+    tags: ["#Potato", "#BlackSpots", "#Disease"],
     timestamp: "1 day ago",
+    image_query: "potato leaf late blight spots",
+    image: "https://images.unsplash.com/photo-1518977676601-b53f02ac6d31?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 201,
         author: "Krishi AI",
-        text: "This is Powdery Mildew. Improve air circulation and apply a sulfur-based fungicide.",
-        upvotes: 15,
+        text: "This is Late Blight. Spray Mancozeb immediately to stop it from spreading.",
+        upvotes: 12,
         isAI: true
       },
       {
         id: 202,
-        author: "Gopal Gowda",
-        text: "Correct! I used organic spray and it worked. Marked as resolved for you.",
-        upvotes: 10
+        author: "Basavaraj",
+        text: "Yes, Mancozeb saved my crop last week. Do it quickly.",
+        upvotes: 5
+      }
+    ]
+  },
+  {
+    id: 3,
+    author: "Muthu Kumar",
+    location: "Madurai, TN",
+    crop: "Cotton",
+    issue: "Soil",
+    text: "My soil is very hard and dry. The roots are not growing deep. Should I add more water or compost?",
+    status: "Open",
+    upvotes: 22,
+    tags: ["#Cotton", "#HardSoil", "#Compost"],
+    timestamp: "3 hours ago",
+    image_query: "cracked dry farming soil",
+    image: "https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&q=80&w=800",
+    comments: [
+      {
+        id: 301,
+        author: "Krishi AI",
+        text: "Hard soil needs organic matter. Add cow dung compost and plow it well. Don't just add water.",
+        upvotes: 30,
+        isAI: true
+      }
+    ]
+  },
+  {
+    id: 4,
+    author: "Amrik Singh",
+    location: "Ludhiana, PB",
+    crop: "Wheat",
+    issue: "Water",
+    text: "I gave water to my wheat field yesterday, but the water is still standing. Will it damage the roots?",
+    status: "Resolved",
+    upvotes: 10,
+    tags: ["#Wheat", "#WaterLogging", "#Drainage"],
+    timestamp: "2 days ago",
+    image_query: "flooded wheat field waterlogging",
+    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=800",
+    comments: [
+      {
+        id: 401,
+        author: "Krishi AI",
+        text: "Standing water cuts off air to roots. Make a small drain immediately to let the extra water flow out.",
+        upvotes: 18,
+        isAI: true
+      }
+    ]
+  },
+  {
+    id: 5,
+    author: "Sunita Devi",
+    location: "Patna, BR",
+    crop: "Mango",
+    issue: "Weather",
+    text: "Heavy rain yesterday dropped many small mango fruits from the tree. Can I save the rest?",
+    status: "Open",
+    upvotes: 45,
+    tags: ["#Mango", "#HeavyRain", "#FruitDrop"],
+    timestamp: "5 hours ago",
+    image_query: "mango tree fruit drop after rain",
+    image: "https://images.unsplash.com/photo-1553134833-1c02fbb55967?auto=format&fit=crop&q=80&w=800",
+    comments: [
+      {
+        id: 501,
+        author: "Krishi AI",
+        text: "Give a light spray of Potassium Nitrate to make the remaining fruits stronger. Clear the fallen fruits to prevent disease.",
+        upvotes: 50,
+        isAI: true
+      }
+    ]
+  },
+  {
+    id: 6,
+    author: "Narsimha Rao",
+    location: "Guntur, AP",
+    crop: "Chilli",
+    issue: "Yield",
+    text: "My chilli plants look healthy, but there are very few flowers. Last year I got a lot more chilli.",
+    status: "Open",
+    upvotes: 14,
+    tags: ["#Chilli", "#LowFlowers", "#Yield"],
+    timestamp: "12 hours ago",
+    image_query: "chilli plant no flowers",
+    image: "https://images.unsplash.com/photo-1590779033100-9f60705a2f3b?auto=format&fit=crop&q=80&w=800",
+    comments: [
+      {
+        id: 601,
+        author: "Krishi AI",
+        text: "Too much nitrogen makes plants leafy but stops flowers. Stop urea and give phosphorus and potassium (like 0-52-34).",
+        upvotes: 25,
+        isAI: true
+      }
+    ]
+  },
+  {
+    id: 7,
+    author: "Hari Om",
+    location: "Karnal, HR",
+    crop: "Rice",
+    issue: "Fertilizer",
+    text: "Shopkeeper gave me DAP and Urea. Can I mix both and put them together in the field?",
+    status: "Resolved",
+    upvotes: 30,
+    tags: ["#Rice", "#DAP", "#Urea"],
+    timestamp: "3 days ago",
+    image_query: "mixing dap and urea fertilizer",
+    image: "https://images.unsplash.com/photo-1536633390847-b0c355994ca6?auto=format&fit=crop&q=80&w=800",
+    comments: [
+      {
+        id: 701,
+        author: "Krishi AI",
+        text: "Yes, you can mix DAP and Urea, but apply them immediately after mixing. Do not store the mixture.",
+        upvotes: 40,
+        isAI: true
+      }
+    ]
+  },
+  {
+    id: 8,
+    author: "Venkatesh",
+    location: "Mysuru, KA",
+    crop: "Maize",
+    issue: "Planning",
+    text: "I grew maize this time. Can I grow maize again next season, or should I change the crop?",
+    status: "Open",
+    upvotes: 19,
+    tags: ["#Maize", "#CropRotation", "#SoilHealth"],
+    timestamp: "4 hours ago",
+    image_query: "maize field crop rotation",
+    image: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&q=80&w=800",
+    comments: [
+      {
+        id: 801,
+        author: "Krishi AI",
+        text: "Growing maize again will reduce soil nutrients and increase pests. Grow a dal (pulse) crop like green gram to put nitrogen back in soil.",
+        upvotes: 35,
+        isAI: true
+      }
+    ]
+  },
+  {
+    id: 9,
+    author: "Kamlesh",
+    location: "Surat, GJ",
+    crop: "Groundnut",
+    issue: "Seeds",
+    text: "I planted groundnut seeds 10 days ago, but only half of them have come out of the soil. Are the seeds bad?",
+    status: "Open",
+    upvotes: 27,
+    tags: ["#Groundnut", "#Seeds", "#Germination"],
+    timestamp: "1 day ago",
+    image_query: "groundnut plant germination failure",
+    image: "https://images.unsplash.com/photo-1515150144380-bca9f1650ed9?auto=format&fit=crop&q=80&w=800",
+    comments: [
+      {
+        id: 901,
+        author: "Krishi AI",
+        text: "It could be bad seeds, or the soil was too dry. Check one seed in the soil. If it is rotten, seeds were bad or soil had fungus.",
+        upvotes: 22,
+        isAI: true
+      }
+    ]
+  },
+  {
+    id: 10,
+    author: "Rakesh",
+    location: "Indore, MP",
+    crop: "Soybean",
+    issue: "Market",
+    text: "Soybean price is very low right now. Should I sell it or keep it in the godown for a month?",
+    status: "Open",
+    upvotes: 55,
+    tags: ["#Soybean", "#MarketPrice", "#Storage"],
+    timestamp: "6 hours ago",
+    image_query: "soybean harvest storage",
+    image: "https://images.unsplash.com/photo-1599420186946-7b6fb4eaba23?auto=format&fit=crop&q=80&w=800",
+    comments: [
+      {
+        id: 1001,
+        author: "Krishi AI",
+        text: "Prices usually go up after the main harvest season ends. If you have safe, dry storage, waiting 1-2 months is a good idea.",
+        upvotes: 60,
+        isAI: true
       }
     ]
   }
@@ -113,7 +293,7 @@ export default function Community({ onBack }: { onBack: () => void }) {
   const [activeFilter, setActiveFilter] = useState("All");
   const [showAskForm, setShowAskForm] = useState(false);
 
-  const filters = ["All", "Rice", "Tomato", "Wheat", "Pest", "Disease", "Soil", "Resolved"];
+  const filters = ["All", "Pest", "Disease", "Soil", "Water", "Yield", "Fertilizer", "Planning", "Market", "Resolved"];
 
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.text.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -257,6 +437,16 @@ function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void
         {post.text}
       </p>
 
+      {post.image && (
+        <div className="mb-4 rounded-2xl overflow-hidden h-48">
+          <img 
+            src={post.image} 
+            alt={post.image_query} 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+      )}
+
       <div className="flex flex-wrap gap-2 mb-6">
         {post.tags.map(tag => (
           <span key={tag} className="text-[10px] font-bold text-primary/60 bg-primary/5 px-2 py-0.5 rounded-md">
@@ -340,6 +530,16 @@ function PostDetail({ post, onBack, onUpvote }: { post: Post, onBack: () => void
         <p className="text-text/70 text-lg leading-relaxed mb-8">
           {post.text}
         </p>
+
+        {post.image && (
+          <div className="mb-8 rounded-3xl overflow-hidden">
+            <img 
+              src={post.image} 
+              alt={post.image_query} 
+              className="w-full h-auto"
+            />
+          </div>
+        )}
 
         {/* AI Answer Highlighted */}
         {aiAnswer && (
