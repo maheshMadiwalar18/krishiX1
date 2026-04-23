@@ -29,31 +29,33 @@ export default function Hero({ isLoggedIn, onLogin, onDashboard, onAssistant }: 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-3xl mx-auto"
+          className="max-w-4xl mx-auto"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white/80 text-[10px] font-bold uppercase tracking-[0.2em] mb-8">
-            <Sparkles size={12} className="text-primary-light" />
-            Your AI Farming Expert
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#14532D] border border-white/5 rounded-full text-[#A7F3D0] text-xs md:text-sm font-medium uppercase tracking-wider mb-8 shadow-2xl">
+            Your AI Farming Platform
           </div>
-          <h1 className="text-white mb-6 text-5xl lg:text-6xl tracking-tight leading-[1.1] font-display font-black">
-            {t('home_hero_title')}
+          
+          <h1 className="text-white mb-6 text-[36px] md:text-[56px] lg:text-[64px] tracking-tight leading-[1.15] font-display font-bold md:font-extrabold px-2">
+            Empowering Farmers for a <br className="hidden md:block" />
+            <span className="text-[#22C55E]">Viksit Bharat</span>
           </h1>
-          <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            {t('home_hero_subtitle')}
+          
+          <p className="text-lg md:text-[20px] text-[#D1D5DB] mb-12 max-w-2xl mx-auto font-sans font-normal leading-relaxed px-4">
+            Smart tools, better decisions, and stronger growth for every farmer.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 px-6">
             <button 
               onClick={() => onDashboard()} 
-              className="w-full sm:w-auto px-10 py-4 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-lg group"
+              className="w-full sm:w-auto px-12 py-4 bg-[#166534] text-white rounded-xl font-bold hover:bg-[#064e3b] transition-all flex items-center justify-center gap-2 shadow-xl active:scale-95"
             >
-              {t('btn_scan_now')}
+              Start Scanning
             </button>
             <button 
               onClick={() => onAssistant()}
-              className="w-full sm:w-auto px-10 py-4 bg-white text-primary rounded-xl font-bold hover:bg-neutral-50 transition-all flex items-center justify-center gap-2 shadow-lg"
+              className="w-full sm:w-auto px-12 py-4 bg-white text-[#166534] border-2 border-[#166534] rounded-xl font-bold hover:bg-neutral-50 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95"
             >
-              {t('btn_ask_ai')}
+              Ask Assistant
             </button>
           </div>
         </motion.div>
