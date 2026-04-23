@@ -48,9 +48,9 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
       // Mock logic
       const mockPlan: IrrigationPlan = {
         when: "Early Morning (5:00 AM - 7:00 AM)",
-        amount: formData.irrigation === 'Drip' ? "25 - 35 mins" : 
-                formData.irrigation === 'Sprinkler' ? "45 - 60 mins" : 
-                formData.irrigation === 'Borewell' ? "2 - 3 hours" : "1 - 2 hours",
+        amount: formData.irrigation === 'Drip' ? "25 - 35 mins (Drip)" : 
+                formData.irrigation === 'Sprinkler' ? "45 - 60 mins (Sprinkler)" : 
+                formData.irrigation === 'Borewell' ? "2 - 3 hours (Borewell)" : "1 - 2 hours (Manual)",
         frequency: "Once every 2 days",
         warning: "High UV levels expected tomorrow. Do not water in the afternoon to avoid evaporation loss.",
         tips: [
