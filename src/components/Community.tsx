@@ -325,47 +325,47 @@ export default function Community({ onBack }: { onBack: () => void }) {
             exit={{ opacity: 0 }}
           >
             {/* Header Area */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 mb-10">
               <div className="flex items-center gap-4">
                 <button 
                   onClick={onBack}
-                  className="w-10 h-10 bg-white border border-border rounded-xl flex items-center justify-center text-text/70 hover:text-primary transition-all shadow-sm"
+                  className="w-10 h-10 bg-white border border-border rounded-[12px] flex items-center justify-center text-text/70 hover:text-primary transition-all shadow-sm active:scale-95"
                 >
                   <ChevronLeft size={20} />
                 </button>
-                <h1 className="text-2xl font-display font-extrabold text-text">Farmer Community</h1>
+                <h1 className="text-2xl font-display font-bold text-text">Farmer Community</h1>
               </div>
               <button 
                 onClick={() => setShowAskForm(true)}
-                className="bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-primary/90 transition-all"
+                className="bg-primary text-white px-6 py-3 rounded-[12px] font-bold flex items-center justify-center gap-2 shadow-sm hover:shadow-md hover:bg-primary/90 transition-all active:scale-95"
               >
                 <Plus size={20} /> Ask Question
               </button>
             </div>
 
             {/* Search & Filters */}
-            <div className="space-y-6 mb-8">
+            <div className="space-y-6 mb-10">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text/40" size={20} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text/40" size={18} />
                 <input 
                   type="text"
                   placeholder="Search farming problems, crops, or pests..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-white border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm transition-all"
+                  className="w-full pl-11 pr-4 py-3.5 bg-white border border-border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary shadow-sm transition-all text-sm"
                 />
               </div>
 
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4">
+              <div className="flex gap-2.5 overflow-x-auto pb-3 scrollbar-hide -mx-4 px-4">
                 {filters.map(f => (
                   <button
                     key={f}
                     onClick={() => setActiveFilter(f)}
                     className={cn(
-                      "whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold border transition-all",
+                      "whitespace-nowrap px-5 py-2.5 rounded-[12px] text-sm font-semibold border transition-all active:scale-95",
                       activeFilter === f 
-                        ? "bg-primary border-primary text-white shadow-md" 
-                        : "bg-white border-border text-text/60 hover:border-primary/40"
+                        ? "bg-primary border-primary text-white shadow-sm" 
+                        : "bg-white border-border text-text/60 hover:border-primary/30"
                     )}
                   >
                     {f}
@@ -408,8 +408,8 @@ export default function Community({ onBack }: { onBack: () => void }) {
 function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void, onUpvote: (e: any) => void }) {
   return (
     <motion.div 
-      whileHover={{ y: -2 }}
-      className="bg-white rounded-3xl border border-border p-6 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden relative group"
+      whileHover={{ y: -2, shadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05)" }}
+      className="bg-white rounded-[12px] border border-border p-6 shadow-sm hover:border-primary/20 transition-all cursor-pointer overflow-hidden relative group"
       onClick={onClick}
     >
       <div className="flex items-start justify-between mb-4">
@@ -425,8 +425,8 @@ function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void
           </div>
         </div>
         <div className={cn(
-          "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider flex items-center gap-1",
-          post.status === 'Resolved' ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"
+          "px-3 py-1 rounded-[8px] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5",
+          post.status === 'Resolved' ? "bg-green-50 text-green-700 border border-green-100" : "bg-blue-50 text-blue-700 border border-blue-100"
         )}>
           {post.status === 'Resolved' ? <CheckCircle2 size={12} /> : <Clock size={12} />}
           {post.status}
@@ -438,11 +438,11 @@ function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void
       </p>
 
       {post.image && (
-        <div className="mb-4 rounded-2xl overflow-hidden h-48">
+        <div className="mb-5 rounded-[12px] overflow-hidden h-48 border border-border/50">
           <img 
             src={post.image} 
             alt={post.image_query} 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
         </div>
       )}
@@ -456,11 +456,11 @@ function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void
       </div>
 
       {/* AI Answer Preview */}
-      <div className="bg-primary/5 rounded-2xl p-4 border border-primary/10 mb-6 flex gap-3 items-start">
-        <div className="w-6 h-6 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
+      <div className="bg-primary/[0.03] rounded-[12px] p-4 border border-primary/10 mb-6 flex gap-3.5 items-start">
+        <div className="w-6 h-6 rounded-[8px] bg-primary/10 flex items-center justify-center shrink-0">
           <Brain size={14} className="text-primary" />
         </div>
-        <p className="text-xs text-primary/80 font-medium italic line-clamp-2">
+        <p className="text-xs text-primary/80 font-medium italic line-clamp-2 leading-relaxed">
           {post.comments.find(c => c.isAI)?.text}
         </p>
       </div>
@@ -474,12 +474,12 @@ function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void
             <ThumbsUp size={18} />
             <span className="text-xs font-bold">{post.upvotes}</span>
           </button>
-          <div className="flex items-center gap-2 text-text/40">
+          <div className="flex items-center gap-2.5 text-text/40">
             <MessageSquare size={18} />
             <span className="text-xs font-bold">{post.comments.length}</span>
           </div>
         </div>
-        <button className="text-primary text-xs font-black uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+        <button className="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-1.5 hover:gap-2.5 transition-all">
           View Detail <ArrowLeft size={14} className="rotate-180" />
         </button>
       </div>
@@ -495,12 +495,12 @@ function PostDetail({ post, onBack, onUpvote }: { post: Post, onBack: () => void
     <div className="space-y-6">
       <button 
         onClick={onBack}
-        className="flex items-center gap-2 text-text/40 hover:text-text transition-colors font-bold text-sm mb-4"
+        className="flex items-center gap-2.5 text-text/40 hover:text-text transition-colors font-bold text-sm mb-6 active:scale-95 w-fit"
       >
         <ArrowLeft size={16} /> Back to Feed
       </button>
 
-      <div className="bg-white rounded-3xl border border-border p-8 shadow-xl">
+      <div className="bg-white rounded-[12px] border border-border p-7 shadow-md">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -523,7 +523,7 @@ function PostDetail({ post, onBack, onUpvote }: { post: Post, onBack: () => void
           </div>
         </div>
 
-        <h2 className="text-2xl font-display font-black text-text mb-4">
+        <h2 className="text-2xl font-display font-bold text-text mb-4">
           Problem with {post.crop} ({post.issue})
         </h2>
         
@@ -532,43 +532,43 @@ function PostDetail({ post, onBack, onUpvote }: { post: Post, onBack: () => void
         </p>
 
         {post.image && (
-          <div className="mb-8 rounded-3xl overflow-hidden">
+          <div className="mb-8 rounded-[12px] overflow-hidden border border-border/50">
             <img 
               src={post.image} 
               alt={post.image_query} 
-              className="w-full h-auto"
+              className="w-full h-auto object-cover max-h-[400px]"
             />
           </div>
         )}
 
         {/* AI Answer Highlighted */}
         {aiAnswer && (
-          <div className="bg-primary text-white p-8 rounded-3xl shadow-xl relative overflow-hidden mb-8">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
+          <div className="bg-primary text-white p-7 rounded-[12px] shadow-lg relative overflow-hidden mb-10">
+            <div className="absolute top-0 right-0 p-4 opacity-5">
               <Brain size={120} />
             </div>
             <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-4 bg-white/20 w-fit px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">
+              <div className="flex items-center gap-2 mb-4 bg-white/10 w-fit px-3 py-1.5 rounded-[8px] text-[10px] font-bold uppercase tracking-widest border border-white/10">
                 <Brain size={14} /> AI Solution
               </div>
-              <p className="text-lg font-medium leading-relaxed mb-4">
+              <p className="text-lg font-medium leading-relaxed mb-6">
                 {aiAnswer.text}
               </p>
-              <div className="flex items-center gap-4 text-white/60 text-xs">
-                <button className="flex items-center gap-1 hover:text-white transition-colors">
+              <div className="flex items-center gap-5 text-white/70 text-xs">
+                <button className="flex items-center gap-1.5 hover:text-white transition-colors">
                   <ThumbsUp size={14} /> Helpful ({aiAnswer.upvotes})
                 </button>
-                <span>•</span>
-                <span>Verified by KrushiX</span>
+                <span className="opacity-30">•</span>
+                <span>Verified by KrushiX AI</span>
               </div>
             </div>
           </div>
         )}
 
         {/* Comment Section */}
-        <div className="border-t border-border pt-8 mt-8">
-          <h4 className="font-display font-black text-xl mb-6 flex items-center gap-2">
-            <MessageSquare className="text-primary" /> 
+        <div className="border-t border-border/60 pt-8 mt-4">
+          <h4 className="font-display font-bold text-xl mb-8 flex items-center gap-2.5">
+            <MessageSquare className="text-primary" size={22} /> 
             Replies ({otherComments.length})
           </h4>
 
@@ -580,10 +580,10 @@ function PostDetail({ post, onBack, onUpvote }: { post: Post, onBack: () => void
                     <User size={20} />
                   </div>
                   <div className="flex-1">
-                    <div className="bg-bg p-4 rounded-2xl border border-border">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-black text-sm text-text">{comment.author}</span>
-                        <span className="text-[10px] text-text/40 font-bold">12 hours ago</span>
+                    <div className="bg-bg/50 p-4 rounded-[12px] border border-border/50">
+                      <div className="flex items-center justify-between mb-2.5">
+                        <span className="font-bold text-sm text-text">{comment.author}</span>
+                        <span className="text-[10px] text-text/30 font-medium">12 hours ago</span>
                       </div>
                       <p className="text-text/70 text-sm leading-relaxed">
                         {comment.text}
@@ -627,18 +627,18 @@ function PostDetail({ post, onBack, onUpvote }: { post: Post, onBack: () => void
           </div>
 
           {/* Add Comment Box */}
-          <div className="bg-bg border border-border p-4 rounded-2xl">
+          <div className="bg-bg/30 border border-border p-4 rounded-[12px] mt-10">
             <textarea 
               placeholder="Add your solution or ask for details..."
-              className="w-full bg-transparent border-none focus:ring-0 text-sm min-h-[80px] resize-none"
+              className="w-full bg-transparent border-none focus:ring-0 text-sm min-h-[90px] resize-none placeholder:text-text/30"
             />
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50">
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/40">
               <div className="flex gap-2">
-                <button className="p-2 text-text/40 hover:text-primary transition-colors">
+                <button className="p-2 text-text/40 hover:text-primary transition-colors hover:bg-white rounded-[8px]">
                   <ImageIcon size={20} />
                 </button>
               </div>
-              <button className="bg-primary text-white px-6 py-2 rounded-xl font-bold text-xs flex items-center gap-2 shadow-md hover:bg-primary/90">
+              <button className="bg-primary text-white px-6 py-2.5 rounded-[10px] font-bold text-xs flex items-center gap-2 shadow-sm hover:shadow-md hover:bg-primary/90 transition-all active:scale-95">
                 <Send size={14} /> Post Reply
               </button>
             </div>
