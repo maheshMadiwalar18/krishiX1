@@ -17,7 +17,7 @@ export default function Hero({ isLoggedIn, onLogin, onDashboard, onAssistant }: 
     <section className="relative h-[650px] -mt-24 flex items-center overflow-hidden">
       <div className="absolute inset-0">
         <img 
-          src="/hero-bg.png" 
+          src="/hero-bg-v2.png" 
           className="w-full h-full object-cover scale-105 animate-slow-zoom"
           alt="Farmland background"
         />
