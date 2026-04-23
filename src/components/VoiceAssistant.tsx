@@ -5,7 +5,7 @@ import {
   Send, 
   Volume2, 
   Sparkles,
-  Bot,
+  Sprout,
   User as UserIcon,
   X
 } from 'lucide-react';
@@ -25,7 +25,7 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
     {
       id: '1',
       role: 'assistant',
-      content: 'Namaste! I am AgriGuru. How can I help with your farming today?',
+      content: 'Namaste! I am KrushiX. How can I help with your farming today?',
       timestamp: new Date()
     }
   ]);
@@ -119,10 +119,10 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
                 )}
               >
                 <div className={cn(
-                  "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-                  msg.role === 'assistant' ? "bg-nature-bg text-primary" : "bg-primary text-white"
+                  "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm border border-primary/10 overflow-hidden",
+                  msg.role === 'assistant' ? "bg-white p-1" : "bg-primary text-white"
                 )}>
-                  {msg.role === 'assistant' ? <Bot size={18} /> : <UserIcon size={18} />}
+                  {msg.role === 'assistant' ? <img src="/logo.png" alt="KrushiX" className="w-full h-full object-contain" /> : <UserIcon size={18} />}
                 </div>
                 <div className={cn(
                   "p-4 rounded-2xl relative",

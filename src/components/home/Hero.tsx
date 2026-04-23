@@ -36,7 +36,7 @@ export default function Hero({ isLoggedIn, onLogin, onDashboard, onAssistant }: 
             Cultivating the Future of Bharat.<br />One Yield at a Time.
           </h1>
           <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-            Harness the power of cutting-edge AI to instantly diagnose crop threats, anticipate micro-climate shifts, and unlock your land's maximum potential.
+            Empower your farming journey with AI-driven insights and localized recommendations designed for maximum yield.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

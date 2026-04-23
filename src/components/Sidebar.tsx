@@ -26,8 +26,8 @@ export default function Sidebar() {
           <Sprout size={24} />
         </div>
         <span className="text-3xl font-display font-black flex items-center">
-          <span className="text-primary tracking-tighter">Agri</span>
-          <span className="text-primary-light">Guru</span>
+          <span className="text-primary tracking-tighter">Krushi</span>
+          <span className="text-primary-light">X</span>
         </span>
       </div>
 

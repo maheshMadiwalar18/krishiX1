@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 
 const quotes = [
   { text: "The farmer is the backbone of our nation.", author: "Indian Proverb" },
-  { text: "Smart farming is not the future—it’s the present.", author: "AgriGuru Vision" }
+  { text: "Smart farming is not the future—it’s the present.", author: "KrushiX Vision" }
 ];
 
 export default function Quotes() {

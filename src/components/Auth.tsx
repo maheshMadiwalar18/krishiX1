@@ -25,7 +25,24 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
   
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [quoteIndex, setQuoteIndex] = useState(0);
   const navigate = useNavigate();
+
+  const inspiringQuotes = [
+    "Helping farmers grow more with smart and easy solutions.",
+    "Better farming starts with the right guidance.",
+    "Smart farming made simple for every farmer.",
+    "Grow more, waste less, farm smarter.",
+    "Your farming partner for better growth and success.",
+    "Simple tools to help you grow healthy crops."
+  ];
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % inspiringQuotes.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,8 +103,8 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
     setError('');
     
     // Use a standard demo credential
-    const demoEmail = "demo@agriguru.com";
-    const demoPassword = "agriguruDemo!";
+    const demoEmail = "demo@krushix.com";
+    const demoPassword = "krushixDemo!";
 
     try {
       // Attempt login first
@@ -148,10 +165,21 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
           <div className="w-20 h-20 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20">
             <Sprout size={48} className="text-[#81C784]" />
           </div>
-          <h2 className="text-4xl font-black tracking-tight mb-4 text-white">Join AgriGuru</h2>
-          <p className="text-white/80 text-lg max-w-sm font-light">
-            Empower your farming journey with AI-driven insights and localized recommendations designed for maximum yield.
-          </p>
+          <h2 className="text-4xl font-black tracking-tight mb-6 text-white">Join KrushiX</h2>
+          <div className="h-24 flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              <motion.p 
+                key={quoteIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.5 }}
+                className="text-white/80 text-xl max-w-sm font-light italic leading-relaxed"
+              >
+                “{inspiringQuotes[quoteIndex]}”
+              </motion.p>
+            </AnimatePresence>
+          </div>
         </motion.div>
       </div>
 

@@ -1,4 +1,4 @@
-import { Sprout, Bell, User, LogIn } from 'lucide-react';
+import { Sprout, Bell, User, LogIn, Bug, CloudSun, BarChart3, BookOpen } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 interface NavbarProps {
@@ -15,11 +15,10 @@ export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNaviga
   const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
-    { label: 'Disease', view: 'disease', path: '/disease-detection' },
-    { label: 'Weather', view: 'weather', path: '/weather' },
-    { label: 'Assistant', view: 'assistant', path: '/assistant' },
-    { label: 'Analytics', view: 'analytics', path: '/analytics' },
-    { label: 'Knowledge', view: 'knowledge', path: '/knowledge' },
+    { label: 'Disease', icon: Bug, view: 'disease', path: '/disease-detection' },
+    { label: 'Weather', icon: CloudSun, view: 'weather', path: '/weather' },
+    { label: 'Analytics', icon: BarChart3, view: 'analytics', path: '/analytics' },
+    { label: 'Knowledge', icon: BookOpen, view: 'knowledge', path: '/knowledge' },
   ] as const;
 
   return (
@@ -30,8 +29,8 @@ export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNaviga
             <Sprout size={18} strokeWidth={2.5} />
           </div>
           <span className="text-xl font-black tracking-tight flex items-center">
-            <span className="text-primary tracking-tighter">Agri</span>
-            <span className="text-primary-light">Guru</span>
+            <span className="text-primary tracking-tighter">Krushi</span>
+            <span className="text-primary-light">X</span>
           </span>
         </div>
 
@@ -41,13 +40,14 @@ export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNaviga
               <button
                 key={item.view}
                 onClick={() => onNavigate(item.view)}
-                className={`text-xs font-bold transition-all uppercase tracking-widest relative py-1 ${
+                className={`flex items-center gap-2 text-xs font-bold transition-all uppercase tracking-widest relative py-1 ${
                   isActive(item.path) 
                     ? 'text-primary' 
                     : 'text-text/60 hover:text-primary'
                 }`}
               >
-                {item.label}
+                <item.icon size={16} />
+                <span>{item.label}</span>
                 {isActive(item.path) && (
                   <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-primary rounded-full shadow-[0_0_8px_rgba(46,125,50,0.5)]" />
                 )}

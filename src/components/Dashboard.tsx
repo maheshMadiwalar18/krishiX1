@@ -110,7 +110,7 @@ export default function Dashboard({ onStartView }: { onStartView: (view: 'diseas
           <h1 className="text-4xl font-display font-extrabold text-text mb-2">
             Hello, {userData?.name || 'Farmer'} 👋
           </h1>
-          <p className="text-text/60 font-medium text-lg">Welcome back to your AgriGuru control center.</p>
+          <p className="text-text/60 font-medium text-lg">Welcome back to your KrushiX control center.</p>
           
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-2xl border border-border shadow-sm flex items-center gap-4">
@@ -198,7 +198,7 @@ export default function Dashboard({ onStartView }: { onStartView: (view: 'diseas
         <div onClick={() => onStartView('assistant')} className="cursor-pointer">
           <FeatureCard 
             icon={Bot} 
-            title="Ask Guru" 
+            title="Ask KrushiX" 
             description="24/7 AI Farming Assistant."
             color="bg-[#81C784]"
             delay={0}

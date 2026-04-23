@@ -12,7 +12,7 @@ export default function InstantTry({ onScan, onVoice }: QuickActionProps) {
     <section className="max-w-4xl mx-auto px-6 md:px-8 text-center">
       <div className="mb-16">
         <h2 className="mb-4">Ignite Your Farming Transformation</h2>
-        <p className="text-text/60 max-w-xl mx-auto font-light">Experience the revolutionary capabilities of AgriGuru. Log in now and witness the impact firsthand.</p>
+        <p className="text-text/60 max-w-xl mx-auto font-light">Experience the revolutionary capabilities of KrushiX. Log in now and witness the impact firsthand.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

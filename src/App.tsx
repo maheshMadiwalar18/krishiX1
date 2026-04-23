@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import { Sprout } from 'lucide-react';
 import Home from './components/Home';
 import DiseaseDetection from './components/DiseaseDetection';
 import WeatherRecommendation from './components/WeatherRecommendation';
@@ -191,6 +192,16 @@ function AppContent() {
           </Routes>
         </AnimatePresence>
       </main>
+
+      {!isAuthPage && isLoggedIn && location.pathname !== '/assistant' && (
+        <button 
+          onClick={() => handleNavigate('assistant')}
+          className="fixed bottom-6 right-6 w-16 h-16 bg-white rounded-full shadow-[0_4px_20px_rgba(46,125,50,0.4)] hover:shadow-[0_4px_25px_rgba(46,125,50,0.6)] hover:scale-105 transition-all flex items-center justify-center z-50 group border-2 border-primary/10 overflow-hidden p-2.5"
+          aria-label="Ask KrushiX Assistant"
+        >
+          <img src="/logo.png" alt="KrushiX Logo" className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+        </button>
+      )}
     </div>
   );
 }

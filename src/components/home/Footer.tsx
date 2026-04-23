@@ -15,12 +15,12 @@ export default function Footer({ onNavigate }: FooterProps) {
               <Sparkles size={18} />
             </div>
             <span className="text-xl font-display font-black flex items-center">
-              <span className="text-primary tracking-tighter">Agri</span>
-              <span className="text-primary-light">Guru</span>
+              <span className="text-primary tracking-tighter">Krushi</span>
+              <span className="text-primary-light">X</span>
             </span>
           </div>
           <p className="text-sm text-text/60 leading-relaxed">
-            Empowering farmers across Bharat with cutting-edge artificial intelligence for a sustainable future.
+            Empower your farming journey with AI-driven insights and localized recommendations designed for maximum yield.
           </p>
         </div>
         
@@ -57,7 +57,7 @@ export default function Footer({ onNavigate }: FooterProps) {
       
       <div className="border-t border-border py-8 text-center bg-bg/50 backdrop-blur-sm">
         <p className="text-[10px] font-bold text-text/30 uppercase tracking-[0.4em]">
-          AgriGuru Systems • Built with Love for Farmers • © 2026
+          KrushiX Systems • Built with Love for Farmers • © 2026
         </p>
       </div>
     </footer>
