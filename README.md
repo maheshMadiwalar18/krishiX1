@@ -86,9 +86,6 @@ Follow these steps to run KrishiX locally:
    npm run dev
    ```
 
-## 🤝 Contributors
-- [Your Name/Placeholder]
-- [Contributor Name/Placeholder]
 
 ## 📄 License
 This project is licensed under the MIT License.
