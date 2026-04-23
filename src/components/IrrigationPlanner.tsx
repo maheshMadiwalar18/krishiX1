@@ -38,37 +38,57 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
     crop: 'Maize',
     soil: 'Red Soil',
     irrigation: 'Borewell',
-    land: '2'
+    land: '2',
+    stage: 'Vegetative'
   });
   const [plan, setPlan] = useState<IrrigationPlan | null>(null);
 
-  const handleGeneratePlan = () => {
+  const handleGeneratePlan = async () => {
     setLoading(true);
-    setTimeout(() => {
-      // Mock logic
-      const mockPlan: IrrigationPlan = {
+    try {
+      const response = await fetch('/api/irrigation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          crop: formData.crop,
+          soil: formData.soil,
+          stage: formData.stage,
+          weather: 'Sunny', // Fallback or dynamic weather can be added later
+          location: userLocation
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to get AI advice');
+
+      const data = await response.json();
+      
+      const newPlan: IrrigationPlan = {
         when: "Early Morning (5:00 AM - 7:00 AM)",
         amount: formData.irrigation === 'Drip' ? "25 - 35 mins (Drip)" : 
                 formData.irrigation === 'Sprinkler' ? "45 - 60 mins (Sprinkler)" : 
                 formData.irrigation === 'Borewell' ? "2 - 3 hours (Borewell)" : "1 - 2 hours (Manual)",
         frequency: "Once every 2 days",
-        warning: "High UV levels expected tomorrow. Do not water in the afternoon to avoid evaporation loss.",
+        warning: "High UV levels expected tomorrow. Do not water in the afternoon.",
         tips: [
-          "Check soil moisture 2 inches deep before watering",
-          "Water directly at the root zone",
-          "Ensure proper drainage in clay patches"
+          "Check soil moisture 2 inches deep",
+          "Water directly at root zone",
+          "Avoid leaf wetness"
         ],
         insight: {
-          method: `${formData.irrigation} with Root Zone Focus`,
-          reason: `Your ${formData.crop} in ${formData.soil} needs steady moisture without drowning.`,
-          plan: `Water at 5 AM. Focus on the base of the plant. Check soil every 2 days.`
+          method: data.method,
+          reason: data.reason,
+          plan: data.plan
         }
       };
       
-      setPlan(mockPlan);
-      setLoading(false);
+      setPlan(newPlan);
       setView('result');
-    }, 1200);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to generate plan. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -151,6 +171,22 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
                   onChange={(e) => setFormData({...formData, land: e.target.value})}
                   className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
                 />
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-text/40 uppercase tracking-widest flex items-center gap-2">
+                  <Clock size={14} /> Plant Stage <span className="text-red-500">*</span>
+                </label>
+                <select 
+                  value={formData.stage}
+                  onChange={(e) => setFormData({...formData, stage: e.target.value})}
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                >
+                  <option>Seedling</option>
+                  <option>Vegetative</option>
+                  <option>Flowering</option>
+                  <option>Fruiting</option>
+                  <option>Harvest Ready</option>
+                </select>
               </div>
             </div>
 

@@ -5,6 +5,7 @@ import diseaseRoutes from './routes/diseaseRoutes.js';
 import weatherRoutes from './routes/weatherRoutes.js';
 import assistantRoutes from './routes/assistantRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import irrigationRoutes from './routes/irrigationRoutes.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use('/api/disease', diseaseRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/assistant', assistantRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/irrigation', irrigationRoutes);
 
 // Base route
 app.get('/', (req, res) => {
