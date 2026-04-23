@@ -19,7 +19,7 @@ import { cn } from '../lib/utils';
 
 interface IrrigationPlan {
   when: string;
-  amount: 'Low' | 'Medium' | 'High';
+  amount: string;
   frequency: string;
   warning: string;
   tips: string[];
@@ -48,7 +48,9 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
       // Mock logic
       const mockPlan: IrrigationPlan = {
         when: "Early Morning (5:00 AM - 7:00 AM)",
-        amount: "Medium",
+        amount: formData.irrigation === 'Drip' ? "25 - 35 mins" : 
+                formData.irrigation === 'Sprinkler' ? "45 - 60 mins" : 
+                formData.irrigation === 'Borewell' ? "2 - 3 hours" : "1 - 2 hours",
         frequency: "Once every 2 days",
         warning: "High UV levels expected tomorrow. Do not water in the afternoon to avoid evaporation loss.",
         tips: [
@@ -189,15 +191,9 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
                 <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4">
                   <Waves size={24} />
                 </div>
-                <h4 className="text-xs font-bold text-text/40 uppercase tracking-widest mb-2">{t('label_how_much')}</h4>
+                <h4 className="text-xs font-bold text-text/40 uppercase tracking-widest mb-2">Watering Duration</h4>
                 <div className="flex items-center gap-2">
-                  <span className={cn(
-                    "px-3 py-1 rounded-full text-xs font-black uppercase",
-                    plan?.amount === 'Low' ? "bg-green-100 text-green-700" : 
-                    plan?.amount === 'Medium' ? "bg-blue-100 text-blue-700" : "bg-indigo-100 text-indigo-700"
-                  )}>
-                    {plan?.amount}
-                  </span>
+                  <p className="text-lg font-black text-text">{plan?.amount}</p>
                 </div>
               </div>
 
