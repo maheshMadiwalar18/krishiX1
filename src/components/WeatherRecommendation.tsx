@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const forecast = [
   { day: 'Mon', temp: 32, icon: Sun, condition: 'Sunny' },
@@ -53,6 +54,7 @@ const recommendations = [
 ];
 
 export default function WeatherRecommendation({ onBack, userLocation = "Your Farm - Karnataka" }: { onBack: () => void, userLocation?: string }) {
+  const { t } = useLanguage();
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
@@ -64,7 +66,7 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-2xl font-display font-extrabold text-neutral-900">Weather & Recommendations</h1>
+          <h1 className="text-2xl font-display font-extrabold text-neutral-900">{t('weather_title')}</h1>
           <p className="text-neutral-500 text-sm flex items-center gap-1 mt-1">
             <MapPin size={14} className="text-green-600" />
             {userLocation}
@@ -105,17 +107,17 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
                 <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
                   <Droplets className="text-blue-300 mb-1" size={18} />
-                  <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">Humidity</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">{t('weather_humidity')}</p>
                   <p className="text-base font-bold text-white">45%</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
                   <Wind className="text-teal-300 mb-1" size={18} />
-                  <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">Wind</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">{t('weather_wind')}</p>
                   <p className="text-base font-bold text-white">14 km/h</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
                   <CloudRain className="text-indigo-300 mb-1" size={18} />
-                  <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">Rain</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">{t('weather_rain')}</p>
                   <p className="text-base font-bold text-white">5%</p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
@@ -128,10 +130,10 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3">
                 <button className="flex-1 sm:flex-none bg-white text-green-800 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-green-50 transition-colors flex items-center justify-center gap-2 shadow-sm">
-                  <Info size={16} /> View Advice
+                  <Info size={16} /> {t('weather_view_advice')}
                 </button>
                 <button className="flex-1 sm:flex-none bg-green-700/50 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-green-700/70 border border-green-500/30 transition-colors flex items-center justify-center gap-2 backdrop-blur-sm">
-                  <Droplet size={16} /> Plan Irrigation
+                  <Droplet size={16} /> {t('weather_plan_irrigation')}
                 </button>
               </div>
             </div>
@@ -147,7 +149,7 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
               <Brain size={20} className="text-green-700" />
             </div>
             <div>
-              <h4 className="font-bold text-green-900 text-sm mb-1">AI Insight</h4>
+              <h4 className="font-bold text-green-900 text-sm mb-1">{t('weather_ai_insight')}</h4>
               <p className="text-sm text-green-800/80 leading-relaxed">
                 With a steady temperature around 32°C and low rain probability, the upcoming week is perfect for soil preparation. However, high UV index means you should schedule active irrigation during early morning or late evening to minimize evaporation loss.
               </p>
@@ -157,7 +159,7 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
           {/* 7-Day Forecast */}
           <section>
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-neutral-900 text-lg">7-Day Forecast</h3>
+              <h3 className="font-bold text-neutral-900 text-lg">{t('weather_forecast')}</h3>
               <button className="text-sm font-medium text-green-600 hover:text-green-700 transition-colors">See full</button>
             </div>
             <div className="flex gap-3 overflow-x-auto pb-4 -mx-2 px-2 scrollbar-hide">
@@ -187,8 +189,8 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
                 <Sprout size={20} />
               </div>
               <div>
-                <h3 className="font-bold text-neutral-900 text-xl">Crop Recommendations</h3>
-                <p className="text-xs text-neutral-500">Based on your local weather</p>
+                <h3 className="font-bold text-neutral-900 text-xl">{t('weather_crop_rec')}</h3>
+                <p className="text-xs text-neutral-500">{t('weather_based')}</p>
               </div>
             </div>
 
@@ -219,15 +221,15 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
                   
                   <div className="space-y-3 mb-4">
                     <div className="flex items-center justify-between text-sm border-b border-neutral-100 pb-2">
-                      <span className="text-neutral-500 flex items-center gap-2"><Calendar size={14} /> Sowing Time</span>
+                      <span className="text-neutral-500 flex items-center gap-2"><Calendar size={14} /> {t('weather_sowing')}</span>
                       <span className="font-semibold text-neutral-800">{rec.sowingTime}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm border-b border-neutral-100 pb-2">
-                      <span className="text-neutral-500 flex items-center gap-2"><Droplet size={14} /> Water Req.</span>
+                      <span className="text-neutral-500 flex items-center gap-2"><Droplet size={14} /> {t('weather_water')}</span>
                       <span className="font-semibold text-neutral-800">{rec.waterReq}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm border-b border-neutral-100 pb-2">
-                      <span className="text-neutral-500 flex items-center gap-2"><Leaf size={14} /> Fertilizer</span>
+                      <span className="text-neutral-500 flex items-center gap-2"><Leaf size={14} /> {t('weather_fertilizer')}</span>
                       <span className="font-semibold text-neutral-800">{rec.fertilizer}</span>
                     </div>
                   </div>
@@ -240,7 +242,7 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
                   </div>
                   
                   <button className="w-full py-2.5 bg-neutral-900 text-white text-sm font-bold rounded-xl hover:bg-green-700 transition-colors flex items-center justify-center gap-2 shadow-md">
-                    View Details
+                    {t('weather_view_details')}
                   </button>
                 </motion.div>
               ))}

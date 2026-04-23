@@ -22,6 +22,7 @@ import { motion } from 'motion/react';
 import { CardSkeleton } from './ui/Skeleton';
 import { auth, db } from '../lib/firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface UserData {
   name: string;
@@ -32,9 +33,10 @@ interface UserData {
   createdAt: string;
 }
 
-export default function Dashboard({ onStartView }: { onStartView: (view: 'disease' | 'weather' | 'assistant' | 'analytics' | 'knowledge') => void }) {
+export default function Dashboard({ onStartView }: { onStartView: (view: 'disease' | 'weather' | 'assistant' | 'knowledge') => void }) {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!auth.currentUser) {
@@ -110,7 +112,7 @@ export default function Dashboard({ onStartView }: { onStartView: (view: 'diseas
           <h1 className="text-4xl font-display font-extrabold text-text mb-2">
             Hello, {userData?.name || 'Farmer'} 👋
           </h1>
-          <p className="text-text/60 font-medium text-lg">Welcome back to your KrushiX control center.</p>
+          <p className="text-text/60 font-medium text-lg">{t('dash_subtitle')}</p>
           
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-2xl border border-border shadow-sm flex items-center gap-4">
@@ -209,12 +211,12 @@ export default function Dashboard({ onStartView }: { onStartView: (view: 'diseas
       {/* Quick Stats */}
       <motion.section variants={itemVariants} className="mb-10">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-text">Quick Stats</h2>
+          <h2 className="text-xl font-bold text-text">{t('dash_quick_stats')}</h2>
           <button 
-            onClick={() => onStartView('analytics')}
+            onClick={() => onStartView('knowledge')}
             className="text-xs font-bold text-primary hover:underline flex items-center gap-1 group transition-all"
           >
-            View Full Analytics <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            {t('dash_explore_knowledge')} <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

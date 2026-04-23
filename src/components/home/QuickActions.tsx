@@ -1,6 +1,7 @@
 import React from 'react';
 import { Camera, Mic, Upload, CloudRain, HeartPulse, Bell } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface QuickActionProps {
   onScan: () => void;
@@ -8,11 +9,12 @@ interface QuickActionProps {
 }
 
 export default function InstantTry({ onScan, onVoice }: QuickActionProps) {
+  const { t } = useLanguage();
   return (
     <section className="max-w-4xl mx-auto px-6 md:px-8 text-center">
       <div className="mb-16">
-        <h2 className="mb-4">Ignite Your Farming Transformation</h2>
-        <p className="text-text/60 max-w-xl mx-auto font-light">Experience the revolutionary capabilities of KrushiX. Log in now and witness the impact firsthand.</p>
+        <h2 className="mb-4">{t('quick_title')}</h2>
+        <p className="text-text/60 max-w-xl mx-auto font-light">{t('quick_subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -26,8 +28,8 @@ export default function InstantTry({ onScan, onVoice }: QuickActionProps) {
           <div className="w-16 h-16 rounded-full bg-bg flex items-center justify-center text-primary/40 mb-6 group-hover:text-primary transition-colors">
             <Upload size={32} strokeWidth={1.5} />
           </div>
-          <h3 className="font-semibold text-text mb-2">Upload Crop Image</h3>
-          <p className="text-sm text-text/40 font-light">Drag and drop or click to scan leaf photo</p>
+          <h3 className="font-semibold text-text mb-2">{t('quick_upload')}</h3>
+          <p className="text-sm text-text/40 font-light">{t('quick_upload_desc')}</p>
         </motion.div>
 
         <motion.div 
@@ -41,8 +43,8 @@ export default function InstantTry({ onScan, onVoice }: QuickActionProps) {
           <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
             <Mic size={32} strokeWidth={1.5} />
           </div>
-          <h3 className="font-semibold mb-2">Voice Assistant</h3>
-          <p className="text-sm text-white/60 font-light">Ask any farming question out loud</p>
+          <h3 className="font-semibold mb-2">{t('quick_voice')}</h3>
+          <p className="text-sm text-white/60 font-light">{t('quick_voice_desc')}</p>
         </motion.div>
       </div>
     </section>

@@ -6,7 +6,7 @@ import Home from './components/Home';
 import DiseaseDetection from './components/DiseaseDetection';
 import WeatherRecommendation from './components/WeatherRecommendation';
 import VoiceAssistant from './components/VoiceAssistant';
-import FarmerAnalytics from './components/FarmerAnalytics';
+
 import KnowledgeHub from './components/KnowledgeHub';
 import Dashboard from './components/Dashboard';
 import { NotificationProvider, useNotification } from './components/ui/Notification';
@@ -65,14 +65,14 @@ function AppContent() {
     navigate('/');
   };
 
-  const handleNavigate = (v: 'home' | 'disease' | 'weather' | 'assistant' | 'analytics' | 'login' | 'knowledge') => {
+  const handleNavigate = (v: 'home' | 'disease' | 'weather' | 'assistant' | 'login' | 'knowledge') => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (v === 'home') navigate('/');
     else if (v === 'login') navigate('/auth');
     else if (v === 'disease') navigate('/disease-detection');
     else if (v === 'weather') navigate('/weather');
     else if (v === 'assistant') navigate('/assistant');
-    else if (v === 'analytics') navigate('/analytics');
+
     else if (v === 'knowledge') navigate('/knowledge');
     else if (v === 'dashboard') navigate('/dashboard');
   };
@@ -153,18 +153,7 @@ function AppContent() {
                 </motion.div>
               </ProtectedRoute>
             } />
-            <Route path="/analytics" element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <motion.div 
-                  initial={{ opacity: 0, filter: 'blur(10px)', scale: 1.05 }} 
-                  animate={{ opacity: 1, filter: 'blur(0px)', scale: 1 }} 
-                  exit={{ opacity: 0, filter: 'blur(10px)', scale: 0.95 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <FarmerAnalytics onBack={() => handleNavigate('home')} />
-                </motion.div>
-              </ProtectedRoute>
-            } />
+
             <Route path="/knowledge" element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
                 <motion.div 
@@ -196,10 +185,10 @@ function AppContent() {
       {!isAuthPage && isLoggedIn && location.pathname !== '/assistant' && (
         <button 
           onClick={() => handleNavigate('assistant')}
-          className="fixed bottom-6 right-6 w-16 h-16 bg-white rounded-full shadow-[0_4px_20px_rgba(46,125,50,0.4)] hover:shadow-[0_4px_25px_rgba(46,125,50,0.6)] hover:scale-105 transition-all flex items-center justify-center z-50 group border-2 border-primary/10 overflow-hidden p-2.5"
+          className="fixed bottom-6 right-6 w-16 h-16 bg-primary rounded-full shadow-[0_4px_20px_rgba(46,125,50,0.4)] hover:shadow-[0_4px_25px_rgba(46,125,50,0.6)] hover:scale-105 transition-all flex items-center justify-center z-50 group border-2 border-primary/10 text-white"
           aria-label="Ask KrushiX Assistant"
         >
-          <img src="/logo.png" alt="KrushiX Logo" className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+          <Sprout size={28} className="group-hover:scale-110 transition-transform duration-300" />
         </button>
       )}
     </div>

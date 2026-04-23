@@ -9,7 +9,7 @@ import Footer from './home/Footer';
 interface HomeProps {
   isLoggedIn: boolean;
   onLogin: () => void;
-  onNavigate: (view: 'disease' | 'weather' | 'assistant' | 'analytics' | 'knowledge') => void;
+  onNavigate: (view: 'disease' | 'weather' | 'assistant' | 'knowledge') => void;
 }
 
 export default function Home({ isLoggedIn, onLogin, onNavigate }: HomeProps) {
@@ -34,7 +34,7 @@ export default function Home({ isLoggedIn, onLogin, onNavigate }: HomeProps) {
       <SmartPreview 
         isLoggedIn={isLoggedIn} 
         onLogin={onLogin} 
-        onViewAnalytics={() => onNavigate('analytics')} 
+        onViewDashboard={() => onNavigate('disease')} 
       />
       
       <VoiceCTA 
@@ -43,8 +43,9 @@ export default function Home({ isLoggedIn, onLogin, onNavigate }: HomeProps) {
       
       <Footer onNavigate={(v) => {
         if (v === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
-        else onNavigate(v);
+        else onNavigate(v as any);
       }} />
     </div>
   );
 }
+

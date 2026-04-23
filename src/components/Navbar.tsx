@@ -1,4 +1,4 @@
-import { Sprout, Bell, User, LogIn, Bug, CloudSun, BarChart3, BookOpen } from 'lucide-react';
+import { Sprout, Bell, User, LogIn, Bug, CloudSun, BookOpen } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -7,7 +7,7 @@ interface NavbarProps {
   onLogin: () => void;
   onLogout: () => void;
   onHome: () => void;
-  onNavigate: (view: 'home' | 'disease' | 'weather' | 'assistant' | 'analytics' | 'knowledge' | 'dashboard') => void;
+  onNavigate: (view: 'home' | 'disease' | 'weather' | 'assistant' | 'knowledge' | 'dashboard') => void;
 }
 
 export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNavigate }: NavbarProps) {
@@ -19,7 +19,7 @@ export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNaviga
   const navItems = [
     { label: t('nav_disease'), icon: Bug, view: 'disease', path: '/disease-detection' },
     { label: t('nav_weather'), icon: CloudSun, view: 'weather', path: '/weather' },
-    { label: t('nav_analytics'), icon: BarChart3, view: 'analytics', path: '/analytics' },
+
     { label: t('nav_knowledge'), icon: BookOpen, view: 'knowledge', path: '/knowledge' },
   ] as const;
 
@@ -27,7 +27,13 @@ export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNaviga
     <nav className="fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-xl border-b border-border z-30 px-4 md:px-8 flex items-center justify-between">
       <div className="flex items-center gap-4 md:gap-10">
         <div className="flex items-center gap-2 cursor-pointer" onClick={onHome}>
-          <img src="/logo.png" alt="KrushiX Logo" className="h-9 w-auto object-contain" />
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+            <Sprout size={18} strokeWidth={2.5} />
+          </div>
+          <span className="text-xl font-black tracking-tight flex items-center">
+            <span className="text-primary tracking-tighter">Krushi</span>
+            <span className="text-primary-light">X</span>
+          </span>
         </div>
 
         {isLoggedIn && (

@@ -25,7 +25,13 @@ export default function Sidebar() {
   return (
     <div className="w-[240px] bg-white border-r border-border h-screen flex flex-col fixed left-0 top-0 z-20">
       <div className="p-6 flex items-center gap-3 mb-2">
-        <img src="/logo.png" alt="KrushiX Logo" className="h-10 w-auto object-contain" />
+        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white">
+          <Sprout size={24} />
+        </div>
+        <span className="text-3xl font-display font-black flex items-center">
+          <span className="text-primary tracking-tighter">Krushi</span>
+          <span className="text-primary-light">X</span>
+        </span>
       </div>
 
       <nav className="flex-1 space-y-0">

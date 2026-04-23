@@ -196,7 +196,13 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
         >
           <div className="text-center mb-8">
             <div className="flex justify-center mb-6">
-               <img src="/logo.png" alt="KrushiX Logo" className="h-12 w-auto object-contain" />
+               <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white mx-auto">
+                 <Sprout size={28} strokeWidth={2.5} />
+               </div>
+               <span className="text-2xl font-black tracking-tight flex items-center justify-center mt-2">
+                 <span className="text-primary tracking-tighter">Krushi</span>
+                 <span className="text-primary-light">X</span>
+               </span>
             </div>
             <button 
               onClick={handleDemoLogin}

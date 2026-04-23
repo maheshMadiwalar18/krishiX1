@@ -13,7 +13,7 @@ const translations: Translations = {
   // Navbar
   'nav_disease': { en: 'Disease', kn: 'ರೋಗ ಪತ್ತೆ' },
   'nav_weather': { en: 'Weather', kn: 'ಹವಾಮಾನ' },
-  'nav_analytics': { en: 'Analytics', kn: 'ವರದಿಗಳು' },
+
   'nav_knowledge': { en: 'Knowledge', kn: 'ಮಾಹಿತಿ' },
   'nav_my_account': { en: 'My Account', kn: 'ನನ್ನ ಖಾತೆ' },
   'nav_logout': { en: 'Logout', kn: 'ಹೊರಹೋಗಿ' },
@@ -66,7 +66,86 @@ const translations: Translations = {
   'or_separator': { en: 'OR', kn: 'ಅಥವಾ' },
   'supported_crops': { en: 'Supported crops:', kn: 'ಪತ್ತೆ ಮಾಡಬಹುದಾದ ಬೆಳೆಗಳು:' },
   'security_note': { en: 'Your data is secure and used only for analysis.', kn: 'ನಿಮ್ಮ ಮಾಹಿತಿ ಸುರಕ್ಷಿತವಾಗಿದೆ ಮತ್ತು ಕೇವಲ ಪರೀಕ್ಷೆಗಾಗಿ ಬಳಸಲಾಗುತ್ತದೆ.' },
-  'security_note_bold': { en: 'We do not store your images.', kn: 'ನಾವು ನಿಮ್ಮ ಫೋಟೋಗಳನ್ನು ಉಳಿಸಿಕೊಳ್ಳುವುದಿಲ್ಲ.' }
+  'security_note_bold': { en: 'We do not store your images.', kn: 'ನಾಮ ನಿಮ್ಮ ಫೋಟೋಗಳನ್ನು ಉಳಿಸಿಕೊಳ್ಳುವುದಿಲ್ಲ.' },
+  'auth_signup_btn': { en: 'Join as Farmer', kn: 'ರೈತರಾಗಿ ಸೇರಿ' },
+
+  // Home - QuickActions
+  'quick_title': { en: 'Start Your Farming Journey', kn: 'ನಿಮ್ಮ ಕೃಷಿ ಪಯಣ ಆರಂಭಿಸಿ' },
+  'quick_subtitle': { en: 'Try KrushiX tools now. Log in and see the results.', kn: 'ಈಗಲೇ ಕೃಷಿಎಕ್ಸ್ ಬಳಸಿ ನೋಡಿ.' },
+  'quick_upload': { en: 'Upload Crop Image', kn: 'ಬೆಳೆ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ' },
+  'quick_upload_desc': { en: 'Drag and drop or click to scan leaf photo', kn: 'ಎಲೆಯ ಫೋಟೋ ಇಲ್ಲಿ ಹಾಕಿ ಅಥವಾ ಕ್ಲಿಕ್ ಮಾಡಿ' },
+  'quick_voice': { en: 'Voice Assistant', kn: 'ಧ್ವನಿ ಸಹಾಯಕ' },
+  'quick_voice_desc': { en: 'Ask any farming question out loud', kn: 'ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆ ಕೇಳಿ' },
+
+  // Home - FeaturesGrid
+  'features_title': { en: 'Smart Tools for Your Farm', kn: 'ನಿಮ್ಮ ಹೊಲಕ್ಕೆ ಚತುರ ಸಾಧನಗಳು' },
+  'features_subtitle': { en: 'Simple AI tools to help you grow better crops.', kn: 'ಉತ್ತಮ ಬೆಳೆ ಬೆಳೆಯಲು ಸರಳ ಸಾಧನಗಳು.' },
+  'feat_disease': { en: 'Crop Disease Detection', kn: 'ಬೆಳೆ ರೋಗ ಪತ್ತೆ' },
+  'feat_disease_desc': { en: 'Instant visual diagnosis', kn: 'ತಕ್ಷಣದ ಫೋಟೋ ಪರೀಕ್ಷೆ' },
+  'feat_weather': { en: 'Weather Alerts', kn: 'ಹವಾಮಾನ ಎಚ್ಚರಿಕೆ' },
+  'feat_weather_desc': { en: 'Local weather updates', kn: 'ಸ್ಥಳೀಯ ಹವಾಮಾನ ಮಾಹಿತಿ' },
+  'feat_crop_rec': { en: 'Crop Recommendation', kn: 'ಬೆಳೆ ಶಿಫಾರಸು' },
+  'feat_crop_rec_desc': { en: 'Best crop advice for your soil', kn: 'ನಿಮ್ಮ ಮಣ್ಣಿಗೆ ಸೂಕ್ತ ಬೆಳೆ ಸಲಹೆ' },
+  'feat_ai': { en: 'AI Assistant', kn: 'ಕೃಷಿ ಸಹಾಯಕ' },
+  'feat_ai_desc': { en: '24/7 expert farm support', kn: '24/7 ಕೃಷಿ ತಜ್ಞರ ಸಹಾಯ' },
+  'feat_knowledge': { en: 'Knowledge Hub', kn: 'ಮಾಹಿತಿ ಕೇಂದ್ರ' },
+  'feat_knowledge_desc': { en: 'Learn farming simply', kn: 'ಸುಲಭವಾಗಿ ಕೃಷಿ ಕಲಿಯಿರಿ' },
+
+  // Home - DashboardPreview
+  'preview_title': { en: 'Live Farm Status', kn: 'ನಿಮ್ಮ ಹೊಲದ ಸ್ಥಿತಿ' },
+  'preview_subtitle': { en: 'Monitor your farm health and weather in real-time.', kn: 'ನಿಮ್ಮ ಹೊಲದ ಆರೋಗ್ಯ ಮತ್ತು ಹವಾಮಾನ ನೋಡಿ.' },
+  'stat_weather': { en: 'Current Weather', kn: 'ಈಗಿನ ಹವಾಮಾನ' },
+  'stat_health': { en: 'Crop Health', kn: 'ಬೆಳೆ ಆರೋಗ್ಯ' },
+  'stat_alerts': { en: 'Critical Alerts', kn: 'ತುರ್ತು ಎಚ್ಚರಿಕೆ' },
+  'btn_scan_crop': { en: 'Scan Your Crop Now', kn: 'ಈಗ ನಿಮ್ಮ ಬೆಳೆ ಪರೀಕ್ಷಿಸಿ' },
+
+  // Home - VoiceCTA
+  'voice_title': { en: 'Talk to Your Farming Expert.', kn: 'ನಿಮ್ಮ ಕೃಷಿ ತಜ್ಞರೊಂದಿಗೆ ಮಾತನಾಡಿ.' },
+  'voice_subtitle': { en: 'Ask questions about soil, pests, or crops and get instant help.', kn: 'ಮಣ್ಣು, ಕೀಟ ಅಥವಾ ಬೆಳೆ ಬಗ್ಗೆ ಪ್ರಶ್ನೆ ಕೇಳಿ, ತಕ್ಷಣ ಉತ್ತರ ಪಡೆಯಿರಿ.' },
+  'btn_start_voice': { en: 'Start Voice Assistant', kn: 'ಧ್ವನಿ ಸಹಾಯಕ ಆರಂಭಿಸಿ' },
+
+  // Home - Footer
+  'footer_tagline': { en: 'Simple tools to help you grow healthy crops.', kn: 'ಆರೋಗ್ಯಕರ ಬೆಳೆ ಬೆಳೆಯಲು ಸರಳ ಸಾಧನಗಳು.' },
+  'footer_product': { en: 'Product', kn: 'ಉತ್ಪನ್ನ' },
+  'footer_portal': { en: 'Portal', kn: 'ಪೋರ್ಟಲ್' },
+  'footer_connect': { en: 'Connect', kn: 'ಸಂಪರ್ಕ' },
+  'footer_disease': { en: 'Disease Detection', kn: 'ರೋಗ ಪತ್ತೆ' },
+  'footer_weather_alerts': { en: 'Weather Alerts', kn: 'ಹವಾಮಾನ ಎಚ್ಚರಿಕೆ' },
+  'footer_crop_rec': { en: 'Crop Recommendations', kn: 'ಬೆಳೆ ಶಿಫಾರಸು' },
+  'footer_voice': { en: 'AI Voice Expert', kn: 'AI ಧ್ವನಿ ತಜ್ಞ' },
+  'footer_scanner': { en: 'Crop Scanner', kn: 'ಬೆಳೆ ಸ್ಕ್ಯಾನರ್' },
+  'footer_contact': { en: 'Contact Support', kn: 'ಸಹಾಯ ಸಂಪರ್ಕ' },
+  'footer_community': { en: 'Community Forum', kn: 'ಸಮುದಾಯ ವೇದಿಕೆ' },
+
+  // Weather Page
+  'weather_title': { en: 'Weather & Recommendations', kn: 'ಹವಾಮಾನ ಮತ್ತು ಶಿಫಾರಸು' },
+  'weather_forecast': { en: '7-Day Forecast', kn: '7 ದಿನಗಳ ಮುನ್ಸೂಚನೆ' },
+  'weather_ai_insight': { en: 'AI Insight', kn: 'AI ಸಲಹೆ' },
+  'weather_crop_rec': { en: 'Crop Recommendations', kn: 'ಬೆಳೆ ಶಿಫಾರಸು' },
+  'weather_based': { en: 'Based on your local weather', kn: 'ನಿಮ್ಮ ಸ್ಥಳೀಯ ಹವಾಮಾನ ಆಧಾರಿತ' },
+  'weather_view_advice': { en: 'View Advice', kn: 'ಸಲಹೆ ನೋಡಿ' },
+  'weather_plan_irrigation': { en: 'Plan Irrigation', kn: 'ನೀರಾವರಿ ಯೋಜನೆ' },
+  'weather_sowing': { en: 'Sowing Time', kn: 'ಬಿತ್ತನೆ ಸಮಯ' },
+  'weather_water': { en: 'Water Req.', kn: 'ನೀರಿನ ಅಗತ್ಯ' },
+  'weather_fertilizer': { en: 'Fertilizer', kn: 'ಗೊಬ್ಬರ' },
+  'weather_view_details': { en: 'View Details', kn: 'ವಿವರ ನೋಡಿ' },
+  'weather_humidity': { en: 'Humidity', kn: 'ತೇವಾಂಶ' },
+  'weather_wind': { en: 'Wind', kn: 'ಗಾಳಿ' },
+  'weather_rain': { en: 'Rain', kn: 'ಮಳೆ' },
+
+  // Voice Assistant
+  'assistant_title': { en: 'KrushiX Assistant', kn: 'ಕೃಷಿಎಕ್ಸ್ ಸಹಾಯಕ' },
+  'assistant_greeting': { en: 'Namaste! I am KrushiX. How can I help with your farming today?', kn: 'ನಮಸ್ಕಾರ! ನಾನು ಕೃಷಿಎಕ್ಸ್. ಇಂದು ನಿಮ್ಮ ಕೃಷಿಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?' },
+  'assistant_placeholder': { en: 'Type your farming question...', kn: 'ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆ ಬರೆಯಿರಿ...' },
+  'assistant_listening': { en: 'Listening...', kn: 'ಕೇಳಿಸುತ್ತಿದೆ...' },
+
+  // Dashboard
+  'dash_welcome': { en: 'Welcome back', kn: 'ಮರಳಿ ಸ್ವಾಗತ' },
+  'dash_subtitle': { en: 'Your farm at a glance.', kn: 'ನಿಮ್ಮ ಹೊಲದ ಸ್ಥಿತಿ.' },
+  'dash_quick_actions': { en: 'Quick Actions', kn: 'ತ್ವರಿತ ಕ್ರಮಗಳು' },
+  'dash_quick_stats': { en: 'Quick Stats', kn: 'ತ್ವರಿತ ಮಾಹಿತಿ' },
+  'dash_explore_knowledge': { en: 'Explore Knowledge Hub', kn: 'ಮಾಹಿತಿ ಕೇಂದ್ರ ನೋಡಿ' },
+  'dash_profile': { en: 'Farmer Profile', kn: 'ರೈತ ಪ್ರೊಫೈಲ್' }
 };
 
 interface LanguageContextType {

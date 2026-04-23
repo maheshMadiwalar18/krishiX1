@@ -122,7 +122,7 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
                   "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm border border-primary/10 overflow-hidden",
                   msg.role === 'assistant' ? "bg-white p-1" : "bg-primary text-white"
                 )}>
-                  {msg.role === 'assistant' ? <img src="/logo.png" alt="KrushiX" className="w-full h-full object-contain" /> : <UserIcon size={18} />}
+                  {msg.role === 'assistant' ? <Sprout size={18} /> : <UserIcon size={18} />}
                 </div>
                 <div className={cn(
                   "p-4 rounded-2xl relative",
