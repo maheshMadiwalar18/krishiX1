@@ -62,135 +62,27 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
   });
   const [results, setResults] = useState<CropStrategy[]>([]);
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!formData.previousCrop.trim()) {
       alert("Please enter the previous crop grown to get rotation recommendations.");
       return;
     }
     setLoading(true);
-    // Simulate AI generation with rotation logic
-    setTimeout(() => {
-      const land = parseFloat(formData.landSize) || 1;
-      const prev = formData.previousCrop.toLowerCase();
-      
-      let mockResults: CropStrategy[] = [];
-
-      if (prev.includes('maize') || prev.includes('rice') || prev.includes('wheat')) {
-        // Cereal previously -> Suggest Legumes or Oilseeds
-        mockResults = [
-          {
-            crop: "Groundnut (Moongphali)",
-            yield: `${10 * land} Quintals`,
-            expense: { seeds: `₹${3000 * land}`, fertilizer: `₹${2000 * land}`, labor: `₹${4000 * land}`, water: `₹${1500 * land}` },
-            income: `₹${55000 * land}`,
-            profit: `₹${44500 * land}`,
-            risk: "Low",
-            water_need: "Low",
-            rotation_benefit: "Restores Nitrogen used by cereals and breaks the pest cycle of Maize.",
-            insight: "Since you grew a cereal (Maize), Groundnut will naturally fertilize your soil and prepare it for the next season.",
-            plan: {
-              sowing: "Next 10 days",
-              irrigation: "Twice during pod formation",
-              tips: ["Use gypsum for better pod filling", "Apply seed treatment", "Keep soil loose"]
-            },
-            tag: "lowest_risk"
-          },
-          {
-            crop: "Soybean",
-            yield: `${15 * land} Quintals`,
-            expense: { seeds: `₹${2500 * land}`, fertilizer: `₹${2500 * land}`, labor: `₹${3500 * land}`, water: `₹${2000 * land}` },
-            income: `₹${62000 * land}`,
-            profit: `₹${51500 * land}`,
-            risk: "Medium",
-            water_need: "Moderate",
-            rotation_benefit: "High protein crop that improves soil structure and reduces weed growth.",
-            insight: "Excellent rotation choice to maintain soil productivity. Provides higher market value than repeating cereals.",
-            plan: {
-              sowing: "Early Kharif",
-              irrigation: "Critical at flowering stage",
-              tips: ["Inoculate with Rhizobium", "Control early weeds", "Avoid deep sowing"]
-            },
-            tag: "most_profitable"
-          },
-          {
-            crop: "Black Gram (Urad)",
-            yield: `${5 * land} Quintals`,
-            expense: { seeds: `₹${1500 * land}`, fertilizer: `₹${1500 * land}`, labor: `₹${2500 * land}`, water: `₹${500 * land}` },
-            income: `₹${32000 * land}`,
-            profit: `₹${26000 * land}`,
-            risk: "Low",
-            water_need: "Low",
-            rotation_benefit: "Short duration crop that acts as a 'green manure' and needs very little water.",
-            insight: "Best for low water availability. Leaves the soil rich in nutrients for your next crop.",
-            plan: {
-              sowing: "Anytime in the next month",
-              irrigation: "Minimal, only during droughts",
-              tips: ["Follow ridge and furrow sowing", "Harvest at 80% maturity", "Dry well before storage"]
-            },
-            tag: "water_efficient"
-          }
-        ];
-      } else {
-        // Fallback or generic rotation
-        mockResults = [
-          {
-            crop: "Finger Millet (Ragi)",
-            yield: `${12 * land} Quintals`,
-            expense: { seeds: `₹${1500 * land}`, fertilizer: `₹${3000 * land}`, labor: `₹${5000 * land}`, water: `₹${1000 * land}` },
-            income: `₹${35000 * land}`,
-            profit: `₹${24500 * land}`,
-            risk: "Low",
-            water_need: "Low",
-            rotation_benefit: "High resilience crop that adapts to any soil condition left by previous crops.",
-            insight: "Safe choice that requires low investment and guarantees steady yields regardless of previous depletion.",
-            plan: {
-              sowing: "Next 15 days",
-              irrigation: "Occasional if dry",
-              tips: ["Transplant seedlings for better yield", "Apply zinc sulfate", "Early weeding is key"]
-            },
-            tag: "lowest_risk"
-          },
-          {
-            crop: "Sunflower",
-            yield: `${18 * land} Quintals`,
-            expense: { seeds: `₹${3500 * land}`, fertilizer: `₹${4500 * land}`, labor: `₹${4000 * land}`, water: `₹${3000 * land}` },
-            income: `₹${60000 * land}`,
-            profit: `₹${45000 * land}`,
-            risk: "Medium",
-            water_need: "Moderate",
-            rotation_benefit: "Breaks soil compaction with deep roots and adds biomass.",
-            insight: "High income potential. Deep roots reach nutrients that the previous crop might have missed.",
-            plan: {
-              sowing: "Mid-season",
-              irrigation: "Critical at head formation",
-              tips: ["Ensure pollinator activity", "Protect from birds", "Apply potash for seed weight"]
-            },
-            tag: "most_profitable"
-          },
-          {
-            crop: "Cowpea",
-            yield: `${8 * land} Quintals`,
-            expense: { seeds: `₹${1200 * land}`, fertilizer: `₹${1800 * land}`, labor: `₹${3000 * land}`, water: `₹${800 * land}` },
-            income: `₹${28000 * land}`,
-            profit: `₹${21200 * land}`,
-            risk: "Low",
-            water_need: "Low",
-            rotation_benefit: "Fast-growing cover crop that prevents soil erosion and fixes Nitrogen.",
-            insight: "Dual-purpose crop for soil health and quick income. Protects your land from heat.",
-            plan: {
-              sowing: "Early window",
-              irrigation: "Very low requirement",
-              tips: ["Harvest pods regularly", "Can be used as fodder later", "Keep the soil mulched"]
-            },
-            tag: "water_efficient"
-          }
-        ];
-      }
-      
-      setResults(mockResults);
-      setLoading(false);
+    try {
+      const response = await fetch('/api/planning/generate-strategy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      const data = await response.json();
+      setResults(data);
       setStep('results');
-    }, 1500);
+    } catch (error) {
+      console.error("Failed to generate strategy:", error);
+      alert("Failed to connect to the AI brain. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

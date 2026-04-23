@@ -1,11 +1,11 @@
 import { cn } from '../lib/utils';
-import { 
-  Home, 
-  Sprout, 
-  CloudSun, 
-  Bug, 
-  MessageSquare, 
-  Settings, 
+import {
+  Home,
+  Sprout,
+  CloudSun,
+  Bug,
+  MessageSquare,
+  Settings,
   LogOut,
   ChevronRight
 } from 'lucide-react';
@@ -40,8 +40,8 @@ export default function Sidebar() {
             key={item.label}
             className={cn(
               "w-full flex items-center gap-3 px-6 py-4 transition-all duration-200 font-black text-xs uppercase tracking-widest",
-              item.active 
-                ? "bg-primary/5 text-primary border-r-4 border-primary" 
+              item.active
+                ? "bg-primary/5 text-primary border-r-4 border-primary"
                 : "text-text/40 hover:bg-bg hover:text-primary"
             )}
           >

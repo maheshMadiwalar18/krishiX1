@@ -54,12 +54,22 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
     // Simulation: user asked a question after listening
     const userQuery = "How much urea should I use for 2 acres of wheat?";
     handleNewMessage(userQuery, 'user');
-    
-    // Simulate AI thinking and replying
-    setTimeout(() => {
-      const aiResponse = "For 2 acres of wheat, you typically need about 80-100 kg of Urea as a top dressing. However, I recommend checking your specific soil test report first for exact dosage.";
-      handleNewMessage(aiResponse, 'assistant');
-    }, 1500);
+    callChatbotAPI(userQuery);
+  };
+
+  const callChatbotAPI = async (message: string) => {
+    try {
+      const response = await fetch('/api/assistant/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+      const data = await response.json();
+      handleNewMessage(data.reply, 'assistant');
+    } catch (error) {
+      console.error('Chat error:', error);
+      handleNewMessage("I'm sorry, I'm having trouble connecting to my brain right now.", 'assistant');
+    }
   };
 
   const handleNewMessage = (content: string, role: 'user' | 'assistant') => {
@@ -74,12 +84,10 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
 
   const handleSendText = () => {
     if (!inputText.trim()) return;
-    handleNewMessage(inputText, 'user');
+    const message = inputText.trim();
+    handleNewMessage(message, 'user');
     setInputText('');
-    
-    setTimeout(() => {
-      handleNewMessage("I've noted your question. Let me analyze your farm data...", 'assistant');
-    }, 1000);
+    callChatbotAPI(message);
   };
 
   return (
@@ -235,7 +243,10 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
         ].map((query) => (
           <button 
             key={query}
-            onClick={() => handleNewMessage(query, 'user')}
+            onClick={() => {
+              handleNewMessage(query, 'user');
+              callChatbotAPI(query);
+            }}
             className="whitespace-nowrap px-4 py-2 bg-white border border-border rounded-full text-xs font-semibold text-text/60 hover:border-primary/40 hover:text-primary transition-all shadow-sm"
           >
             {query}

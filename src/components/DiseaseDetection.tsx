@@ -47,34 +47,27 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
     reader.readAsDataURL(file);
   };
 
-  const handleScan = () => {
+  const handleScan = async () => {
     if (!image) {
       addNotification('info', 'Please upload or capture an image first.');
       return;
     }
     setIsScanning(true);
-    // Mocking AI Scan
-    setTimeout(() => {
-      setIsScanning(false);
-      setResult({
-        name: "Wheat Yellow Rust",
-        confidence: "94%",
-        medicine: {
-          name: "Propiconazole 25% EC",
-          dosage: "500ml per acre",
-          method: "Foliar Spray",
-          frequency: "Twice a week (14-day interval)"
-        },
-        prevention: [
-          "Rotate crops annually to break the pest cycle",
-          "Use disease-resistant seeds during sowing",
-          "Maintain optimal plant spacing for air circulation",
-          "Remove and destroy infected plant debris"
-        ],
-        actionLevel: "Medium"
+    try {
+      const response = await fetch('/api/disease/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image, dataType })
       });
+      const data = await response.json();
+      setResult(data);
       addNotification('success', 'Scan completed. Disease identified.');
-    }, 2800);
+    } catch (error) {
+      console.error("Scan error:", error);
+      addNotification('error', 'Failed to analyze the image. Please try again.');
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   const speakResult = () => {

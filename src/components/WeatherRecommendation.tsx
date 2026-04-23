@@ -29,6 +29,46 @@ const forecast = [
 export default function WeatherRecommendation({ onBack, userLocation = "Your Farm - Karnataka" }: { onBack: () => void, userLocation?: string }) {
   const { t } = useLanguage();
 
+  const [weatherData, setWeatherData] = React.useState<any>(null);
+  const [aiAdvice, setAiAdvice] = React.useState<string>("");
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchWeatherAndAdvice = async () => {
+      try {
+        // 1. Fetch Live Weather
+        const weatherRes = await fetch('/api/weather/live');
+        const weather = await weatherRes.json();
+        setWeatherData(weather);
+
+        // 2. Fetch AI Advice based on Live Weather
+        const adviceRes = await fetch('/api/weather/ai-advice', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            location: weather.location,
+            weatherData: weather
+          })
+        });
+        const advice = await adviceRes.json();
+        setAiAdvice(advice.advice);
+      } catch (error) {
+        console.error("Weather error:", error);
+        setAiAdvice("Focus on irrigation during early morning or late evening to minimize evaporation loss.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchWeatherAndAdvice();
+  }, []);
+
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <p className="font-bold text-text/60 tracking-tight">Fetching Live Weather & AI Advice...</p>
+    </div>
+  );
+
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
@@ -43,7 +83,7 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
           <h1 className="text-2xl font-display font-extrabold text-neutral-900">{t('weather_title')}</h1>
           <p className="text-neutral-500 text-sm flex items-center gap-1 mt-1">
             <MapPin size={14} className="text-green-600" />
-            {userLocation}
+            {weatherData?.location || userLocation}
           </p>
         </div>
       </div>
@@ -66,11 +106,11 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
               </div>
               
               <div className="flex items-end gap-4 mb-6">
-                <h2 className="text-7xl font-display font-light tracking-tighter">32°C</h2>
+                <h2 className="text-7xl font-display font-light tracking-tighter">{weatherData?.temp}°C</h2>
                 <div className="pb-2">
-                  <p className="text-xl font-medium text-white/90">Mostly Sunny</p>
+                  <p className="text-xl font-medium text-white/90">{weatherData?.condition}</p>
                   <p className="text-sm text-white/70 flex items-center gap-1 mt-1">
-                    <Thermometer size={14} /> Feels like 34°C
+                    <Thermometer size={14} /> Feels like {weatherData ? weatherData.temp + 2 : '--'}°C
                   </p>
                 </div>
               </div>
@@ -80,22 +120,22 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
               <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
                 <Droplets className="text-blue-300 mb-1" size={18} />
                 <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">{t('weather_humidity')}</p>
-                <p className="text-base font-bold text-white">45%</p>
+                <p className="text-base font-bold text-white">{weatherData?.humidity}%</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
                 <Wind className="text-teal-300 mb-1" size={18} />
                 <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">{t('weather_wind')}</p>
-                <p className="text-base font-bold text-white">14 km/h</p>
+                <p className="text-base font-bold text-white">{weatherData?.wind} km/h</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
                 <CloudRain className="text-indigo-300 mb-1" size={18} />
                 <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">{t('weather_rain')}</p>
-                <p className="text-base font-bold text-white">5%</p>
+                <p className="text-base font-bold text-white">{weatherData?.rain} mm</p>
               </div>
               <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/10 hover:bg-white/20 transition-colors">
                 <Sun className="text-yellow-300 mb-1" size={18} />
                 <p className="text-[10px] uppercase tracking-widest text-white/60 mb-0.5 font-bold">UV Index</p>
-                <p className="text-base font-bold text-white">High (8)</p>
+                <p className="text-base font-bold text-white">{weatherData?.uv}</p>
               </div>
             </div>
 
@@ -120,7 +160,7 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
           <div>
             <h4 className="font-bold text-green-900 text-sm mb-1">{t('weather_ai_insight')}</h4>
             <p className="text-sm text-green-800/80 leading-relaxed">
-              With a steady temperature around 32°C and low rain probability, the upcoming week is perfect for soil preparation. However, high UV index means you should schedule active irrigation during early morning or late evening to minimize evaporation loss.
+              {aiAdvice}
             </p>
           </div>
         </motion.div>

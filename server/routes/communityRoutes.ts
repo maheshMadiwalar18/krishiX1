@@ -1,51 +1,34 @@
 import express from 'express';
-import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+import { generateGeminiText, toGeminiError } from '../gemini.ts';
 
 dotenv.config();
 
 const router = express.Router();
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
-router.post('/ai-reply', async (req, res) => {
-  const { crop, issue, text } = req.body;
+router.post('/auto-reply', async (req, res) => {
+  const { question } = req.body;
 
   if (!process.env.GEMINI_API_KEY) {
-    return res.json({ 
-      author: "Krishi AI",
-      text: "Neem oil spray is recommended for most pests. Keep the soil moist but not soggy.",
-      isAI: true
-    });
+    return res.json({ reply: "Thanks for sharing! Our experts will get back to you soon." });
   }
 
   try {
     const prompt = `
-      You are an agricultural expert named Krishi AI. 
-      A farmer has a problem with their ${crop}. 
-      Category: ${issue}
-      Description: ${text}
-
-      Provide a short, helpful solution (max 2 sentences). 
-      Be practical and encouraging.
+      You are an expert agronomist in the KrishiX community. 
+      A farmer asked: "${question}"
+      
+      Provide a helpful, expert first response.
+      Keep it short (2-3 sentences).
     `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash-lite',
-      contents: prompt,
-    });
+    const text = await generateGeminiText(prompt, 'gemini-1.5-flash');
 
-    res.json({
-      author: "Krishi AI",
-      text: response.text || "Apply organic fertilizer and check for pests regularly.",
-      isAI: true
-    });
+    res.json({ reply: text });
   } catch (error) {
-    console.error('Community AI Error:', error);
-    res.json({
-      author: "Krishi AI",
-      text: "I recommend checking the moisture levels and applying natural pesticides if needed.",
-      isAI: true
-    });
+    const gemErr = toGeminiError(error);
+    console.error('Community AI Error:', gemErr.message);
+    res.json({ reply: "Great question! Let's wait for other community members to share their experience too." });
   }
 });
 

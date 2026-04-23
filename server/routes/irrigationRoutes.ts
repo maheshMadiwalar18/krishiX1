@@ -1,68 +1,44 @@
 import express from 'express';
-import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+import { generateGeminiText, toGeminiError } from '../gemini.ts';
 
 dotenv.config();
 
 const router = express.Router();
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
-router.post('/', async (req, res) => {
-  const { crop, soil, stage, weather, location } = req.body;
+router.post('/plan', async (req, res) => {
+  const { crop, stage, method } = req.body;
 
   if (!process.env.GEMINI_API_KEY) {
-    return res.status(500).json({ error: 'Gemini API key not configured' });
+    return res.json([]);
   }
 
   try {
     const prompt = `
-You are an agriculture expert.
+      As an irrigation expert, generate a 7-day watering schedule.
+      Crop: ${crop}
+      Growth Stage: ${stage}
+      Irrigation Method: ${method}
 
-Based on:
-Crop: ${crop}
-Soil: ${soil}
-Stage: ${stage}
-Weather: ${weather}
-Location: ${location}
+      Return ONLY a JSON array of 7 objects. Each object should have:
+      - day: String (e.g. "Monday")
+      - waterAmount: String (e.g. "12 Liters/m2")
+      - duration: String (e.g. "45 mins")
+      - time: String (e.g. "06:00 AM")
+      - note: String (Advice for that day)
+    `;
 
-Give irrigation advice in this exact format:
-Recommended Method: [Method name]
-Reason: [Short reason]
-Plan: [Simple practical plan]
-
-Use simple English. Keep answers short and practical.
-    `.trim();
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash-lite',
-      contents: prompt,
-    });
-
-    const text = response.text ?? '';
-
-    // Parse the structured text into JSON
-    const methodMatch = text.match(/Recommended Method:\s*(.+)/i);
-    const reasonMatch = text.match(/Reason:\s*(.+)/i);
-    const planMatch = text.match(/Plan:\s*(.+)/i);
-
-    const jsonResponse = {
-      method: methodMatch ? methodMatch[1].trim() : 'Standard Irrigation',
-      reason: reasonMatch ? reasonMatch[1].trim() : 'Based on crop and soil requirements.',
-      plan: planMatch ? planMatch[1].trim() : 'Water at root zone in the early morning.',
-    };
-
-    res.json(jsonResponse);
-  } catch (error: any) {
-    console.error('Gemini API Error:', error?.message || error);
+    const text = await generateGeminiText(prompt, 'gemini-1.5-flash');
     
-    // Fallback to a smart mock response if API fails (e.g. quota limit)
-    const fallbackResponse = {
-      method: "Smart Drip Irrigation",
-      reason: "Based on local soil moisture retention and crop stage needs.",
-      plan: "Water for 30-45 minutes in the early morning to minimize evaporation. Monitor soil moisture weekly."
-    };
-    
-    res.json(fallbackResponse);
+    // Extract JSON from potential markdown code blocks
+    const jsonMatch = text.match(/\[[\s\S]*\]/);
+    const results = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+
+    res.json(results);
+  } catch (error) {
+    const gemErr = toGeminiError(error);
+    console.error('Irrigation AI Error:', gemErr.message);
+    res.json([]);
   }
 });
 
