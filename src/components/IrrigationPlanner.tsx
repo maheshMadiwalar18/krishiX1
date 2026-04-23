@@ -23,7 +23,11 @@ interface IrrigationPlan {
   frequency: string;
   warning: string;
   tips: string[];
-  insight: string;
+  insight: {
+    method: string;
+    reason: string;
+    plan: string;
+  };
 }
 
 export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - Karnataka" }: { onBack: () => void, userLocation?: string }) {
@@ -52,7 +56,11 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
           "Water directly at the root zone",
           "Ensure proper drainage in clay patches"
         ],
-        insight: `For your ${formData.crop} in ${formData.soil}, this plan prevents water stress while saving up to 20% more water through optimized timing.`
+        insight: {
+          method: `${formData.irrigation} with Root Zone Focus`,
+          reason: `Your ${formData.crop} in ${formData.soil} needs steady moisture without drowning.`,
+          plan: `Water at 5 AM. Focus on the base of the plant. Check soil every 2 days.`
+        }
       };
       
       setPlan(mockPlan);
@@ -243,9 +251,20 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
                   <h4 className="font-display font-black text-xl mb-4 flex items-center gap-3">
                     <Brain /> {t('irrigation_ai_insight')}
                   </h4>
-                  <p className="text-white/90 leading-relaxed font-medium">
-                    {plan?.insight}
-                  </p>
+                  <div className="space-y-6">
+                    <div className="bg-white/10 p-4 rounded-2xl border border-white/10">
+                      <h5 className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">1. Recommended Method</h5>
+                      <p className="text-sm font-bold">{plan?.insight.method}</p>
+                    </div>
+                    <div className="bg-white/10 p-4 rounded-2xl border border-white/10">
+                      <h5 className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">2. Reason</h5>
+                      <p className="text-sm font-bold">{plan?.insight.reason}</p>
+                    </div>
+                    <div className="bg-white/10 p-4 rounded-2xl border border-white/10">
+                      <h5 className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">3. Plan</h5>
+                      <p className="text-sm font-bold">{plan?.insight.plan}</p>
+                    </div>
+                  </div>
                   <div className="mt-8 pt-8 border-t border-white/10">
                     <button 
                       onClick={() => setView('form')}
