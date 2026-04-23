@@ -17,7 +17,8 @@ import {
   Calendar,
   Brain,
   Droplet,
-  Timer
+  Timer,
+  Users
 } from 'lucide-react';
 import FeatureCard from './FeatureCard';
 import StatCard from './StatCard';
@@ -36,7 +37,7 @@ interface UserData {
   createdAt: string;
 }
 
-export default function Dashboard({ onStartView }: { onStartView: (view: 'disease' | 'weather' | 'assistant' | 'knowledge' | 'planning' | 'irrigation' | 'growth_irrigation') => void }) {
+export default function Dashboard({ onStartView }: { onStartView: (view: 'disease' | 'weather' | 'assistant' | 'knowledge' | 'planning' | 'irrigation' | 'community') => void }) {
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
   const { t } = useLanguage();
@@ -211,12 +212,12 @@ export default function Dashboard({ onStartView }: { onStartView: (view: 'diseas
           />
         </div>
 
-        <div onClick={() => onStartView('growth_irrigation')} className="cursor-pointer">
+        <div onClick={() => onStartView('community')} className="cursor-pointer">
           <FeatureCard 
-            icon={Timer} 
-            title="Growth Stage Irrigation" 
-            description="Precise water for every stage."
-            color="bg-[#00BCD4]"
+            icon={Users} 
+            title="Farmer Community" 
+            description="Discuss and solve problems."
+            color="bg-[#FF7043]"
             delay={0.15}
           />
         </div>

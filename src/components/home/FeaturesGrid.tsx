@@ -1,10 +1,10 @@
 import React from 'react';
-import { Camera, CloudRain, Sparkles, Bot, BookOpen, Brain, Droplet, Timer } from 'lucide-react';
+import { Camera, CloudRain, Sparkles, Bot, BookOpen, Brain, Droplet, Timer, Users } from 'lucide-react';
 import FeatureCard from '../FeatureCard';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface FeaturesGridProps {
-  onNavigate: (view: 'disease' | 'weather' | 'assistant' | 'knowledge' | 'planning' | 'irrigation' | 'growth_irrigation') => void;
+  onNavigate: (view: 'disease' | 'weather' | 'assistant' | 'knowledge' | 'planning' | 'irrigation' | 'community') => void;
 }
 
 export default function FeaturesGrid({ onNavigate }: FeaturesGridProps) {
@@ -50,12 +50,12 @@ export default function FeaturesGrid({ onNavigate }: FeaturesGridProps) {
           onClick={() => onNavigate('irrigation')}
         />
         <FeatureCard 
-          icon={Timer} 
-          title="Growth Stage Irrigation" 
-          description="Precise water for every stage."
+          icon={Users} 
+          title="Farmer Community" 
+          description="Discuss problems with other farmers."
           color="bg-primary"
           delay={0.4}
-          onClick={() => onNavigate('growth_irrigation')}
+          onClick={() => onNavigate('community')}
         />
         <FeatureCard 
           icon={Bot} 
