@@ -431,12 +431,13 @@ export default function Community({ onBack }: { onBack: () => void }) {
   );
 }
 
-function PostCard({ post, onClick, onUpvote, onDelete }: { 
+const PostCard = ({ post, onClick, onUpvote, onDelete }: { 
   post: Post, 
   onClick: () => void, 
-  onUpvote: (e: any) => void,
-  onDelete: () => void
-}) {
+  onUpvote: (e?: any) => void,
+  onDelete: () => void,
+  key?: any
+}) => {
   const [showMore, setShowMore] = useState(false);
 
   const handleShare = (e: React.MouseEvent) => {
@@ -454,7 +455,7 @@ function PostCard({ post, onClick, onUpvote, onDelete }: {
 
   return (
     <motion.div
-      whileHover={{ y: -2, shadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05)" }}
+      whileHover={{ y: -2, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.05)" }}
       className="bg-white rounded-[12px] border border-border p-6 shadow-sm hover:border-primary/20 transition-all cursor-pointer overflow-hidden relative group"
       onClick={onClick}
     >
