@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sprout, Bell, User, LogIn, Bug, CloudSun, BookOpen, Sparkles, Droplet } from 'lucide-react';
+import { Sprout, Bell, User, LogIn, Bug, CloudSun, BookOpen, Sparkles, Droplet, Timer } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -8,7 +8,7 @@ interface NavbarProps {
   onLogin: () => void;
   onLogout: () => void;
   onHome: () => void;
-  onNavigate: (view: 'home' | 'disease' | 'weather' | 'assistant' | 'knowledge' | 'dashboard' | 'planning' | 'irrigation') => void;
+  onNavigate: (view: 'home' | 'disease' | 'weather' | 'assistant' | 'login' | 'knowledge' | 'planning' | 'dashboard' | 'irrigation' | 'growth_irrigation') => void;
 }
 
 export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNavigate }: NavbarProps) {
@@ -22,6 +22,7 @@ export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNaviga
     { label: t('nav_weather'), icon: CloudSun, view: 'weather', path: '/weather' },
     { label: t('nav_decision_system'), icon: Sparkles, view: 'planning', path: '/planning' },
     { label: t('irrigation_title'), icon: Droplet, view: 'irrigation', path: '/irrigation' },
+    { label: 'Growth Stage', icon: Timer, view: 'growth_irrigation', path: '/growth-irrigation' },
     { label: t('nav_knowledge'), icon: BookOpen, view: 'knowledge', path: '/knowledge' },
   ] as const;
 

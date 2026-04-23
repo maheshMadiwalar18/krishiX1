@@ -1,10 +1,10 @@
 import React from 'react';
-import { Camera, CloudRain, Sparkles, Bot, BookOpen, Brain, Droplet } from 'lucide-react';
+import { Camera, CloudRain, Sparkles, Bot, BookOpen, Brain, Droplet, Timer } from 'lucide-react';
 import FeatureCard from '../FeatureCard';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface FeaturesGridProps {
-  onNavigate: (view: 'disease' | 'weather' | 'assistant' | 'knowledge' | 'planning' | 'irrigation') => void;
+  onNavigate: (view: 'disease' | 'weather' | 'assistant' | 'knowledge' | 'planning' | 'irrigation' | 'growth_irrigation') => void;
 }
 
 export default function FeaturesGrid({ onNavigate }: FeaturesGridProps) {
@@ -44,26 +44,26 @@ export default function FeaturesGrid({ onNavigate }: FeaturesGridProps) {
         <FeatureCard 
           icon={Droplet} 
           title={t('irrigation_title')} 
-          description="Smart watering schedules for your crops."
+          description="Smart watering schedules."
           color="bg-primary"
           delay={0.35}
           onClick={() => onNavigate('irrigation')}
+        />
+        <FeatureCard 
+          icon={Timer} 
+          title="Growth Stage Irrigation" 
+          description="Precise water for every stage."
+          color="bg-primary"
+          delay={0.4}
+          onClick={() => onNavigate('growth_irrigation')}
         />
         <FeatureCard 
           icon={Bot} 
           title={t('feat_ai')} 
           description={t('feat_ai_desc')}
           color="bg-primary"
-          delay={0.4}
+          delay={0.45}
           onClick={() => onNavigate('assistant')}
-        />
-        <FeatureCard 
-          icon={BookOpen} 
-          title={t('feat_knowledge')} 
-          description={t('feat_knowledge_desc')}
-          color="bg-primary"
-          delay={0.5}
-          onClick={() => onNavigate('knowledge')}
         />
       </div>
     </section>

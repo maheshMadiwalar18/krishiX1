@@ -7,6 +7,7 @@ import DiseaseDetection from './components/DiseaseDetection';
 import WeatherRecommendation from './components/WeatherRecommendation';
 import CropDecisionSystem from './components/CropDecisionSystem';
 import IrrigationPlanner from './components/IrrigationPlanner';
+import GrowthStageIrrigation from './components/GrowthStageIrrigation';
 import VoiceAssistant from './components/VoiceAssistant';
 
 import KnowledgeHub from './components/KnowledgeHub';
@@ -67,7 +68,7 @@ function AppContent() {
     navigate('/');
   };
 
-  const handleNavigate = (v: 'home' | 'disease' | 'weather' | 'assistant' | 'login' | 'knowledge' | 'planning' | 'dashboard' | 'irrigation') => {
+  const handleNavigate = (v: 'home' | 'disease' | 'weather' | 'assistant' | 'login' | 'knowledge' | 'planning' | 'dashboard' | 'irrigation' | 'growth_irrigation') => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (v === 'home') navigate('/');
     else if (v === 'login') navigate('/auth');
@@ -78,6 +79,7 @@ function AppContent() {
     else if (v === 'knowledge') navigate('/knowledge');
     else if (v === 'planning') navigate('/planning');
     else if (v === 'irrigation') navigate('/irrigation');
+    else if (v === 'growth_irrigation') navigate('/growth-irrigation');
     else if (v === 'dashboard') navigate('/dashboard');
   };
 
@@ -166,6 +168,18 @@ function AppContent() {
                   transition={{ type: "spring", damping: 25, stiffness: 200 }}
                 >
                   <IrrigationPlanner onBack={() => handleNavigate('home')} />
+                </motion.div>
+              </ProtectedRoute>
+            } />
+            <Route path="/growth-irrigation" element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <motion.div 
+                  initial={{ opacity: 0, x: 30 }} 
+                  animate={{ opacity: 1, x: 0 }} 
+                  exit={{ opacity: 0, x: -30 }}
+                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                >
+                  <GrowthStageIrrigation onBack={() => handleNavigate('home')} />
                 </motion.div>
               </ProtectedRoute>
             } />
