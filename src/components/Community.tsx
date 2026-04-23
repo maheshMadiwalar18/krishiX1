@@ -59,7 +59,7 @@ const MOCK_POSTS: Post[] = [
     tags: ["#Onion", "#Pest", "#WhiteInsects"],
     timestamp: "2 hours ago",
     image_query: "onion leaves thrips damage",
-    image: "https://images.unsplash.com/photo-1628350565513-23e57bc02f2b?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1592419044706-39796d40f98c?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 101,
@@ -82,7 +82,7 @@ const MOCK_POSTS: Post[] = [
     tags: ["#Potato", "#BlackSpots", "#Disease"],
     timestamp: "1 day ago",
     image_query: "potato leaf late blight spots",
-    image: "https://images.unsplash.com/photo-1518977676601-b53f02ac6d31?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1597362905123-2286341ff51e?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 201,
@@ -111,7 +111,7 @@ const MOCK_POSTS: Post[] = [
     tags: ["#Cotton", "#HardSoil", "#Compost"],
     timestamp: "3 hours ago",
     image_query: "cracked dry farming soil",
-    image: "https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 301,
@@ -134,7 +134,7 @@ const MOCK_POSTS: Post[] = [
     tags: ["#Wheat", "#WaterLogging", "#Drainage"],
     timestamp: "2 days ago",
     image_query: "flooded wheat field waterlogging",
-    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1433001353349-7220c326081e?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 401,
@@ -157,7 +157,7 @@ const MOCK_POSTS: Post[] = [
     tags: ["#Mango", "#HeavyRain", "#FruitDrop"],
     timestamp: "5 hours ago",
     image_query: "mango tree fruit drop after rain",
-    image: "https://images.unsplash.com/photo-1553134833-1c02fbb55967?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1591073113125-e46713c829ed?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 501,
@@ -180,7 +180,7 @@ const MOCK_POSTS: Post[] = [
     tags: ["#Chilli", "#LowFlowers", "#Yield"],
     timestamp: "12 hours ago",
     image_query: "chilli plant no flowers",
-    image: "https://images.unsplash.com/photo-1590779033100-9f60705a2f3b?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 601,
@@ -249,7 +249,7 @@ const MOCK_POSTS: Post[] = [
     tags: ["#Groundnut", "#Seeds", "#Germination"],
     timestamp: "1 day ago",
     image_query: "groundnut plant germination failure",
-    image: "https://images.unsplash.com/photo-1515150144380-bca9f1650ed9?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 901,
@@ -272,7 +272,7 @@ const MOCK_POSTS: Post[] = [
     tags: ["#Soybean", "#MarketPrice", "#Storage"],
     timestamp: "6 hours ago",
     image_query: "soybean harvest storage",
-    image: "https://images.unsplash.com/photo-1599420186946-7b6fb4eaba23?auto=format&fit=crop&q=80&w=800",
+    image: "https://images.unsplash.com/photo-1582281298055-e25b84a30b0b?auto=format&fit=crop&q=80&w=800",
     comments: [
       {
         id: 1001,
@@ -443,6 +443,9 @@ function PostCard({ post, onClick, onUpvote }: { post: Post, onClick: () => void
             src={post.image} 
             alt={post.image_query} 
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=800";
+            }}
           />
         </div>
       )}
@@ -537,6 +540,9 @@ function PostDetail({ post, onBack, onUpvote }: { post: Post, onBack: () => void
               src={post.image} 
               alt={post.image_query} 
               className="w-full h-auto object-cover max-h-[400px]"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=800";
+              }}
             />
           </div>
         )}
