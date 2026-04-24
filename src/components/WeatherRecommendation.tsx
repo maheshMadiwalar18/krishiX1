@@ -35,26 +35,86 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const fetchWeatherAndAdvice = async () => {
+    const CACHE_KEY = 'krushix_weather_cache';
+    const CACHE_TIME = 20 * 60 * 1000; // 20 minutes
+
+    const fetchWeatherAndAdvice = async (isBackground = false) => {
+      if (!isBackground) setLoading(true);
+      
       try {
-        // 1. Fetch Live Weather (which now includes Smart AI Prediction)
-        const weatherRes = await fetch('/api/weather/live');
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s Timeout for AI processing
+
+        const weatherRes = await fetch('/api/weather/live', { signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (!weatherRes.ok) throw new Error("Weather API failed");
         
         const weather = await weatherRes.json();
         setWeatherData(weather);
 
-        // 2. Use the prediction reason as the "AI Advice" summary
         if (weather.prediction) {
-          setAiAdvice(weather.prediction.reason || "Weather conditions are optimal for crop growth.");
+          const advice = weather.prediction.reason || "Weather conditions are optimal for crop growth.";
+          setAiAdvice(advice);
+          
+          // Store in cache
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data: weather,
+            advice: advice,
+            timestamp: Date.now()
+          }));
         }
       } catch (error) {
-        console.error("Weather error:", error);
-        setAiAdvice("Unable to fetch live AI advice. Focus on standard irrigation and pest monitoring.");
+        console.error("Weather fetch failed:", error);
+        if (!isBackground && !weatherData) {
+          // ⚡ FALLBACK: Show mock data if everything fails so UI doesn't look broken
+          setWeatherData({
+            temp: 28,
+            humidity: 65,
+            wind: 12,
+            rain: 5,
+            uv: 4,
+            condition: "Cloudy (Offline)",
+            location: "Offline Mode",
+            prediction: {
+              risk: "Normal",
+              alert: "Offline: Using estimated data",
+              reason: "We couldn't connect to the live weather server. Showing typical conditions for your region."
+            }
+          });
+          setAiAdvice("Unable to fetch live AI advice. Showing offline estimates.");
+        }
       } finally {
         setLoading(false);
       }
     };
+
+    // ⚡ INSTANT UI: Load from cache first
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        const { data, advice, timestamp } = parsed;
+        const isExpired = Date.now() - timestamp > CACHE_TIME;
+
+        // ⚡ CACHE FIX: If old cache doesn't have wind/uv, force a refresh
+        const isOldVersion = data.wind === undefined || data.uv === undefined;
+
+        setWeatherData(data);
+        setAiAdvice(advice);
+        
+        if (!isExpired && !isOldVersion) {
+          setLoading(false);
+          // Refresh in background to keep it fresh
+          fetchWeatherAndAdvice(true);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Weather cache corrupted, clearing...");
+      localStorage.removeItem(CACHE_KEY);
+    }
+
     fetchWeatherAndAdvice();
   }, []);
 
@@ -85,14 +145,15 @@ export default function WeatherRecommendation({ onBack, userLocation = "Your Far
       </div>
 
       {/* ✅ SMART CLIMATE ALERT & DISEASE PREDICTION SECTION */}
-      {weatherData?.prediction && (
+      {weatherData?.prediction && (weatherData.prediction.risk === 'High' || weatherData.prediction.risk === 'Medium') && (
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className={cn(
             "p-6 rounded-[2rem] border-2 shadow-sm flex flex-col gap-4",
             weatherData.prediction.risk === 'High' ? "bg-red-50 border-red-200 text-red-900" :
-            weatherData.prediction.risk === 'Medium' ? "bg-orange-50 border-orange-200 text-orange-900" :
+            weatherData.prediction.risk === 'Medium' ? "bg-yellow-50 border-yellow-200 text-yellow-900" :
+            weatherData.prediction.risk === 'Normal' ? "bg-emerald-50 border-emerald-200 text-emerald-900" :
             "bg-green-50 border-green-200 text-green-900"
           )}
         >

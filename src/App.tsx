@@ -12,6 +12,7 @@ import VoiceAssistant from './components/VoiceAssistant';
 import Earthworm from './components/Earthworm';
 import Community from './components/Community';
 import Dashboard from './components/Dashboard';
+import Presentation from './components/Presentation';
 import { NotificationProvider, useNotification } from './components/ui/Notification';
 import { AnimatePresence, motion } from 'motion/react';
 
@@ -220,6 +221,7 @@ function AppContent() {
                 </motion.div>
               </ProtectedRoute>
             } />
+            <Route path="/presentation" element={<Presentation />} />
           </Routes>
         </AnimatePresence>
       </main>

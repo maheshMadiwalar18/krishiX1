@@ -292,6 +292,7 @@ export default function Community({ onBack }: { onBack: () => void }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const [showAskForm, setShowAskForm] = useState(false);
+  const [userUpvotes, setUserUpvotes] = useState<Set<number>>(new Set());
 
   const filters = ["All", "Pest", "Disease", "Soil", "Water", "Yield", "Fertilizer", "Planning", "Market", "Resolved"];
 
@@ -305,12 +306,42 @@ export default function Community({ onBack }: { onBack: () => void }) {
     return matchesSearch && matchesFilter;
   });
 
-  const handleUpvote = (postId: number, commentId?: number) => {
-    if (commentId) {
-      // Logic for comment upvote
+  const handleUpvote = (postId: number) => {
+    const newUpvotes = new Set(userUpvotes);
+    const hasUpvoted = newUpvotes.has(postId);
+
+    if (hasUpvoted) {
+      newUpvotes.delete(postId);
+      setPosts(posts.map(p => p.id === postId ? { ...p, upvotes: p.upvotes - 1 } : p));
     } else {
+      newUpvotes.add(postId);
       setPosts(posts.map(p => p.id === postId ? { ...p, upvotes: p.upvotes + 1 } : p));
-      if (selectedPost?.id === postId) setSelectedPost({ ...selectedPost, upvotes: selectedPost.upvotes + 1 });
+    }
+
+    setUserUpvotes(newUpvotes);
+    
+    if (selectedPost?.id === postId) {
+      setSelectedPost(prev => prev ? { ...prev, upvotes: hasUpvoted ? prev.upvotes - 1 : prev.upvotes + 1 } : null);
+    }
+  };
+
+  const handleAddComment = (postId: number, commentText: string) => {
+    const newComment: Comment = {
+      id: Date.now(),
+      author: "You",
+      text: commentText,
+      upvotes: 0,
+      timestamp: "Just now" as any
+    };
+
+    setPosts(posts.map(p => 
+      p.id === postId 
+        ? { ...p, comments: [...p.comments, newComment] }
+        : p
+    ));
+
+    if (selectedPost?.id === postId) {
+      setSelectedPost(prev => prev ? { ...prev, comments: [...prev.comments, newComment] } : null);
     }
   };
 
@@ -428,6 +459,7 @@ export default function Community({ onBack }: { onBack: () => void }) {
                   onClick={() => setSelectedPost(post)}
                   onUpvote={() => handleUpvote(post.id)}
                   onDelete={() => handleDelete(post.id)}
+                  userHasUpvoted={userUpvotes.has(post.id)}
                 />
               ))}
             </div>
@@ -444,6 +476,8 @@ export default function Community({ onBack }: { onBack: () => void }) {
               onBack={() => setSelectedPost(null)}
               onUpvote={() => handleUpvote(selectedPost.id)}
               onDelete={() => handleDelete(selectedPost.id)}
+              onAddComment={(text) => handleAddComment(selectedPost.id, text)}
+              userHasUpvoted={userUpvotes.has(selectedPost.id)}
             />
           </motion.div>
         )}
@@ -452,11 +486,12 @@ export default function Community({ onBack }: { onBack: () => void }) {
   );
 }
 
-const PostCard = ({ post, onClick, onUpvote, onDelete }: { 
+const PostCard = ({ post, onClick, onUpvote, onDelete, userHasUpvoted }: { 
   post: Post, 
   onClick: () => void, 
   onUpvote: (e?: any) => void,
   onDelete: () => void,
+  userHasUpvoted: boolean,
   key?: any
 }) => {
   const { t } = useLanguage();
@@ -575,9 +610,12 @@ const PostCard = ({ post, onClick, onUpvote, onDelete }: {
         <div className="flex items-center gap-6">
           <button
             onClick={(e) => { e.stopPropagation(); onUpvote(e); }}
-            className="flex items-center gap-2 text-text/40 hover:text-primary transition-colors"
+            className={cn(
+              "flex items-center gap-2 transition-colors",
+              userHasUpvoted ? "text-primary" : "text-text/40 hover:text-primary"
+            )}
           >
-            <ThumbsUp size={18} />
+            <ThumbsUp size={18} fill={userHasUpvoted ? "currentColor" : "none"} />
             <span className="text-xs font-bold">{post.upvotes}</span>
           </button>
           <div className="flex items-center gap-2.5 text-text/40">
@@ -593,16 +631,19 @@ const PostCard = ({ post, onClick, onUpvote, onDelete }: {
   );
 }
 
-function PostDetail({ post, onBack, onUpvote, onDelete }: { 
+function PostDetail({ post, onBack, onUpvote, onDelete, onAddComment, userHasUpvoted }: { 
   post: Post, 
   onBack: () => void, 
   onUpvote: () => void,
-  onDelete: () => void 
+  onDelete: () => void,
+  onAddComment: (text: string) => void,
+  userHasUpvoted: boolean
 }) {
   const { t } = useLanguage();
   const aiAnswer = post.comments.find(c => c.isAI);
   const otherComments = post.comments.filter(c => !c.isAI);
   const [showMore, setShowMore] = useState(false);
+  const [commentText, setCommentText] = useState("");
 
   const handleShare = () => {
     if (navigator.share) {
@@ -697,6 +738,25 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
           </div>
         )}
 
+        <div className="flex items-center gap-6 mb-10 pb-10 border-b border-border/40">
+          <button
+            onClick={onUpvote}
+            className={cn(
+              "flex items-center gap-2.5 transition-all active:scale-95 px-5 py-2.5 rounded-xl border",
+              userHasUpvoted 
+                ? "bg-primary/5 border-primary/20 text-primary" 
+                : "bg-white border-border text-text/40 hover:border-primary/20 hover:text-primary"
+            )}
+          >
+            <ThumbsUp size={20} fill={userHasUpvoted ? "currentColor" : "none"} />
+            <span className="text-sm font-bold">{post.upvotes} {t('comm_upvotes')}</span>
+          </button>
+          <div className="flex items-center gap-2.5 text-text/40 px-5 py-2.5">
+            <MessageSquare size={20} />
+            <span className="text-sm font-bold">{otherComments.length} {t('comm_replies')}</span>
+          </div>
+        </div>
+
         {/* AI Answer Highlighted */}
         {aiAnswer && (
           <div className="bg-primary text-white p-7 rounded-[12px] shadow-lg relative overflow-hidden mb-10">
@@ -786,6 +846,8 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
           <div className="bg-bg/30 border border-border p-4 rounded-[12px] mt-10">
             <textarea
               placeholder="Add your solution or ask for details..."
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
               className="w-full bg-transparent border-none focus:ring-0 text-sm min-h-[90px] resize-none placeholder:text-text/30"
             />
             <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/40">
@@ -794,7 +856,15 @@ function PostDetail({ post, onBack, onUpvote, onDelete }: {
                   <ImageIcon size={20} />
                 </button>
               </div>
-              <button className="bg-primary text-white px-6 py-2.5 rounded-[10px] font-bold text-xs flex items-center gap-2 shadow-sm hover:shadow-md hover:bg-primary/90 transition-all active:scale-95">
+              <button 
+                onClick={() => {
+                  if (commentText.trim()) {
+                    onAddComment(commentText);
+                    setCommentText("");
+                  }
+                }}
+                className="bg-primary text-white px-6 py-2.5 rounded-[10px] font-bold text-xs flex items-center gap-2 shadow-sm hover:shadow-md hover:bg-primary/90 transition-all active:scale-95"
+              >
                 <Send size={14} /> {t('comm_post_reply')}
               </button>
             </div>

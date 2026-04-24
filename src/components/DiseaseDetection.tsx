@@ -27,6 +27,8 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
   const [isScanning, setIsScanning] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const [dataType, setDataType] = useState<'leaf' | 'plant' | 'fruit' | 'stem'>('leaf');
+  const [lastAnalyzedImage, setLastAnalyzedImage] = useState<string | null>(null);
+  const [cachedResult, setCachedResult] = useState<any | null>(null);
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -53,8 +55,8 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
       img.src = base64Str;
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 800;
-        const MAX_HEIGHT = 800;
+        const MAX_WIDTH = 512; // OPTIMIZED: Smaller size for much faster AI processing
+        const MAX_HEIGHT = 512;
         let width = img.width;
         let height = img.height;
 
@@ -73,19 +75,28 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.7)); // 0.7 quality is plenty for AI
+        resolve(canvas.toDataURL('image/jpeg', 0.6)); // OPTIMIZED: Lower quality but perfectly fine for AI recognition
       };
     });
   };
-
   const handleScan = async () => {
     if (!image) {
       addNotification('info', 'Please upload or capture an image first.');
       return;
     }
+
+    // ⚡ INSTANT CACHE: Prevent redundant scanning of the same image
+    if (image === lastAnalyzedImage && cachedResult) {
+      setResult(cachedResult);
+      addNotification('success', 'Showing previous result for this image.');
+      return;
+    }
+
     setIsScanning(true);
+    setResult(null); // Clear previous results immediately for fresh UI
+
     try {
-      // ⚡ COMPRESSION: Shrink image before sending (Massive Speed Boost)
+      // ⚡ COMPRESSION: Shrink image significantly (Massive Speed Boost)
       const compressedImage = await compressImage(image);
       
       const response = await fetch('/api/disease/scan', {
@@ -94,8 +105,11 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
         body: JSON.stringify({ image: compressedImage, dataType })
       });
       const data = await response.json();
+      
       setResult(data);
-      addNotification('success', 'Scan completed. Disease identified.');
+      setCachedResult(data);
+      setLastAnalyzedImage(image);
+      addNotification('success', 'Scan completed successfully.');
     } catch (error) {
       console.error("Scan error:", error);
       addNotification('error', 'Failed to analyze the image. Please try again.');
@@ -214,15 +228,21 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
-                  <label className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border border-border rounded-2xl font-black text-sm cursor-pointer hover:bg-bg transition-all shadow-sm active:scale-95 group/btn">
+                  <label className={cn(
+                    "flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border border-border rounded-2xl font-black text-sm transition-all shadow-sm group/btn",
+                    isScanning ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-bg active:scale-95"
+                  )}>
                     <Upload size={18} className="text-primary group-hover/btn:-translate-y-1 transition-transform" />
                     {t('btn_choose_file')}
-                    <input type="file" className="hidden" accept="image/*" onChange={handleUpload} />
+                    <input type="file" className="hidden" accept="image/*" onChange={handleUpload} disabled={isScanning} />
                   </label>
-                  <label className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border border-border rounded-2xl font-black text-sm cursor-pointer hover:bg-bg transition-all shadow-sm active:scale-95 group/btn">
+                  <label className={cn(
+                    "flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border border-border rounded-2xl font-black text-sm transition-all shadow-sm group/btn",
+                    isScanning ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-bg active:scale-95"
+                  )}>
                     <Camera size={18} className="text-primary group-hover/btn:scale-110 transition-transform" />
                     {t('btn_use_camera')}
-                    <input type="file" className="hidden" accept="image/*" capture="environment" onChange={handleUpload} />
+                    <input type="file" className="hidden" accept="image/*" capture="environment" onChange={handleUpload} disabled={isScanning} />
                   </label>
                 </div>
               </>
@@ -436,36 +456,73 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
                           </div>
                         </div>
 
-                        {/* AI Insights: Symptoms & Causes */}
+                        {/* AI Detailed Analysis: Deep Analysis & Damage Extent */}
                         {result.details && (
-                          <div className="bg-white border border-border rounded-[2rem] p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col md:col-span-2">
-                            <div className="flex items-center gap-3 mb-6">
-                              <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-2xl shadow-inner">🔍</div>
+                          <div className="bg-white border border-border rounded-[2.5rem] p-8 shadow-sm hover:shadow-md transition-all flex flex-col md:col-span-2 border-t-4 border-t-blue-500">
+                            <div className="flex items-center gap-4 mb-8">
+                              <div className="w-14 h-14 bg-blue-50 rounded-[1.5rem] flex items-center justify-center text-3xl shadow-inner border border-blue-100">🔬</div>
                               <div>
-                                <h4 className="font-black text-text text-lg">AI Field Observations</h4>
-                                <p className="text-[10px] font-bold text-text/40 uppercase tracking-widest">Symptoms & Causes</p>
+                                <h4 className="font-display font-black text-text text-xl tracking-tight">Expert Deep Analysis</h4>
+                                <p className="text-[10px] font-black text-text/40 uppercase tracking-[0.2em]">Comprehensive AI Pathologist Report</p>
                               </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                              <div className="space-y-2">
-                                <p className="text-[11px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-2">
-                                  <span className="w-2 h-2 bg-blue-500 rounded-full" />
-                                  Symptoms Identified
-                                </p>
-                                <p className="text-sm font-bold text-text/70 bg-blue-50/30 p-4 rounded-2xl border border-blue-100/50 leading-relaxed">
-                                  {result.details.symptoms}
-                                </p>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                              {/* Elaborate Issue */}
+                              <div className="space-y-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                    <Lightbulb size={18} />
+                                  </div>
+                                  <p className="text-xs font-black text-blue-600 uppercase tracking-widest">
+                                    What's Happening
+                                  </p>
+                                </div>
+                                <div className="bg-blue-50/40 p-6 rounded-[2rem] border border-blue-100/50">
+                                  <p className="text-base font-bold text-slate-700 leading-relaxed">
+                                    {result.details.elaborateIssue || result.details.symptoms || "Detailed analysis not available for this sample."}
+                                  </p>
+                                </div>
                               </div>
-                              <div className="space-y-2">
-                                <p className="text-[11px] font-black text-orange-600 uppercase tracking-widest flex items-center gap-2">
-                                  <span className="w-2 h-2 bg-orange-500 rounded-full" />
-                                  Possible Causes
-                                </p>
-                                <p className="text-sm font-bold text-text/70 bg-orange-50/30 p-4 rounded-2xl border border-orange-100/50 leading-relaxed">
-                                  {result.details.causes}
-                                </p>
+
+                              {/* Damage Extent */}
+                              <div className="space-y-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                                    <AlertCircle size={18} />
+                                  </div>
+                                  <p className="text-xs font-black text-orange-600 uppercase tracking-widest">
+                                    Extent of Damage
+                                  </p>
+                                </div>
+                                <div className="bg-orange-50/40 p-6 rounded-[2rem] border border-orange-100/50">
+                                  <p className="text-base font-bold text-slate-700 leading-relaxed">
+                                    {result.details.damageExtent || "Please check the full plant for more symptoms."}
+                                  </p>
+                                  <div className="mt-4 pt-4 border-t border-orange-200/30 flex items-center gap-3">
+                                    <div className="px-3 py-1 bg-orange-100 text-orange-700 rounded-lg text-[10px] font-black uppercase tracking-wider">
+                                      Severity: {result.actionLevel}
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
+                            </div>
+
+                            {/* Detailed Treatment Plan */}
+                            <div className="mt-8 pt-8 border-t border-slate-100">
+                               <div className="flex items-center gap-3 mb-4">
+                                  <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                    <CheckCircle2 size={18} />
+                                  </div>
+                                  <p className="text-xs font-black text-green-600 uppercase tracking-widest">
+                                    Recovery Action Plan
+                                  </p>
+                                </div>
+                                <div className="bg-emerald-50/30 p-6 rounded-[2rem] border border-emerald-100/50">
+                                  <p className="text-base font-bold text-slate-700 leading-relaxed whitespace-pre-line">
+                                    {result.details.treatment}
+                                  </p>
+                                </div>
                             </div>
                           </div>
                         )}
@@ -494,14 +551,7 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
                       </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                      <button className="flex-1 py-5 bg-[#F1F8E9] text-primary font-black rounded-[1.5rem] hover:bg-[#E8F5E9] transition-all active:scale-95 border-2 border-primary/10 shadow-sm flex items-center justify-center gap-2">
-                        {t('btn_export')}
-                      </button>
-                      <button className="flex-1 py-5 bg-primary text-white font-black rounded-[1.5rem] hover:bg-primary/90 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2">
-                        {t('btn_save_log')}
-                      </button>
-                    </div>
+
                   </>
                 )}
               </motion.div>

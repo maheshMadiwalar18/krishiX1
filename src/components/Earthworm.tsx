@@ -17,14 +17,16 @@ const TopicCard = ({
   language, 
   onViewFull,
   isSpeaking, 
-  speakContent 
+  speakContent,
+  t
 }: { 
   topic: EarthwormTopic, 
   icon: any, 
   language: string, 
   onViewFull: (topic: EarthwormTopic) => void,
   isSpeaking: boolean,
-  speakContent: (text: string, lang: 'en' | 'kn') => void
+  speakContent: (topicId: string, text: string, lang: 'en' | 'kn') => void,
+  t: (key: string) => string
 }) => {
   const summary = language === 'kn' ? topic.summary.kn : topic.summary.en;
 
@@ -48,10 +50,14 @@ const TopicCard = ({
           
           <button 
             onClick={() => speakContent(
+              topic.id,
               (language === 'kn' ? topic.content.kn : topic.content.en).replace(/###/g, '').replace(/\*/g, ''), 
               language as 'en' | 'kn'
             )}
-            className="p-2 rounded-lg text-neutral-400 hover:bg-neutral-100 hover:text-primary transition-all flex-shrink-0"
+            className={cn(
+              "p-2 rounded-lg transition-all flex-shrink-0",
+              isSpeaking ? "bg-primary/10 text-primary" : "text-neutral-400 hover:bg-neutral-100 hover:text-primary"
+            )}
           >
             {isSpeaking ? <Square size={16} fill="currentColor" /> : <Volume2 size={16} />}
           </button>
@@ -62,7 +68,7 @@ const TopicCard = ({
             onClick={() => onViewFull(topic)}
             className="w-full py-2.5 rounded-xl border border-neutral-200 text-neutral-600 font-bold text-xs hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
           >
-            View Full Guide
+            {t('earth_view_guide')}
             <ChevronRight size={14} />
           </button>
         </div>
@@ -76,13 +82,15 @@ const SectionHeader = ({
   language, 
   icon: Icon,
   isCompact = false, 
-  children 
+  children,
+  t
 }: { 
   section: EarthwormSection, 
   language: string, 
   icon: any,
   isCompact?: boolean, 
-  children?: React.ReactNode 
+  children?: React.ReactNode,
+  t: (key: string) => string
 }) => (
   <section id={section.id} className="scroll-mt-24">
     <div className="flex items-center justify-between mb-8">
@@ -95,13 +103,13 @@ const SectionHeader = ({
             {language === 'kn' ? section.title.kn : section.title.en}
           </h2>
           <p className="text-neutral-400 text-[10px] font-bold uppercase tracking-widest">
-            {section.topics.length} Guides
+            {section.topics.length} {t('earth_guides')}
           </p>
         </div>
       </div>
       
       <button className="text-neutral-400 hover:text-primary font-bold text-xs flex items-center gap-1 transition-all group">
-        View All <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+        {t('earth_view_all')} <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
       </button>
     </div>
     {children}
@@ -111,14 +119,14 @@ const SectionHeader = ({
 export default function Earthworm({ onBack }: { onBack: () => void }) {
   const { language, t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [speakingTopicId, setSpeakingTopicId] = useState<string | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<EarthwormTopic | null>(null);
 
-  const speakContent = (text: string, lang: 'en' | 'kn') => {
+  const speakContent = (topicId: string, text: string, lang: 'en' | 'kn') => {
     if ('speechSynthesis' in window) {
-      if (isSpeaking) {
+      if (speakingTopicId === topicId) {
         window.speechSynthesis.cancel();
-        setIsSpeaking(false);
+        setSpeakingTopicId(null);
         return;
       }
 
@@ -126,9 +134,9 @@ export default function Earthworm({ onBack }: { onBack: () => void }) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang === 'en' ? 'en-IN' : 'kn-IN';
       utterance.rate = 0.9;
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
+      utterance.onstart = () => setSpeakingTopicId(topicId);
+      utterance.onend = () => setSpeakingTopicId(null);
+      utterance.onerror = () => setSpeakingTopicId(null);
       window.speechSynthesis.speak(utterance);
     }
   };
@@ -144,7 +152,8 @@ export default function Earthworm({ onBack }: { onBack: () => void }) {
       topics: section.topics.filter(topic => 
         topic.title.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
         topic.title.kn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        topic.content.en.toLowerCase().includes(searchQuery.toLowerCase())
+        topic.content.en.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        topic.content.kn.toLowerCase().includes(searchQuery.toLowerCase())
       )
     })).filter(section => section.topics.length > 0);
   }, [searchQuery]);
@@ -174,7 +183,7 @@ export default function Earthworm({ onBack }: { onBack: () => void }) {
                   Earthworm
                 </h1>
                 <p className="text-neutral-400 text-[10px] font-bold uppercase tracking-widest">
-                  Knowledge Base
+                  {t('earth_kb')}
                 </p>
               </div>
             </div>
@@ -197,10 +206,10 @@ export default function Earthworm({ onBack }: { onBack: () => void }) {
         <div className="mb-20 pb-12 border-b border-neutral-100">
           <div className="max-w-2xl">
             <h2 className="text-2xl md:text-3xl font-bold text-neutral-800 mb-4">
-              Agricultural Intelligence
+              {t('earth_ai')}
             </h2>
             <p className="text-neutral-600 text-base leading-relaxed">
-              Access verified information on government schemes, financial support, and modern farming techniques. Designed for clarity and practical use on the field.
+              {t('earth_subtitle')}
             </p>
           </div>
         </div>
@@ -209,7 +218,7 @@ export default function Earthworm({ onBack }: { onBack: () => void }) {
         <div className="space-y-24">
           {/* Major Sections */}
           {filteredData.filter(s => s.id === 'govt-schemes' || s.id === 'finance-loans').map((section) => (
-            <SectionHeader key={section.id} section={section} language={language} icon={getSectionIcon(section.id)}>
+            <SectionHeader key={section.id} section={section} language={language} icon={getSectionIcon(section.id)} t={t}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
                 {section.topics.map((topic) => (
                   <TopicCard 
@@ -218,8 +227,9 @@ export default function Earthworm({ onBack }: { onBack: () => void }) {
                     icon={getSectionIcon(section.id)}
                     language={language}
                     onViewFull={(t) => setSelectedTopic(t)}
-                    isSpeaking={isSpeaking}
+                    isSpeaking={speakingTopicId === topic.id}
                     speakContent={speakContent}
+                    t={t}
                   />
                 ))}
               </div>
@@ -230,7 +240,7 @@ export default function Earthworm({ onBack }: { onBack: () => void }) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {filteredData.filter(s => s.id === 'sustainable-farming' || s.id === 'equipment').map((section) => (
               <div key={section.id} className="flex flex-col h-full">
-                <SectionHeader section={section} language={language} icon={getSectionIcon(section.id)} isCompact>
+                <SectionHeader section={section} language={language} icon={getSectionIcon(section.id)} isCompact t={t}>
                   <div className="grid grid-cols-1 gap-4">
                     {section.topics.map((topic) => (
                       <TopicCard 
@@ -239,8 +249,9 @@ export default function Earthworm({ onBack }: { onBack: () => void }) {
                         icon={getSectionIcon(section.id)}
                         language={language}
                         onViewFull={(t) => setSelectedTopic(t)}
-                        isSpeaking={isSpeaking}
+                        isSpeaking={speakingTopicId === topic.id}
                         speakContent={speakContent}
+                        t={t}
                       />
                     ))}
                   </div>
@@ -303,13 +314,19 @@ export default function Earthworm({ onBack }: { onBack: () => void }) {
               <div className="p-6 border-t border-neutral-100 bg-neutral-50 flex justify-end gap-4">
                 <button 
                   onClick={() => speakContent(
+                    selectedTopic.id,
                     (language === 'kn' ? selectedTopic.content.kn : selectedTopic.content.en).replace(/###/g, '').replace(/\*/g, ''), 
                     language as 'en' | 'kn'
                   )}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-neutral-200 text-neutral-600 font-bold text-xs hover:border-primary transition-all"
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-xl border font-bold text-xs transition-all",
+                    speakingTopicId === selectedTopic.id 
+                      ? "bg-primary/10 border-primary/20 text-primary" 
+                      : "bg-white border-neutral-200 text-neutral-600 hover:border-primary"
+                  )}
                 >
-                  {isSpeaking ? <Square size={14} fill="currentColor" /> : <Volume2 size={14} />}
-                  {isSpeaking ? 'Stop Reading' : 'Read Aloud'}
+                  {speakingTopicId === selectedTopic.id ? <Square size={14} fill="currentColor" /> : <Volume2 size={14} />}
+                  {speakingTopicId === selectedTopic.id ? t('earth_stop_reading') : t('earth_read_aloud')}
                 </button>
                 <button 
                   onClick={() => setSelectedTopic(null)}

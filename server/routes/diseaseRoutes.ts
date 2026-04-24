@@ -9,32 +9,36 @@ const router = express.Router();
 const OLLAMA_URL = 'http://127.0.0.1:11434/api/generate';
 const USE_OLLAMA = process.env.USE_OLLAMA === 'true';
 
+import crypto from 'crypto';
+
+// ✅ PERFORMANCE: Cache for disease detection results
+const detectionCache: Record<string, any> = {};
+
 // ✅ SHARED SCAN LOGIC
 async function performDetection(image: string) {
   const base64Data = image.includes(',') ? image.split(',')[1] : image;
+  
+  // Create a unique key for the image to support instant caching
+  const imageHash = crypto.createHash('md5').update(base64Data).digest('hex');
+  if (detectionCache[imageHash]) {
+    console.log("⚡ [Cache] Instant result for identical image");
+    return detectionCache[imageHash];
+  }
 
+  // MINIMAL PROMPT: Reduced instructions for faster inference
   const prompt = `
-    You are a high-precision plant analysis system. 
-    Accuracy is more important than answering. 
-    It is OK to say NOT SURE.
-
-    FOLLOW THESE STEPS:
-
-    Step 1: Describe visible features in the image (Color, Spots, Damage, Leaf condition).
-    Step 2: Based ONLY on visible features, classify: HEALTHY, DISEASED, PEST, or NOT SURE.
-    Step 3: Apply "HEALTHY BIAS" - If there are no strong, clear symptoms of disease or pests, you MUST default to HEALTHY.
-    Step 4: Only if DISEASED or PEST: Provide Disease/Pest name, Symptoms (from image only), Treatment, and Prevention.
-
-    Return ONLY a JSON object with this exact structure:
+    Analyze this plant image. Detect disease ONLY if clearly visible.
+    Return ONLY JSON:
     {
-      "observation": "Detailed visual description from Step 1",
+      "observation": "Short description of what you see",
       "status": "HEALTHY / DISEASED / PEST / NOT SURE",
       "confidence": "LOW / MEDIUM / HIGH",
-      "disease": "Name (only if confident)",
-      "symptoms": "Visible symptoms only",
-      "treatment": "Practical steps",
-      "prevention": "Prevention tips",
-      "message": "Final advice to farmer",
+      "disease": "Specific Name",
+      "elaborateIssue": "2-sentence issue explanation",
+      "damageExtent": "Percentage of damage",
+      "treatment": "3-step recovery plan",
+      "prevention": "1 prevention tip",
+      "message": "Advice for farmer",
       "actionLevel": "Low/Medium/High"
     }
   `;
@@ -42,10 +46,10 @@ async function performDetection(image: string) {
   let resultData = null;
 
   if (USE_OLLAMA) {
-    console.log("📸 [Ollama] Analyzing plant image...");
+    console.log("📸 [Ollama] Fast-track vision analysis...");
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout for vision
+      const timeoutId = setTimeout(() => controller.abort(), 10000); 
 
       const response = await fetch(OLLAMA_URL, {
         method: 'POST',
@@ -58,8 +62,8 @@ async function performDetection(image: string) {
           stream: false,
           options: { 
             temperature: 0.1,
-            num_predict: 300, // Limit tokens for speed
-            num_thread: 4    // Use more threads if available
+            num_predict: 120, // REDUCED for speed
+            num_thread: 4
           }
         })
       });
@@ -69,32 +73,34 @@ async function performDetection(image: string) {
       if (response.ok) {
         const ollamaRes = await response.json() as any;
         const rawResponse = ollamaRes.response;
-        console.log("✅ [Ollama] Vision analysis complete");
         const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
         resultData = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
       }
     } catch (err: any) {
-      console.error("❌ [Ollama] Vision failed/timeout:", err.message);
+      console.error("❌ [Ollama] Vision timeout/failed");
     }
   }
 
-  // Gemini Fallback (Faster Model)
   if (!resultData && process.env.GEMINI_API_KEY) {
-    console.log("💎 [Gemini] Falling back to Gemini 2.0 Flash Vision...");
+    console.log("💎 [Gemini] High-speed flash analysis...");
     try {
       const text = await generateGeminiTextFromContent(
         [
           prompt,
           { inlineData: { data: base64Data, mimeType: "image/jpeg" } }
         ],
-        'gemini-2.0-flash' // Upgraded to 2.0-flash for speed
+        'gemini-2.0-flash'
       );
-      console.log("✅ [Gemini] Vision analysis complete");
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       resultData = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
     } catch (err: any) {
-      console.error("🔥 [Gemini] Vision failed:", err.message);
+      console.error("🔥 [Gemini] failed");
     }
+  }
+
+  // Cache the successful result
+  if (resultData) {
+    detectionCache[imageHash] = resultData;
   }
 
   return resultData;

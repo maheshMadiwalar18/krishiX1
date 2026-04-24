@@ -1,75 +1,56 @@
-# KrishiX – AI-Powered Smart Farming Platform
-
-*Predict. Prevent. Prosper.*
+# KrishiX – AI-Powered Smart Farming Assistant
+*Empowering Farmers with Open-Source Intelligence*
 
 ## 🌍 Overview
-KrishiX is an AI-powered, climate-smart farming platform designed to empower farmers with real-time, actionable insights. By leveraging modern technology, KrishiX provides disease detection, smart irrigation guidance, and a supportive community. This platform aims to bridge the gap between traditional agriculture and modern technology, ensuring farmers can maximize yields while remaining sustainable and resilient to climate change.
+**KrishiX** is a next-generation, climate-smart farming platform designed to provide farmers with real-time, actionable insights. By combining cutting-edge open-source AI with local environmental data, KrishiX offers instant disease detection, smart irrigation guidance, and a bilingual community hub. Our goal is to democratize high-tech agriculture, making it accessible, affordable, and sustainable for every farmer.
 
-## ⚠️ Problem Statement
-Modern agriculture faces several critical challenges that affect farm productivity and sustainability:
-- **Lack of Real-Time Guidance:** Farmers often lack immediate access to expert advice when facing sudden crop issues.
-- **Resource Overuse:** Excessive and inefficient use of water, fertilizers, and pesticides degrades soil health and increases costs.
-- **Climate Change Impact:** Unpredictable weather patterns lead to significant crop losses without proper localized forecasting.
-- **Information Accessibility:** Crucial agricultural knowledge is often not available in regional languages or accessible formats.
+---
 
-## 💡 Solution
-KrishiX solves these issues by providing a unified, intelligent platform tailored for farmers:
-- **AI-Based Disease Detection:** Instantly identify crop diseases from photos and receive treatment recommendations.
-- **Weather-Based Recommendations:** Get precise, location-based weather forecasts paired with actionable crop advice.
-- **Smart Irrigation System:** Optimize water usage based on soil and weather data.
-- **Knowledge Hub (Multilingual + Voice):** Access an extensive library of agricultural best practices with text-to-speech support in regional languages.
-- **Farmer Community (AgriConnect):** Connect, share experiences, and learn from a network of fellow farmers.
+## 💡 The Problem & Our Solution
+Farmers today face unpredictable weather, emerging crop diseases, and a lack of localized expert advice. **KrishiX** bridges this gap using a "Local-First" AI approach:
+- **Instant Diagnosis:** AI-based disease detection using vision models.
+- **Climate Intelligence:** Hyper-localized weather alerts and crop-specific advice.
+- **Resource Optimization:** Data-driven irrigation strategies to save water and costs.
+- **Inclusive Design:** Full support for regional languages (Kannada & English) with integrated Voice and Text-to-Speech.
 
-## ✨ Features
-- **Crop Disease Detection:** Image-based AI scanning for quick diagnosis.
-- **Weather & Crop Recommendations:** Real-time alerts and adaptive planning.
-- **Smart Irrigation Advisor:** Data-driven water management.
-- **Crop Health Forecast:** Predictive analytics for proactive care.
-- **Knowledge Hub with Text-to-Speech:** Accessible learning across languages.
-- **Farmer Community Platform:** Dedicated space for collaboration.
+---
 
-## ⚙️ How It Works
-1. **Farmer Inputs Data:** The user uploads a photo of a crop, speaks a query, or inputs basic farm details.
-2. **AI Processes Data:** The backend AI models analyze the image, text, or voice input alongside real-time weather and soil data.
-3. **System Generates Insights:** KrishiX generates a tailored, localized recommendation or diagnosis.
-4. **Farmer Takes Action:** The farmer applies the precise, actionable advice to optimize their farming process.
+## 🏗 Open-Source Technology Stack
+KrishiX is built on a foundation of powerful open-source technologies, ensuring privacy, scalability, and independence from expensive proprietary platforms.
 
-## 🛠 Tech Stack
-- **Frontend:** React.js
-- **Backend:** FastAPI
-- **Database:** Firebase
-- **APIs:** Weather API, AI Models
-- **Tools:** Tailwind CSS
+### 🧠 Artificial Intelligence (The Brain)
+- **[Ollama](https://ollama.com/):** We use Ollama as our primary AI orchestration layer, allowing us to run high-performance models locally.
+- **[LLaVA (Large Language-and-Vision Assistant)](https://llava-vl.github.io/):** Our core vision model for disease detection. It processes crop images locally without requiring constant cloud uploads.
+- **[Phi-3 / Mistral]:** Optimized lightweight language models used for generating agricultural advice and processing regional language queries.
+- **Hybrid Fallback:** Integrated with **Google Gemini 2.0 Flash** for high-speed cloud-based edge cases.
 
-## 🏗 System Architecture
-The application follows a streamlined architecture:
-**Frontend (React) → Backend (FastAPI) → AI Models & External APIs → Database (Firebase)**
-The frontend collects user inputs and displays insights. The backend serves as the orchestration layer, connecting to AI models for processing and Firebase for secure data storage, delivering lightning-fast results back to the user.
+### 🌐 Weather & Environment
+- **[Open-Meteo](https://open-meteo.com/):** An open-source weather API that provides hyper-local hourly and daily forecasts without the restrictive costs of commercial providers.
 
-## 🌱 Sustainability Impact
-- **Water Conservation:** Smart irrigation significantly reduces water waste.
-- **Reduced Chemical Usage:** Targeted disease treatment prevents the blanket application of pesticides.
-- **Improved Soil Health:** Optimized fertilizer recommendations maintain soil integrity.
-- **Increased Farmer Income:** Higher yields and lower input costs drive profitability.
+### 💻 Development & Infrastructure
+- **Frontend:** [React.js](https://reactjs.org/) + [Vite](https://vitejs.dev/) + [Tailwind CSS](https://tailwindcss.com/)
+- **Backend:** [Node.js](https://nodejs.org/) & [Express](https://expressjs.com/)
+- **Icons & UI:** [Lucide React](https://lucide.dev/) & [Framer Motion](https://www.framer.com/motion/)
+- **Database/Auth:** [Firebase](https://firebase.google.com/) for secure authentication and cloud synchronization.
 
-## 🎯 Feasibility
-- **Uses Existing APIs and Cloud Services:** Rapid deployment and high reliability.
-- **Low-Cost Implementation:** Designed to be highly affordable and accessible.
-- **Scalable Architecture:** Capable of growing from local communities to nationwide usage.
+---
 
-## 🚀 Future Scope
-- **IoT Integration:** Direct connection with soil moisture sensors and automated irrigation.
-- **More Regional Languages:** Expanding voice and text support for wider accessibility.
-- **Advanced AI Models:** Improved accuracy and broader crop detection libraries.
-- **Government Scheme Integration:** Direct access to subsidies and agricultural programs.
+## ✨ Key Features
+- **📸 Disease Detection:** Snap a photo of a leaf/plant to get an instant diagnosis and treatment plan.
+- **🌤 Smart Weather Hub:** View live temperature, humidity, wind, and UV index with AI-driven risk alerts.
+- **💧 Irrigation Strategy:** Personalized water management based on current climate conditions.
+- **📚 Earthworm (Knowledge Base):** A localized digital library for best practices with "Read Aloud" support.
+- **🤝 AgriConnect:** A social feed for farmers to share updates, ask questions, and like community posts.
 
-## 📸 Screenshots
-*(Add screenshots of your app here)*
+---
 
-## 💻 Installation
+## 🚀 Getting Started
 
-Follow these steps to run KrishiX locally:
+### Prerequisites
+- Node.js (v18+)
+- [Ollama](https://ollama.com/) (to run AI locally)
 
+### Installation
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/maheshMadiwalar18/krishiX.git
@@ -81,11 +62,38 @@ Follow these steps to run KrishiX locally:
    npm install
    ```
 
-3. **Run the project:**
-   ```bash
-   npm run dev
+3. **Set up environment variables:**
+   Create a `.env` file in the root directory:
+   ```env
+   VITE_FIREBASE_API_KEY=your_key
+   GEMINI_API_KEY=your_key
+   ACCUWEATHER_API_KEY=your_key
+   USE_OLLAMA=true
    ```
 
+4. **Run the project:**
+   ```bash
+   # Start the frontend
+   npm run dev
+   
+   # Start the backend (in a separate terminal)
+   npm run server
+   ```
+
+---
+
+## 🌱 Our Vision
+We believe that the future of farming is open. By utilizing open-source models like LLaVA and Open-Meteo, KrishiX ensures that the most advanced agricultural tools remain in the hands of the people who feed the world—the farmers.
+
+---
+
+## 👥 Meet the Team
+- **Hemanth**
+- **Chethan**
+- **Bharath**
+- **Mahesh**
+
+---
 
 ## 📄 License
 This project is licensed under the MIT License.

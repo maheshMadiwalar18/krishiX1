@@ -207,7 +207,17 @@ const translations: Translations = {
   'irr_method': { en: 'Recommended Method', kn: 'ಶಿಫಾರಸು ಮಾಡಿದ ವಿಧಾನ' },
   'irr_reason': { en: 'Reason', kn: 'ಕಾರಣ' },
   'irr_plan': { en: 'Watering Plan', kn: 'ನೀರಾವರಿ ಯೋಜನೆ' },
-  'alert_fill_fields': { en: 'Please fill all required fields before generating the strategy.', kn: 'ಯೋಜನೆ ಸಿದ್ಧಪಡಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು ಎಲ್ಲಾ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.' }
+  'alert_fill_fields': { en: 'Please fill all required fields before generating the strategy.', kn: 'ಯೋಜನೆ ಸಿದ್ಧಪಡಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು ಎಲ್ಲಾ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.' },
+  
+  // Earthworm
+  'earth_view_all': { en: 'View All', kn: 'ಎಲ್ಲವನ್ನೂ ನೋಡಿ' },
+  'earth_view_guide': { en: 'View Full Guide', kn: 'ಪೂರ್ಣ ಮಾಹಿತಿ ನೋಡಿ' },
+  'earth_read_aloud': { en: 'Read Aloud', kn: 'ಓದಿ ಕೇಳಿ' },
+  'earth_stop_reading': { en: 'Stop Reading', kn: 'ಓದುವುದನ್ನು ನಿಲ್ಲಿಸಿ' },
+  'earth_guides': { en: 'Guides', kn: 'ಮಾಹಿತಿಗಳು' },
+  'earth_kb': { en: 'Knowledge Base', kn: 'ಮಾಹಿತಿ ಕೇಂದ್ರ' },
+  'earth_ai': { en: 'Agricultural Intelligence', kn: 'ಕೃಷಿ ಜ್ಞಾನ' },
+  'earth_subtitle': { en: 'Access verified information on government schemes, financial support, and modern farming techniques. Designed for clarity and practical use on the field.', kn: 'ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು, ಆರ್ಥಿಕ ನೆರವು ಮತ್ತು ಆಧುನಿಕ ಕೃಷಿ ವಿಧಾನಗಳ ಬಗ್ಗೆ ಪರಿಶೀಲಿಸಿದ ಮಾಹಿತಿಯನ್ನು ಪಡೆಯಿರಿ. ಸ್ಪಷ್ಟತೆ ಮತ್ತು ಪ್ರಾಯೋಗಿಕ ಬಳಕೆಗಾಗಿ ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.' }
 };
 
 interface LanguageContextType {
