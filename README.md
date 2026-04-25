@@ -4,6 +4,50 @@
 ## 🌍 Overview
 **KrishiX** is a next-generation, climate-smart farming platform designed to provide farmers with real-time, actionable insights. By combining cutting-edge open-source AI with local environmental data, KrishiX offers instant disease detection, smart irrigation guidance, and a bilingual community hub. Our goal is to democratize high-tech agriculture, making it accessible, affordable, and sustainable for every farmer.
 
+### 🏗 Architecture Overview
+```mermaid
+graph TB
+    subgraph "Client Layer (Frontend)"
+        UserApp["React Web App (Vite)"]
+        FAuth["Firebase Auth"]
+        FStore["Firestore / Cloud Sync"]
+    end
+
+    subgraph "Service Layer (Backend)"
+        Server["Node.js / Express Server"]
+    end
+
+    subgraph "Intelligence Layer (AI Models)"
+        subgraph "Local Execution (Ollama)"
+            LLaVA["LLaVA (Vision/Diagnosis)"]
+            Mistral["Mistral/Phi-3 (Agricultural Advice)"]
+        end
+        Gemini["Google Gemini 2.0 (Cloud Fallback)"]
+    end
+
+    subgraph "Data Layer (External APIs)"
+        Weather["Open-Meteo API"]
+        Accu["AccuWeather API"]
+    end
+
+    %% Connections
+    UserApp <--> FAuth
+    UserApp <--> FStore
+    UserApp <==> Server
+    
+    Server <--> LLaVA
+    Server <--> Mistral
+    Server <--> Gemini
+    Server <--> Weather
+    Server <--> Accu
+
+    style UserApp fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style Server fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    style Ollama fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style Gemini fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    style Weather fill:#e0f2f1,stroke:#004d40,stroke-width:2px
+```
+
 ---
 
 ## 💡 The Problem & Our Solution

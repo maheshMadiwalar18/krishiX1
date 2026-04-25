@@ -9,9 +9,8 @@ const router = express.Router();
 // Ollama Config
 const useOllama = process.env.USE_OLLAMA === 'true';
 const ollamaModel = process.env.OLLAMA_MODEL || 'phi3:latest'; 
-const ollamaUrl = 'http://127.0.0.1:11434/api/generate';
 
-console.log("🛠️ [Assistant] Route Initialized", { useOllama, ollamaModel, ollamaUrl });
+console.log("🛠️ [Assistant] Route Initialized", { useOllama, ollamaModel });
 
 // ✅ PERFORMANCE: Simple in-memory cache
 const cache: Record<string, string> = {};
@@ -21,6 +20,7 @@ router.post("/chat", async (req, res) => {
     const { message } = req.body;
 
     if (!message) {
+      console.log("⚠️ [Assistant] Empty message received");
       return res.status(400).json({ reply: "Message required" });
     }
 
@@ -32,78 +32,63 @@ router.post("/chat", async (req, res) => {
 
     let text = "";
 
-    // 1. Try Ollama (Optimized for speed)
+    // 1. Try Ollama (Master Dual-Stack Connection)
     if (useOllama) {
-      console.log(`🤖 [Ollama] Sending request: "${message}"`);
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout for snappier fallback
+      console.log(`🤖 [Assistant] Querying Ollama (${ollamaModel})...`);
+      
+      const urls = ['http://127.0.0.1:11434/api/generate', 'http://localhost:11434/api/generate'];
+      
+      for (const url of urls) {
+        if (text) break;
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(12000), 
+            body: JSON.stringify({
+              model: ollamaModel,
+              prompt: `Answer as KrishiX AI (simple English, max 3 sentences). Question: "${message}"`,
+              stream: false,
+              options: { num_predict: 200, temperature: 0.6, keep_alive: "15m" }
+            })
+          });
 
-        const response = await fetch(ollamaUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          body: JSON.stringify({
-            model: ollamaModel,
-            prompt: `
-              Answer as KrishiX AI (simple English, max 3 sentences, practical advice).
-              Farmer Question: "${message}"
-            `,
-            stream: false,
-            options: {
-              num_predict: 120, // Fast output
-              temperature: 0.6,
-              keep_alive: "10m" // Keep model warm
-            }
-          })
-        });
-
-        clearTimeout(timeoutId);
-
-        if (response.ok) {
-          const data = await response.json() as any;
-          text = data.response;
-          console.log("✅ [Ollama] Response received successfully");
-        } else {
-          console.error(`❌ [Ollama] HTTP Error: ${response.status}`);
+          if (response.ok) {
+            const data = await response.json() as any;
+            text = data.response;
+            console.log(`✅ [Assistant] Response from ${url}`);
+          }
+        } catch (ollamaErr: any) {
+          console.error(`❌ [Assistant] Failed on ${url}:`, ollamaErr.message);
         }
-      } catch (ollamaErr: any) {
-        console.error("❌ [Ollama] Connection failed/timeout:", ollamaErr.message);
       }
     }
 
     // 2. Try Gemini Fallback
-    if (!text) {
-      console.log("💎 [Gemini] Falling back to cloud AI...");
+    if (!text && process.env.GEMINI_API_KEY) {
+      console.log("💎 [Gemini] Calling cloud fallback...");
       try {
-        const prompt = `
-          Answer as KrishiX AI (simple English, max 3 sentences).
-          Farmer Question: "${message}"
-        `;
-
+        const prompt = `Answer as KrishiX AI (simple English, max 3 sentences). Question: "${message}"`;
         text = await generateGeminiText(prompt, "gemini-1.5-flash");
         console.log("✅ [Gemini] Response received");
       } catch (geminiErr: any) {
-        console.error("🔥 [Gemini] Critical failure:", geminiErr.message);
+        console.error("🔥 [Gemini] Error:", geminiErr.message);
       }
     }
 
     if (!text) {
       return res.status(503).json({
-        reply: "Sorry, I am having trouble connecting to my brain. Please try again in 10 seconds."
+        reply: "I'm having a little trouble connecting to my brain right now. Please make sure Ollama is running and try again!"
       });
     }
 
     // ✅ PERFORMANCE: Store in cache
     cache[message] = text;
-
     return res.json({ reply: text });
 
   } catch (error: any) {
-    console.error("🔥 [Critical] Server Error:", error.message);
-    return res.status(500).json({
-      reply: "I am resting right now. Please try again later."
-    });
+    console.error("🔥 [Critical] Assistant Crash:", error.stack || error.message);
+    return res.status(500).json({ reply: "An internal server error occurred." });
   }
 });
 

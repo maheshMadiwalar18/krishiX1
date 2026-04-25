@@ -228,21 +228,27 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
-                  <label className={cn(
-                    "flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border border-border rounded-2xl font-black text-sm transition-all shadow-sm group/btn",
-                    isScanning ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-bg active:scale-95"
-                  )}>
+                  <label 
+                    htmlFor="file-upload"
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border border-border rounded-2xl font-black text-sm transition-all shadow-sm group/btn",
+                      isScanning ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-bg active:scale-95"
+                    )}
+                  >
                     <Upload size={18} className="text-primary group-hover/btn:-translate-y-1 transition-transform" />
                     {t('btn_choose_file')}
-                    <input type="file" className="hidden" accept="image/*" onChange={handleUpload} disabled={isScanning} />
+                    <input id="file-upload" type="file" className="hidden" accept="image/*" onChange={handleUpload} disabled={isScanning} />
                   </label>
-                  <label className={cn(
-                    "flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border border-border rounded-2xl font-black text-sm transition-all shadow-sm group/btn",
-                    isScanning ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-bg active:scale-95"
-                  )}>
+                  <label 
+                    htmlFor="camera-upload"
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white border border-border rounded-2xl font-black text-sm transition-all shadow-sm group/btn",
+                      isScanning ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:bg-bg active:scale-95"
+                    )}
+                  >
                     <Camera size={18} className="text-primary group-hover/btn:scale-110 transition-transform" />
                     {t('btn_use_camera')}
-                    <input type="file" className="hidden" accept="image/*" capture="environment" onChange={handleUpload} disabled={isScanning} />
+                    <input id="camera-upload" type="file" className="hidden" accept="image/*" capture="environment" onChange={handleUpload} disabled={isScanning} />
                   </label>
                 </div>
               </>
@@ -386,34 +392,34 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
                   {/* Status Message Box */}
                   <div className={cn(
                     "p-4 rounded-2xl border-l-4 mb-2 flex gap-4 items-center",
-                    result.status === 'HEALTHY' ? "bg-green-50/50 border-green-500 text-green-800" :
-                    result.status === 'PEST' ? "bg-purple-50/50 border-purple-500 text-purple-800" :
-                    result.status === 'NOT SURE' ? "bg-orange-50/50 border-orange-500 text-orange-800" :
-                    result.actionLevel === 'High' ? "bg-red-50/50 border-red-500 text-red-800" : "bg-blue-50/50 border-blue-500 text-blue-800"
+                    result.status?.toUpperCase() === 'HEALTHY' ? "bg-green-50/50 border-green-500 text-green-800" :
+                    result.status?.toUpperCase() === 'PEST' ? "bg-purple-50/50 border-purple-500 text-purple-800" :
+                    result.status?.toUpperCase() === 'NOT SURE' ? "bg-orange-50/50 border-orange-500 text-orange-800" :
+                    result.actionLevel?.toUpperCase() === 'HIGH' ? "bg-red-50/50 border-red-500 text-red-800" : "bg-blue-50/50 border-blue-500 text-blue-800"
                   )}>
                     <div className="shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
-                      {result.status === 'PEST' ? (
+                      {result.status?.toUpperCase() === 'PEST' ? (
                         <Bug size={20} className="text-purple-500" />
                       ) : (
                         <AlertCircle size={20} className={cn(
-                           result.status === 'HEALTHY' ? "text-green-500" :
-                           result.status === 'NOT SURE' ? "text-orange-500" :
-                           result.actionLevel === 'High' ? "text-red-500" : "text-blue-500"
+                           result.status?.toUpperCase() === 'HEALTHY' ? "text-green-500" :
+                           result.status?.toUpperCase() === 'NOT SURE' ? "text-orange-500" :
+                           result.actionLevel?.toUpperCase() === 'HIGH' ? "text-red-500" : "text-blue-500"
                         )} />
                       )}
                     </div>
                     <p className="text-sm font-bold leading-snug">
                       {result.message || (
-                        result.status === 'HEALTHY' ? "Plant looks healthy. No disease or pests detected." :
-                        result.status === 'PEST' ? "Pest Attack Detected! Visible damage from insects found on the plant." :
-                        result.status === 'NOT SURE' ? "Image unclear. Please upload a closer or clearer image." :
+                        result.status?.toUpperCase() === 'HEALTHY' ? "Plant looks healthy. No disease or pests detected." :
+                        result.status?.toUpperCase() === 'PEST' ? "Pest Attack Detected! Visible damage from insects found on the plant." :
+                        result.status?.toUpperCase() === 'NOT SURE' ? "Image unclear. Please upload a closer or clearer image." :
                         "Disease detected. Please follow the treatment steps below."
                       )}
                     </p>
                   </div>
                 </div>
 
-                {(result.status === 'DISEASED' || result.status === 'PEST') && (
+                {(result.status?.toUpperCase() === 'DISEASED' || result.status?.toUpperCase() === 'PEST' || result.status?.toUpperCase() === 'DISEASE') && (
                   <>
                     <div className="space-y-4">
                       <h3 className="text-xl font-black text-text flex items-center gap-2 pl-2">

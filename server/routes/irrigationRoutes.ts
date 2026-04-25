@@ -1,130 +1,121 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { generateGeminiText, toGeminiError } from '../gemini.ts';
+import { generateGeminiText } from '../gemini.ts';
 
 dotenv.config();
 
 const router = express.Router();
 
-router.get('/ping', (req, res) => {
-  res.json({ message: "Irrigation router is alive" });
-});
+// ✅ PERFORMANCE: Simple in-memory cache for irrigation strategies
+const cache: Record<string, any> = {};
 
 router.post('/strategy', async (req, res) => {
   try {
-    console.log("🌊 [Irrigation API] Incoming Request:", req.body);
     const { crop, soilType, irrigationType, plantStage, landSize } = req.body;
 
-    // 1. VALIDATE REQUEST BODY
     if (!crop || !soilType || !irrigationType || !plantStage || !landSize) {
-      console.warn("⚠️ Missing required fields in request:", req.body);
-      return res.status(400).json({
-        success: false,
-        error: "All fields are required"
-      });
+      return res.status(400).json({ success: false, error: "All fields are required" });
+    }
+
+    // ✅ PERFORMANCE: Cache check
+    const cacheKey = `${crop}-${soilType}-${irrigationType}-${plantStage}-${landSize}`;
+    if (cache[cacheKey]) {
+      console.log("⚡ [Irrigation Cache] Serving instant strategy");
+      return res.json(cache[cacheKey]);
     }
 
     const prompt = `
       You are an agricultural irrigation expert.
-      
-      Farmer Details:
-      Crop: ${crop}
-      Soil Type: ${soilType}
-      Irrigation Type: ${irrigationType}
-      Plant Stage: ${plantStage}
-      Land Size: ${landSize} acres
-      
-      Generate:
-      1. Recommended irrigation method
-      2. Reason
-      3. Watering plan
-      
-      Return ONLY a JSON object with:
-      - recommendedMethod: String
-      - reason: String
-      - plan: String
-      
-      Keep response short and practical.
-      Format: {"recommendedMethod": "...", "reason": "...", "plan": "..."}
+      Crop: ${crop}, Soil: ${soilType}, System: ${irrigationType}, Stage: ${plantStage}, Size: ${landSize} acres.
+      Return ONLY a JSON object: {"recommendedMethod": "...", "reason": "...", "plan": "..."}
+      Keep it practical for a farmer.
     `;
 
-    let text = "";
+    let resultData = null;
 
-    // 1. Try Ollama if enabled
+    // 1. Try Ollama (Master Dual-Stack Connection)
     if (process.env.USE_OLLAMA === 'true') {
-      const ollamaModel = process.env.OLLAMA_MODEL || 'phi3';
-      console.log(`🤖 Using Ollama (${ollamaModel}) for Irrigation...`);
-      try {
-        const response = await fetch('http://127.0.0.1:11434/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: ollamaModel,
-            prompt: prompt,
-            stream: false
-          })
-        });
+      const ollamaModel = process.env.OLLAMA_MODEL || 'phi3:latest';
+      console.log(`🤖 [Irrigation] Querying Ollama (${ollamaModel})...`);
+      
+      const urls = ['http://127.0.0.1:11434/api/generate', 'http://localhost:11434/api/generate'];
+      
+      for (const url of urls) {
+        if (resultData) break;
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(15000), // 15s timeout for text
+            body: JSON.stringify({
+              model: ollamaModel,
+              prompt: prompt,
+              stream: false,
+              options: { temperature: 0.3, num_predict: 250, keep_alive: "15m" }
+            })
+          });
 
-        if (response.ok) {
-          const data = await response.json() as any;
-          text = data.response;
-          console.log("✅ Ollama success");
+          if (response.ok) {
+            const data = await response.json() as any;
+            const text = data.response;
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+              resultData = JSON.parse(jsonMatch[0]);
+              console.log(`✅ [Irrigation] Success from ${url}`);
+            }
+          }
+        } catch (err: any) {
+          console.error(`❌ [Irrigation] Failed on ${url}:`, err.message);
         }
-      } catch (ollamaErr: any) {
-        console.error("❌ Ollama failed:", ollamaErr.message);
       }
     }
 
     // 2. Try Gemini Fallback
-    if (!text && process.env.GEMINI_API_KEY) {
-      console.log("💎 Calling Gemini for Irrigation...");
+    if (!resultData && process.env.GEMINI_API_KEY) {
+      console.log("💎 [Gemini] Calling cloud fallback (2.0-flash)...");
       try {
-        text = await generateGeminiText(prompt, 'gemini-2.0-flash');
-        console.log("✅ Gemini success");
-      } catch (geminiErr: any) {
-        console.error("🔥 Gemini failed:", geminiErr.message);
+        const text = await generateGeminiText(prompt, 'gemini-2.0-flash');
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          resultData = JSON.parse(jsonMatch[0]);
+          console.log("✅ [Gemini] Success");
+        }
+      } catch (err: any) {
+        console.error("🔥 [Gemini] Failed:", err.message);
       }
     }
 
-    // 3. Final Fallback if AI fails
-    if (!text || text.trim() === "") {
-      console.warn("⚠️ All AI services failed - using static fallback");
-      return res.json({
-        recommendedMethod: irrigationType || "Drip Irrigation",
-        reason: "Suitable for efficient water usage in this soil type.",
-        plan: "Water early morning every alternate day for 30-40 minutes."
-      });
-    }
-    
-    let results;
-    try {
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      results = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
-    } catch (parseError) {
-      console.error("❌ JSON Parse Error:", parseError);
+    // 3. Final Safe Response
+    if (!resultData) {
+      resultData = {
+        recommendedMethod: irrigationType || "Precision Drip Irrigation",
+        reason: `Based on your ${crop} crop and ${soilType} soil, we recommend an efficient watering schedule to maximize yield.`,
+        plan: "Water early morning for 45 minutes every 2 days. Monitor soil moisture at root level."
+      };
     }
 
-    if (!results) {
-      return res.json({
-        recommendedMethod: irrigationType || "Standard Irrigation",
-        reason: "General irrigation logic for this crop type.",
-        plan: "Check soil moisture daily and water when dry."
-      });
-    }
+    // ✅ STABILITY: Ensure all fields are strings to prevent React crashes
+    const sanitizedResult = {
+      recommendedMethod: typeof resultData.recommendedMethod === 'string' 
+        ? resultData.recommendedMethod 
+        : (resultData.method || irrigationType || "Smart Irrigation"),
+      reason: typeof resultData.reason === 'string' 
+        ? resultData.reason 
+        : "Optimized for your specific crop and soil conditions.",
+      plan: typeof resultData.plan === 'string' 
+        ? resultData.plan 
+        : (typeof resultData.plan === 'object' 
+            ? Object.entries(resultData.plan).map(([k, v]) => `${k}: ${v}`).join('. ') 
+            : "Follow a consistent watering schedule.")
+    };
 
-    console.log("✅ Sending irrigation strategy:", results);
-    res.json({
-      recommendedMethod: results.recommendedMethod || results.method || "Smart Irrigation",
-      reason: results.reason || "Optimized for your current farm conditions.",
-      plan: results.plan || "Follow a consistent schedule based on soil dampness."
-    });
+    // ✅ PERFORMANCE: Cache result
+    cache[cacheKey] = sanitizedResult;
+    res.json(sanitizedResult);
 
   } catch (error: any) {
-    console.error("❌ IRRIGATION API ERROR:", error);
-    res.status(500).json({
-      success: false,
-      error: error.message || "Unknown server error"
-    });
+    console.error("🔥 [Critical] Irrigation Error:", error.message);
+    res.status(500).json({ success: false, error: "Internal server error" });
   }
 });
 

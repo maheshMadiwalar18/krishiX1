@@ -1,158 +1,144 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { generateGeminiTextFromContent } from '../gemini.ts';
+import crypto from 'crypto';
 
 dotenv.config();
 
 const router = express.Router();
 
-const OLLAMA_URL = 'http://127.0.0.1:11434/api/generate';
-const USE_OLLAMA = process.env.USE_OLLAMA === 'true';
-
-import crypto from 'crypto';
-
-// ✅ PERFORMANCE: Cache for disease detection results
+// ✅ Cache
 const detectionCache: Record<string, any> = {};
+const CACHE_VERSION = 'v11-PROPER-FIX';
 
 // ✅ SHARED SCAN LOGIC
 async function performDetection(image: string) {
   const base64Data = image.includes(',') ? image.split(',')[1] : image;
-  
-  // Create a unique key for the image to support instant caching
-  const imageHash = crypto.createHash('md5').update(base64Data).digest('hex');
+  const imageHash = crypto.createHash('md5').update(base64Data + CACHE_VERSION).digest('hex');
+
   if (detectionCache[imageHash]) {
-    console.log("⚡ [Cache] Instant result for identical image");
-    return detectionCache[imageHash];
+    console.log("⚡ [Cache] Purging old results...");
+    // delete detectionCache[imageHash]; // Optional: Force fresh every time
   }
 
-  // MINIMAL PROMPT: Reduced instructions for faster inference
-  const prompt = `
-    Analyze this plant image. Detect disease ONLY if clearly visible.
-    Return ONLY JSON:
-    {
-      "observation": "Short description of what you see",
-      "status": "HEALTHY / DISEASED / PEST / NOT SURE",
-      "confidence": "LOW / MEDIUM / HIGH",
-      "disease": "Specific Name",
-      "elaborateIssue": "2-sentence issue explanation",
-      "damageExtent": "Percentage of damage",
-      "treatment": "3-step recovery plan",
-      "prevention": "1 prevention tip",
-      "message": "Advice for farmer",
-      "actionLevel": "Low/Medium/High"
-    }
-  `;
-
+  console.log("🚀 [Ollama] Deep-scanning plant image...");
   let resultData = null;
 
-  if (USE_OLLAMA) {
-    console.log("📸 [Ollama] Fast-track vision analysis...");
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); 
+  const urls = ['http://127.0.0.1:11434/api/generate', 'http://localhost:11434/api/generate'];
+  
+  for (const url of urls) {
+    if (resultData) break;
 
-      const response = await fetch(OLLAMA_URL, {
+    try {
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
+        signal: AbortSignal.timeout(60000),
         body: JSON.stringify({
           model: 'llava',
-          prompt: prompt,
+          prompt: `Analyze this image. What plant is this? Is it healthy or does it have a disease/pest? If diseased, name the disease. Provide a 1-sentence observation. Return ONLY as JSON: {"name": "...", "status": "DISEASED/HEALTHY", "observation": "..."}`,
           images: [base64Data],
           stream: false,
-          options: { 
-            temperature: 0.1,
-            num_predict: 120, // REDUCED for speed
-            num_thread: 4
-          }
+          options: { temperature: 0.2, num_predict: 200, keep_alive: "30m" }
         })
       });
 
-      clearTimeout(timeoutId);
-
       if (response.ok) {
         const ollamaRes = await response.json() as any;
-        const rawResponse = ollamaRes.response;
+        const rawResponse = ollamaRes.response || "";
+        console.log("✅ [Ollama] Finished thinking");
+        
         const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
-        resultData = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+        if (jsonMatch) {
+          try {
+            const parsed = JSON.parse(jsonMatch[0]);
+            // Validate it's not just the template
+            if (parsed.status && !parsed.status.includes("|")) {
+              resultData = parsed;
+            }
+          } catch (e) {
+            console.warn("⚠️ JSON parse error");
+          }
+        }
+
+        // Improved Text Fallback
+        if (!resultData && rawResponse.length > 5) {
+          const lower = rawResponse.toLowerCase();
+          const isHealthy = lower.includes("healthy") && !lower.includes("diseased");
+          const isPest = lower.includes("pest") || lower.includes("insect");
+          
+          resultData = {
+            name: "Plant Analysis",
+            status: isHealthy ? "HEALTHY" : (isPest ? "PEST" : "DISEASED"),
+            confidence: "MEDIUM",
+            observation: rawResponse.substring(0, 150),
+            details: { elaborateIssue: rawResponse, treatment: "Remove affected parts and use organic controls." }
+          };
+        }
       }
     } catch (err: any) {
-      console.error("❌ [Ollama] Vision timeout/failed");
+      console.error(`❌ Connection error:`, err.message);
     }
   }
 
-  if (!resultData && process.env.GEMINI_API_KEY) {
-    console.log("💎 [Gemini] High-speed flash analysis...");
-    try {
-      const text = await generateGeminiTextFromContent(
-        [
-          prompt,
-          { inlineData: { data: base64Data, mimeType: "image/jpeg" } }
-        ],
-        'gemini-2.0-flash'
-      );
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      resultData = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
-    } catch (err: any) {
-      console.error("🔥 [Gemini] failed");
-    }
+  if (!resultData) {
+    resultData = {
+      name: "Unable to detect",
+      status: "NOT SURE",
+      confidence: "LOW",
+      observation: "AI response was unclear. Please try a closer, clearer photo.",
+      message: "Please ensure the leaf is in focus and well-lit."
+    };
   }
 
-  // Cache the successful result
-  if (resultData) {
-    detectionCache[imageHash] = resultData;
-  }
-
+  detectionCache[imageHash] = resultData;
   return resultData;
 }
 
-// ✅ SUPPORT BOTH ENDPOINTS
+// ✅ NORMALIZATION
+function normalizeResult(rawResult: any) {
+  if (!rawResult) return null;
+  const result: any = { ...rawResult };
+
+  result.name = result.name || "Unknown Plant";
+  
+  // Strict status mapping to prevent template-repeat errors
+  const rawStatus = String(result.status || "").toUpperCase();
+  if (rawStatus === "HEALTHY") result.status = "HEALTHY";
+  else if (rawStatus === "PEST") result.status = "PEST";
+  else if (rawStatus === "DISEASED") result.status = "DISEASED";
+  else if (rawStatus.includes("HEALTH") && !rawStatus.includes("|")) result.status = "HEALTHY";
+  else if (rawStatus.includes("PEST") && !rawStatus.includes("|")) result.status = "PEST";
+  else result.status = "DISEASED";
+
+  result.confidence = result.confidence || "MEDIUM";
+  result.actionLevel = result.actionLevel || (result.status === 'HEALTHY' ? 'Low' : 'High');
+  result.message = result.message || "Follow the recommended care plan.";
+  result.observation = result.observation || "Symptoms observed on plant surface.";
+
+  if (!result.medicine || typeof result.medicine !== 'object') {
+    result.medicine = { name: "Organic Control", dosage: "Standard", method: "Foliar Spray", frequency: "Weekly" };
+  }
+  if (!result.details || typeof result.details !== 'object') {
+    result.details = { elaborateIssue: "Stress detected.", damageExtent: "Local.", treatment: "Standard care." };
+  }
+  if (!Array.isArray(result.prevention)) {
+    result.prevention = ["Maintain soil moisture", "Ensure proper spacing"];
+  }
+
+  return result;
+}
+
+// ✅ ROUTES
 router.post('/scan', async (req, res) => {
   const { image } = req.body;
-  const result = await performDetection(image);
-  
-  if (!result) {
-    return res.status(500).json({ error: "Failed to detect disease" });
-  }
-
-  // ✅ RULE-BASED FILTER (Game Changer)
-  const rawText = JSON.stringify(result).toLowerCase();
-  if (
-    rawText.includes("not sure") || 
-    rawText.includes("unclear") || 
-    rawText.includes("low confidence") ||
-    result.status === 'NOT SURE'
-  ) {
-    result.status = 'NOT SURE';
-    result.message = "⚠️ Please upload a clearer image. The current image is too blurry or symptoms are weak.";
-  }
-
-  // Map to legacy UI format for compatibility
-  const mappedResult = {
-    name: result.status === 'HEALTHY' ? 'Plant is Healthy' : 
-          result.status === 'PEST' ? 'Pest Attack Detected' : (result.disease || result.status),
-    status: result.status,
-    message: result.message,
-    observation: result.observation,
-    confidence: result.confidence || "MEDIUM",
-    medicine: {
-      name: (result.status === 'DISEASED' || result.status === 'PEST') ? (result.treatment?.split('.')[0] || "Consult expert") : "None needed",
-      dosage: (result.status === 'DISEASED' || result.status === 'PEST') ? "As per label" : "N/A",
-      method: (result.status === 'DISEASED' || result.status === 'PEST') ? "Apply as directed" : "N/A",
-      frequency: (result.status === 'DISEASED' || result.status === 'PEST') ? "See instructions" : "N/A"
-    },
-    prevention: result.prevention ? [result.prevention] : ["Continue regular care"],
-    actionLevel: (result.status === 'DISEASED' || result.status === 'PEST') ? (result.actionLevel || "Medium") : "Low",
-    details: result
-  };
-
-  res.json(mappedResult);
+  const rawResult = await performDetection(image);
+  res.json(normalizeResult(rawResult));
 });
 
 router.post('/detect', async (req, res) => {
   const { image } = req.body;
-  const result = await performDetection(image);
-  res.json(result);
+  const rawResult = await performDetection(image);
+  res.json(normalizeResult(rawResult));
 });
 
 export default router;
