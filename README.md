@@ -84,6 +84,7 @@ KrishiX is built on a foundation of powerful open-source technologies, ensuring 
 - **🌤 Smart Weather Hub:** View live temperature, humidity, wind, and UV index with AI-driven risk alerts.
 - **💧 Irrigation Strategy:** Personalized water management based on current climate conditions.
 - **📚 Earthworm (Knowledge Base):** A localized digital library for best practices with "Read Aloud" support.
+- **🌱 Sustainable Farming Guides:** Discover modern techniques like Rainwater Harvesting, Agroforestry, Composting, and Zero-Budget Natural Farming.
 - **🤝 AgriConnect:** A social feed for farmers to share updates, ask questions, and like community posts.
 
 ---
