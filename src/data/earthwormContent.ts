@@ -421,6 +421,49 @@ Mulching is like putting a blanket over your soil. You can use dry straw, leaves
 ಮಲ್ಚಿಂಗ್ ಎನ್ನುವುದು ಮಣ್ಣಿನ ಮೇಲೆ ಹೊದಿಕೆ ಹಾಕಿದಂತೆ. ಇದು ಸೂರ್ಯನ ಶಾಖದಿಂದ ನೀರು ಆವಿಯಾಗುವುದನ್ನು ತಡೆಯುತ್ತದೆ.
           `
         }
+      },
+      {
+        id: 'rainwater-harvesting',
+        title: { en: 'Rainwater Harvesting', kn: 'ಮಳೆನೀರು ಕೊಯ್ಲು' },
+        summary: { en: 'Catch and save rainwater for the dry months.', kn: 'ಒಣಗಿದ ತಿಂಗಳುಗಳಿಗಾಗಿ ಮಳೆನೀರನ್ನು ಸಂಗ್ರಹಿಸಿ ಉಳಿಸಿ.' },
+        content: {
+          en: `
+### Every Drop Counts
+Rain is free water from the sky, but most of it runs off into the rivers. By digging a small pond (Krishi Bhagya scheme helps with this) or directing water to your borewell, you can save this water.
+
+### Benefits:
+- **Recharge Borewells**: The water goes deep into the ground, raising the water table.
+- **Dry Season Supply**: When summer comes, you will still have water for your crops.
+
+### ಕನ್ನಡ ಆವೃತ್ತಿ (Kannada Version)
+ಮಳೆನೀರು ಉಚಿತವಾಗಿ ಸಿಗುವ ಸಂಪನ್ಮೂಲ. ಕೃಷಿ ಹೊಂಡಗಳನ್ನು ನಿರ್ಮಿಸುವ ಮೂಲಕ ಅಥವಾ ಬೋರ್‌ವೆಲ್‌ಗಳಿಗೆ ಮರುಪೂರಣ ಮಾಡುವ ಮೂಲಕ ಮಳೆನೀರನ್ನು ಸಂಗ್ರಹಿಸಬಹುದು. ಇದು ಅಂತರ್ಜಲ ಮಟ್ಟವನ್ನು ಹೆಚ್ಚಿಸುತ್ತದೆ ಮತ್ತು ಬೇಸಿಗೆಯಲ್ಲಿ ಬೆಳೆಗಳಿಗೆ ನೀರು ಒದಗಿಸುತ್ತದೆ.
+          `,
+          kn: `
+### ಪ್ರತಿ ಹನಿಯೂ ಮುಖ್ಯ
+ಮಳೆನೀರು ಉಚಿತ ನೀರು, ಆದರೆ ಹೆಚ್ಚಿನವು ನದಿಗಳಿಗೆ ಹರಿದುಹೋಗುತ್ತದೆ. ಸಣ್ಣ ಹೊಂಡವನ್ನು ತೋಡುವ ಮೂಲಕ ಈ ನೀರನ್ನು ಉಳಿಸಬಹುದು.
+          `
+        }
+      },
+      {
+        id: 'agroforestry',
+        title: { en: 'Agroforestry', kn: 'ಕೃಷಿ ಅರಣ್ಯ' },
+        summary: { en: 'Grow trees along with your crops for extra income.', kn: 'ಹೆಚ್ಚುವರಿ ಆದಾಯಕ್ಕಾಗಿ ಬೆಳೆಗಳ ಜೊತೆಗೆ ಮರಗಳನ್ನು ಬೆಳೆಸಿ.' },
+        content: {
+          en: `
+### Trees are Friends
+Planting useful trees (like Teak, Sandalwood, or fruit trees) on the borders of your farm doesn't stop your regular crops from growing. In fact, they act as a windbreak and protect your crops from strong winds.
+
+### Long Term Wealth:
+Think of these trees as a fixed deposit in the bank. After 10 or 15 years, selling the timber or fruits will give you a huge amount of money for things like building a house or a wedding.
+
+### ಕನ್ನಡ ಆವೃತ್ತಿ (Kannada Version)
+ನಿಮ್ಮ ಜಮೀನಿನ ಬದುಗಳಲ್ಲಿ ತೇಗ, ಶ್ರೀಗಂಧ ಅಥವಾ ಹಣ್ಣಿನ ಮರಗಳನ್ನು ಬೆಳೆಸುವುದು ಉತ್ತಮ. ಇವು ಗಾಳಿತಡೆಯಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತವೆ. 10-15 ವರ್ಷಗಳ ನಂತರ ಈ ಮರಗಳು ಬ್ಯಾಂಕ್ ಫಿಕ್ಸೆಡ್ ಡೆಪಾಸಿಟ್ ನಂತೆ ದೊಡ್ಡ ಮೊತ್ತದ ಆದಾಯವನ್ನು ನೀಡುತ್ತವೆ.
+          `,
+          kn: `
+### ಮರಗಳು ನಮ್ಮ ಸ್ನೇಹಿತರು
+ನಿಮ್ಮ ಹೊಲದ ಅಂಚುಗಳಲ್ಲಿ ಉಪಯುಕ್ತ ಮರಗಳನ್ನು (ತೇಗ, ಶ್ರೀಗಂಧದಂತಹ) ನೆಡುವುದು ನಿಮ್ಮ ನಿಯಮಿತ ಬೆಳೆಗಳನ್ನು ತಡೆಯುವುದಿಲ್ಲ.
+          `
+        }
       }
     ]
   },
