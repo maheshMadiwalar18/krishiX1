@@ -11,6 +11,12 @@ import planningRoutes from './routes/planningRoutes.js';
 
 import cors from 'cors';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 dotenv.config();
 
 const app = express();
@@ -34,7 +40,7 @@ app.use((err: any, _req: any, res: any, next: any) => {
   return next(err);
 });
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/disease', diseaseRoutes);
 app.use('/api/disease-detect', diseaseRoutes); // Alias for new feature
@@ -47,9 +53,14 @@ app.use('/api/community', communityRoutes);
 app.use('/api/planning', planningRoutes);
 app.use('/api/crop', planningRoutes); // ⚡ Alias for standardized access
 
-// Base route
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the AgriGuru API' });
+// ✅ SERVE STATIC FILES IN PRODUCTION
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// ✅ CATCH-ALL ROUTE FOR REACT ROUTER
+app.get('*', (req, res) => {
+  if (req.url.startsWith('/api')) return res.status(404).json({ error: 'API route not found' });
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.use((err: any, _req: any, res: any, _next: any) => {
@@ -60,5 +71,4 @@ app.use((err: any, _req: any, res: any, _next: any) => {
 // ✅ 3. LISTEN ON 0.0.0.0 FOR NETWORK ACCESS
 app.listen(Number(PORT), "0.0.0.0", () => {
   console.log(`🚀 Server ready on http://0.0.0.0:${PORT}`);
-  console.log(`🔗 Local access: http://localhost:${PORT}`);
 });
