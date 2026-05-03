@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { generateGeminiText } from '../gemini.ts';
+import { generateOpenRouterText } from '../openrouter.ts';
 
 dotenv.config();
 
@@ -8,6 +9,7 @@ const router = express.Router();
 
 const OLLAMA_URL = 'http://127.0.0.1:11434/api/generate';
 const USE_OLLAMA = process.env.USE_OLLAMA === 'true';
+const USE_OPENROUTER = process.env.USE_OPENROUTER === 'true';
 const OLLAMA_MODEL = 'phi3'; // ⚡ Forced fast model
 
 // ⚡ Simple In-Memory Cache
@@ -54,7 +56,22 @@ router.post('/strategy', async (req, res) => {
     }
   }
 
-  // 2. Try Ollama Fallback
+  // 2. Try OpenRouter
+  if (!results && USE_OPENROUTER) {
+    try {
+      console.log("🚀 Calling OpenRouter (google/gemini-2.0-flash-001)...");
+      const text = await generateOpenRouterText(prompt);
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        results = JSON.parse(jsonMatch[0]);
+        console.log("✅ OpenRouter Response Parsed successfully");
+      }
+    } catch (err: any) {
+      console.error("❌ OpenRouter failed:", err.message);
+    }
+  }
+
+  // 3. Try Ollama Fallback
   if (!results && USE_OLLAMA) {
     try {
       console.log("🧠 Falling back to Ollama (phi3)...");
@@ -83,30 +100,31 @@ router.post('/strategy', async (req, res) => {
     console.log("⚠️ Using internal fallback data");
     results = {
       success: true,
+      summaryTip: "AI service is currently busy. Showing standard recommendations for your region.",
       crops: [
         {
-          name: "Tomato",
+          name: "Tomato (Standard)",
           yield: "15-20 Tons/Acre",
           profit: 128000 * (parseFloat(landSize) || 1),
           risk: "Medium",
           waterNeed: "Moderate",
-          insight: "Thrives in red soil and Kharif season.",
-          rotationBenefit: "Fixes nitrogen after Maize.",
+          insight: "A reliable choice for your soil type based on historical regional data.",
+          rotationBenefit: "Helps in nutrient restoration after Maize.",
           tag: "most_profitable",
           expense: { seeds: "₹4,500", fertilizer: "₹8,000", labor: "₹15,000", water: "₹2,500" },
           plan: { sowing: "June - July", tips: ["Regular staking required", "Monitor for early blight"] }
         },
         {
-          name: "Ragi",
+          name: "Ragi (Standard)",
           yield: "1.2 Tons/Acre",
           profit: 30000 * (parseFloat(landSize) || 1),
           risk: "Low",
           waterNeed: "Low",
-          insight: "Drought resistant.",
-          rotationBenefit: "Breaks pest cycles.",
+          insight: "Drought resistant and highly stable.",
+          rotationBenefit: "Excellent for soil structure after previous crops.",
           tag: "water_efficient",
           expense: { seeds: "₹800", fertilizer: "₹2,500", labor: "₹6,000", water: "₹1,000" },
-          plan: { sowing: "July", tips: ["Seed treatment with Azospirillum", "Row planting for better yield"] }
+          plan: { sowing: "July", tips: ["Seed treatment with Azospirillum", "Row planting"] }
         }
       ]
     };

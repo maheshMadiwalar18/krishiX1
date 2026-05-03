@@ -1,6 +1,6 @@
 import React from 'react';
 import { Sparkles, ArrowRight } from 'lucide-react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 interface HeroProps {
@@ -12,16 +12,48 @@ interface HeroProps {
 
 export default function Hero({ isLoggedIn, onLogin, onDashboard, onAssistant }: HeroProps) {
   const { t } = useLanguage();
+  const [currentImage, setCurrentImage] = React.useState(0);
+  const images = [
+    '/home1.png',
+    '/home2.png',
+    '/home3.png'
+  ];
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [images.length]);
 
   return (
     <section className="relative h-[650px] -mt-24 flex items-center overflow-hidden">
       <div className="absolute inset-0">
-        <img 
-          src="/hero-bg-v2.png" 
-          className="w-full h-full object-cover scale-105 animate-slow-zoom"
-          alt="Farmland background"
-        />
+        <AnimatePresence mode="wait">
+          <motion.img 
+            key={images[currentImage]}
+            src={images[currentImage]} 
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1.05 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+            className="w-full h-full object-cover"
+            alt="AgriGuru Hero"
+          />
+        </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80" />
+        
+        {/* Carousel Indicators */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+          {images.map((_, i) => (
+            <div 
+              key={i} 
+              className={`h-1 transition-all duration-500 rounded-full ${
+                currentImage === i ? 'w-8 bg-primary' : 'w-2 bg-white/30'
+              }`} 
+            />
+          ))}
+        </div>
       </div>
       
       <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-8 w-full text-center">

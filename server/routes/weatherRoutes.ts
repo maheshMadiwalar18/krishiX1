@@ -1,12 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { generateGeminiText } from '../gemini.ts';
+import { generateOpenRouterText } from '../openrouter.ts';
 
 dotenv.config();
 
 const router = express.Router();
 const OLLAMA_URL = 'http://127.0.0.1:11434/api/generate';
 const USE_OLLAMA = process.env.USE_OLLAMA === 'true';
+const USE_OPENROUTER = process.env.USE_OPENROUTER === 'true';
 
 // ✅ PERFORMANCE: Cache for climate predictions to avoid redundant AI calls
 const climateCache: Record<string, any> = {};
@@ -118,6 +120,18 @@ async function getClimatePrediction(temp: number, rain: number, humidity: number
       }
     } catch (e) {
       console.error("❌ [Ollama] Weather Prediction failed/timeout");
+    }
+  }
+  
+  if (!aiResult && USE_OPENROUTER) {
+    console.log("🚀 [OpenRouter] Predicting climate risks...");
+    try {
+      const text = await generateOpenRouterText(prompt);
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      aiResult = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+      console.log("✅ [OpenRouter] Weather prediction success");
+    } catch (e) {
+      console.error("❌ [OpenRouter] Weather Prediction failed");
     }
   }
 

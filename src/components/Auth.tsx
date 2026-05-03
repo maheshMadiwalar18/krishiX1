@@ -67,6 +67,12 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);
+        // Sync with backend session
+        await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(userCredential.user, { displayName: name });
@@ -78,6 +84,12 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
           location,
           primaryCrop: primaryCrop || "Not specified",
           createdAt: new Date().toISOString()
+        });
+        // Sync with backend session
+        await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password, phone, location, primaryCrop })
         });
       }
       
@@ -200,8 +212,8 @@ export default function Auth({ onLoginSuccess }: AuthProps) {
                  <Sprout size={28} strokeWidth={2.5} />
                </div>
                <span className="text-2xl font-black tracking-tight flex items-center justify-center mt-2">
-                 <span className="text-primary tracking-tighter">Krushi</span>
-                 <span className="text-primary-light">X</span>
+                 <span className="text-primary tracking-tighter">Agri</span>
+                 <span className="text-primary-light">Guru</span>
                </span>
             </div>
             <button 

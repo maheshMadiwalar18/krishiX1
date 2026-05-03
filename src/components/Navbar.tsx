@@ -1,6 +1,8 @@
 import React from 'react';
 import { Sprout, Bell, User, LogIn, Bug, CloudSun, BookOpen, Sparkles, Droplet, Timer, Users } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { cn } from '../lib/utils';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface NavbarProps {
@@ -27,57 +29,50 @@ export default function Navbar({ isLoggedIn, onLogin, onLogout, onHome, onNaviga
   ] as const;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-xl border-b border-border z-30 px-4 md:px-8 flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 h-20 bg-white/70 backdrop-blur-2xl border-b border-border/50 z-30 px-4 md:px-8 flex items-center justify-between shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
       <div className="flex items-center gap-4 md:gap-10">
         <div className="flex items-center gap-2 cursor-pointer" onClick={onHome}>
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
             <Sprout size={18} strokeWidth={2.5} />
           </div>
           <span className="text-xl font-black tracking-tight flex items-center">
-            <span className="text-primary tracking-tighter">Krushi</span>
-            <span className="text-primary-light">X</span>
+            <span className="text-primary tracking-tighter">Agri</span>
+            <span className="text-primary-light">Guru</span>
           </span>
         </div>
 
         {isLoggedIn && (
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-1 xl:gap-2">
             {navItems.map((item) => (
               <button
                 key={item.view}
                 onClick={() => onNavigate(item.view)}
-                className={`flex items-center gap-2 text-[10px] font-black transition-all uppercase tracking-widest relative py-1 ${
+                className={cn(
+                  "flex flex-col items-center gap-1 group relative py-1 px-3 rounded-xl transition-all duration-300",
                   isActive(item.path) 
-                    ? 'text-primary' 
-                    : 'text-text/60 hover:text-primary'
-                }`}
+                    ? "text-primary bg-primary/5" 
+                    : "text-text/60 hover:text-primary hover:bg-bg"
+                )}
               >
-                <item.icon size={16} />
-                <span>{item.label}</span>
+                <item.icon size={20} className={cn(
+                  "transition-transform duration-300 group-hover:-translate-y-0.5",
+                  isActive(item.path) ? "stroke-[2.5px]" : "stroke-[2px]"
+                )} />
+                <span className={cn(
+                  "text-[10px] font-black uppercase tracking-widest transition-colors",
+                  isActive(item.path) ? "text-primary" : "text-text/40 group-hover:text-primary"
+                )}>
+                  {item.label}
+                </span>
                 {isActive(item.path) && (
-                  <span className="absolute -bottom-[21px] left-0 right-0 h-0.5 bg-primary rounded-full shadow-[0_0_8px_rgba(46,125,50,0.5)]" />
+                  <motion.div 
+                    layoutId="nav-active"
+                    className="absolute -bottom-[2px] left-2 right-2 h-0.5 bg-primary rounded-full"
+                  />
                 )}
               </button>
             ))}
             
-            {/* Language Toggle */}
-            <div className="flex items-center bg-bg rounded-full p-1 border border-border shadow-inner ml-4">
-              <button 
-                onClick={() => setLanguage('en')}
-                className={`px-3 py-1 rounded-full text-[10px] font-black tracking-tight transition-all ${
-                  language === 'en' ? 'bg-primary text-white shadow-md' : 'text-text/40 hover:text-text/60'
-                }`}
-              >
-                EN
-              </button>
-              <button 
-                onClick={() => setLanguage('kn')}
-                className={`px-3 py-1 rounded-full text-[11px] font-black transition-all ${
-                  language === 'kn' ? 'bg-primary text-white shadow-md' : 'text-text/40 hover:text-text/60'
-                }`}
-              >
-                ಕನ್ನಡ
-              </button>
-            </div>
           </div>
         )}
       </div>

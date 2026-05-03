@@ -67,8 +67,12 @@ export default function AIAssistant() {
           </motion.div>
         ))}
         {loading && (
-          <div className="bg-bg p-4 rounded-xl rounded-tl-none max-w-[85%] animate-pulse border border-border">
-            <p className="text-xs text-text/40 font-bold italic">Thinking...</p>
+          <div className="bg-bg p-4 rounded-xl rounded-tl-none max-w-[85%] border border-border">
+            <div className="flex gap-1.5 items-center">
+              <div className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce [animation-duration:0.6s]" />
+              <div className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce [animation-duration:0.6s] [animation-delay:0.2s]" />
+              <div className="w-1.5 h-1.5 bg-primary/40 rounded-full animate-bounce [animation-duration:0.6s] [animation-delay:0.4s]" />
+            </div>
           </div>
         )}
       </div>

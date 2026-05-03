@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { generateGeminiText } from '../gemini.ts';
+import { generateOpenRouterText } from '../openrouter.ts';
 
 dotenv.config();
 
@@ -70,7 +71,22 @@ router.post('/strategy', async (req, res) => {
       }
     }
 
-    // 2. Try Gemini Fallback
+    // 2. Try OpenRouter
+    if (!resultData && process.env.USE_OPENROUTER === 'true') {
+      console.log("🚀 [OpenRouter] Querying cloud API...");
+      try {
+        const text = await generateOpenRouterText(prompt);
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          resultData = JSON.parse(jsonMatch[0]);
+          console.log("✅ [OpenRouter] Success");
+        }
+      } catch (err: any) {
+        console.error("❌ [OpenRouter] Error:", err.message);
+      }
+    }
+
+    // 3. Try Gemini Fallback
     if (!resultData && process.env.GEMINI_API_KEY) {
       console.log("💎 [Gemini] Calling cloud fallback (2.0-flash)...");
       try {

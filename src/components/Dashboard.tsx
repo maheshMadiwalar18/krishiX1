@@ -83,7 +83,7 @@ export default function Dashboard({ onStartView }: { onStartView: (view: 'diseas
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         <motion.section variants={itemVariants} className="lg:col-span-2">
           <h1 className="text-4xl font-display font-extrabold text-text mb-2">
-            Hello, {userData?.name || 'Farmer'} 👋
+            Hello, {userData?.name || 'Farmer'}
           </h1>
           <p className="text-text/60 font-medium text-lg">{t('dash_subtitle')}</p>
           
@@ -193,7 +193,7 @@ export default function Dashboard({ onStartView }: { onStartView: (view: 'diseas
         <div onClick={() => onStartView('assistant')} className="cursor-pointer">
           <FeatureCard 
             icon={Bot} 
-            title="Ask KrushiX" 
+            title="Ask AgriGuru" 
             description="24/7 AI Farming Assistant."
             color="bg-[#81C784]"
             delay={0}

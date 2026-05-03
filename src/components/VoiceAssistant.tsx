@@ -60,7 +60,29 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
   const [inputText, setInputText] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [selectedLang, setSelectedLang] = useState('en-US');
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const recognitionRef = useRef<any>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // ✅ TEXT TO SPEECH (TTS)
+  const speak = useCallback((text: string) => {
+    if (!('speechSynthesis' in window)) return;
+    
+    // Stop any current speech
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = selectedLang;
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    window.speechSynthesis.speak(utterance);
+  }, [selectedLang]);
 
   // ✅ PERFORMANCE: Smooth scroll with threshold
   useEffect(() => {
@@ -74,7 +96,11 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
       content,
       timestamp: new Date()
     }]);
-  }, []);
+
+    if (role === 'assistant') {
+      speak(content);
+    }
+  }, [speak]);
 
   // ✅ PERFORMANCE: Optimized API Call
   const callChatbotAPI = useCallback(async (message: string) => {
@@ -85,7 +111,10 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
       const response = await fetch('/api/assistant/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message })
+        body: JSON.stringify({ 
+          message,
+          language: selectedLang === 'kn-IN' ? 'Kannada' : (selectedLang === 'hi-IN' ? 'Hindi' : 'English')
+        })
       });
 
       if (!response.ok) throw new Error("Server error");
@@ -93,7 +122,7 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
       const data = await response.json();
       handleNewMessage(data?.reply || "I couldn't process that. Please try again.", 'assistant');
     } catch (error) {
-      handleNewMessage("⚠️ Connection issues. Please check your internet or local AI.", 'assistant');
+      handleNewMessage("Connection issues. Please check your internet or local AI.", 'assistant');
     } finally {
       setIsGenerating(false);
     }
@@ -109,18 +138,44 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
   }, [inputText, isGenerating, handleNewMessage, callChatbotAPI]);
 
   const toggleListening = () => {
-    if (isListening) setIsListening(false);
-    else setIsListening(true);
-    
-    // Simulate voice input for now
-    if (!isListening) {
-      setTimeout(() => {
-        setIsListening(false);
-        const voiceQuery = "What is the best crop for black soil?";
-        handleNewMessage(voiceQuery, 'user');
-        callChatbotAPI(voiceQuery);
-      }, 2000);
+    if (isListening) {
+      recognitionRef.current?.stop();
+      setIsListening(false);
+      return;
     }
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Speech Recognition is not supported in this browser.');
+      return;
+    }
+
+    recognitionRef.current = new SpeechRecognition();
+    recognitionRef.current.continuous = false;
+    recognitionRef.current.interimResults = false;
+    recognitionRef.current.lang = selectedLang;
+
+    recognitionRef.current.onstart = () => setIsListening(true);
+    recognitionRef.current.onend = () => setIsListening(false);
+    recognitionRef.current.onerror = (event: any) => {
+      console.error('Speech recognition error', event.error);
+      setIsListening(false);
+    };
+
+    recognitionRef.current.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      if (transcript) {
+        handleNewMessage(transcript, 'user');
+        callChatbotAPI(transcript);
+      }
+    };
+
+    recognitionRef.current.start();
+  };
+
+  const stopSpeaking = () => {
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
   };
 
   return (
@@ -140,9 +195,21 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
           </div>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-100 rounded-full">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-          <span className="text-[10px] font-black text-green-700 uppercase">Live System</span>
+        <div className="flex items-center gap-3">
+          <select 
+            value={selectedLang}
+            onChange={(e) => setSelectedLang(e.target.value)}
+            className="text-xs font-bold bg-white border border-border rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-primary/20"
+          >
+            <option value="en-US">English</option>
+            <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+            <option value="hi-IN">हिन्दी (Hindi)</option>
+          </select>
+
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-100 rounded-full">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="text-[10px] font-black text-green-700 uppercase">Live System</span>
+          </div>
         </div>
       </div>
 
@@ -176,6 +243,17 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
         {/* INPUT AREA */}
         <div className="p-4 bg-bg/30 border-t border-border backdrop-blur-md">
           <div className="flex gap-2 max-w-2xl mx-auto">
+            <button
+              onClick={isSpeaking ? stopSpeaking : () => {}}
+              className={cn(
+                "w-12 h-12 rounded-2xl flex items-center justify-center transition-all active:scale-90 shadow-lg",
+                isSpeaking ? "bg-orange-500 text-white animate-pulse" : "bg-white border border-border text-text/20 cursor-not-allowed"
+              )}
+              title={isSpeaking ? "Stop speaking" : "Not speaking"}
+            >
+              <Volume2 size={18} />
+            </button>
+
             <input
               type="text"
               value={inputText}

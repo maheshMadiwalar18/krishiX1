@@ -524,10 +524,21 @@ export default function DiseaseDetection({ onBack }: { onBack: () => void }) {
                                     Recovery Action Plan
                                   </p>
                                 </div>
-                                <div className="bg-emerald-50/30 p-6 rounded-[2rem] border border-emerald-100/50">
+                                <div className="bg-emerald-50/30 p-6 rounded-[2rem] border-2 border-emerald-100 flex flex-col gap-4">
                                   <p className="text-base font-bold text-slate-700 leading-relaxed whitespace-pre-line">
                                     {result.details.treatment}
                                   </p>
+                                  
+                                  <div className="flex flex-col sm:flex-row gap-4 mt-2">
+                                    <div className="flex-1 bg-white p-4 rounded-2xl border border-emerald-100 shadow-sm">
+                                      <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Recovery Time</p>
+                                      <p className="font-black text-text text-lg">~{result.details.recoveryTimeline}</p>
+                                    </div>
+                                    <div className="flex-1 bg-amber-500 p-4 rounded-2xl shadow-lg shadow-amber-200">
+                                      <p className="text-[10px] font-black text-white/70 uppercase tracking-widest mb-1">Pro Farmer Tip</p>
+                                      <p className="font-bold text-white text-sm leading-tight italic">"{result.details.proTip}"</p>
+                                    </div>
+                                  </div>
                                 </div>
                             </div>
                           </div>

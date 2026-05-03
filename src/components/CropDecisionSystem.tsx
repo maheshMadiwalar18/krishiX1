@@ -129,11 +129,7 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
     setResult(null); // Clear old prediction before new request
 
     try {
-      // ⚡ 1. Show INSTANT Rule-Based Result for better perceived speed
-      const quickResult = generateQuickStrategy(formData);
-      setResult(quickResult);
-      setStep('results');
-
+      // ⚡ Only show loading, don't show mock data first to avoid confusion
       const response = await fetch('/api/crop/strategy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -165,15 +161,23 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
 
         setResult({
           recommendations: transformed,
-          summaryTip: data.summaryTip || "Focus on efficient irrigation and early pest detection."
+          summaryTip: data.summaryTip || "Focus on efficient irrigation and early pest detection.",
+          isAI: !data.summaryTip?.includes("busy")
         });
+        setStep('results');
         console.log("✅ State updated with AI results");
       } else {
         console.warn("⚠️ API returned success:false or empty crops");
       }
     } catch (error: any) {
       console.error("❌ Prediction API Failed:", error.message);
-      // Fallback is already showing from the 'quickResult' above
+      const fallback = generateQuickStrategy(formData);
+      setResult({
+        ...fallback,
+        summaryTip: "Unable to connect to AI. Showing regional standard data.",
+        isAI: false
+      });
+      setStep('results');
     } finally {
       console.log("🔄 Loading finished.");
       setLoading(false);
@@ -191,7 +195,17 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
           <ChevronLeft size={20} />
         </button>
         <div>
-          <h1 className="text-2xl font-display font-extrabold text-neutral-900">{t('decision_title')}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-display font-extrabold text-neutral-900">{t('decision_title')}</h1>
+            {step === 'results' && (
+              <span className={cn(
+                "px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest",
+                result?.isAI ? "bg-primary/10 text-primary border border-primary/20" : "bg-orange-100 text-orange-700 border border-orange-200"
+              )}>
+                {result?.isAI ? "✨ AI Generated" : "Standard Data"}
+              </span>
+            )}
+          </div>
           <p className="text-neutral-500 text-sm">{t('decision_subtitle')}</p>
         </div>
       </div>
@@ -214,7 +228,7 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
                   type="text" 
                   value={formData.location}
                   onChange={(e) => setFormData({...formData, location: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -224,7 +238,7 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
                 <select 
                   value={formData.soilType}
                   onChange={(e) => setFormData({...formData, soilType: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
                 >
                   <option>Red Soil</option>
                   <option>Black Soil</option>
@@ -241,7 +255,7 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
                   type="number" 
                   value={formData.landSize}
                   onChange={(e) => setFormData({...formData, landSize: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -251,7 +265,7 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
                 <select 
                   value={formData.irrigation}
                   onChange={(e) => setFormData({...formData, irrigation: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
                 >
                   <option>Borewell</option>
                   <option>Rain-fed</option>
@@ -266,7 +280,7 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
                 <select 
                   value={formData.season}
                   onChange={(e) => setFormData({...formData, season: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
                 >
                   <option>Kharif (Monsoon)</option>
                   <option>Rabi (Winter)</option>
@@ -277,13 +291,33 @@ export default function CropDecisionSystem({ onBack }: { onBack: () => void }) {
                 <label className="text-xs font-bold text-text/40 uppercase tracking-widest flex items-center gap-2">
                   <History size={14} /> {t('input_prev_crop')} <span className="text-red-500">*</span>
                 </label>
-                <input 
-                  type="text"
-                  placeholder="e.g. Maize, Rice, Wheat..."
+                <select 
                   value={formData.previousCrop}
                   onChange={(e) => setFormData({...formData, previousCrop: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
-                />
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
+                >
+                  <option value="">Select Previous Crop</option>
+                  <option>Maize</option>
+                  <option>Rice (Paddy)</option>
+                  <option>Wheat</option>
+                  <option>Cotton</option>
+                  <option>Sugarcane</option>
+                  <option>Groundnut</option>
+                  <option>Tomato</option>
+                  <option>Potato</option>
+                  <option>Onion</option>
+                  <option>Soybean</option>
+                  <option>Ragi (Finger Millet)</option>
+                  <option>Bajra (Pearl Millet)</option>
+                  <option>Jowar (Sorghum)</option>
+                  <option>Pigeon Pea (Tur)</option>
+                  <option>Chickpea (Gram)</option>
+                  <option>Sunflower</option>
+                  <option>Mustard</option>
+                  <option>Chili</option>
+                  <option>Brinjal</option>
+                  <option>Watermelon</option>
+                </select>
               </div>
             </div>
 

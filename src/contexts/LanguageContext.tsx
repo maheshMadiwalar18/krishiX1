@@ -25,7 +25,7 @@ const translations: Translations = {
   'btn_ask_ai': { en: 'Ask AI', kn: 'ಸಲಹೆ ಕೇಳಿ' },
 
   // Auth Page
-  'auth_title': { en: 'Join KrushiX', kn: 'ಕೃಷಿಎಕ್ಸ್ ಜೊತೆ ಸೇರಿ' },
+  'auth_title': { en: 'Join AgriGuru', kn: 'ಅಗ್ರಿಗುರು ಜೊತೆ ಸೇರಿ' },
   'auth_demo_btn': { en: 'Try Demo Login', kn: 'ನೋಂದಣಿ ಇಲ್ಲದೆ ಪರೀಕ್ಷಿಸಿ' },
   'auth_email_label': { en: 'Email Address', kn: 'ಇಮೇಲ್ ವಿಳಾಸ' },
   'auth_password_label': { en: 'Password', kn: 'ಪಾಸ್‌ವರ್ಡ್' },
@@ -71,7 +71,7 @@ const translations: Translations = {
 
   // Home - QuickActions
   'quick_title': { en: 'Start Your Farming Journey', kn: 'ನಿಮ್ಮ ಕೃಷಿ ಪಯಣ ಆರಂಭಿಸಿ' },
-  'quick_subtitle': { en: 'Try KrushiX tools now. Log in and see the results.', kn: 'ಈಗಲೇ ಕೃಷಿಎಕ್ಸ್ ಬಳಸಿ ನೋಡಿ.' },
+  'quick_subtitle': { en: 'Try AgriGuru tools now. Log in and see the results.', kn: 'ಈಗಲೇ ಅಗ್ರಿಗುರು ಬಳಸಿ ನೋಡಿ.' },
   'quick_upload': { en: 'Upload Crop Image', kn: 'ಬೆಳೆ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ' },
   'quick_upload_desc': { en: 'Drag and drop or click to scan leaf photo', kn: 'ಎಲೆಯ ಫೋಟೋ ಇಲ್ಲಿ ಹಾಕಿ ಅಥವಾ ಕ್ಲಿಕ್ ಮಾಡಿ' },
   'quick_voice': { en: 'Voice Assistant', kn: 'ಧ್ವನಿ ಸಹಾಯಕ' },
@@ -134,8 +134,8 @@ const translations: Translations = {
   'weather_rain': { en: 'Rain', kn: 'ಮಳೆ' },
 
   // Voice Assistant
-  'assistant_title': { en: 'KrushiX Assistant', kn: 'ಕೃಷಿಎಕ್ಸ್ ಸಹಾಯಕ' },
-  'assistant_greeting': { en: 'Namaste! I am KrushiX. How can I help with your farming today?', kn: 'ನಮಸ್ಕಾರ! ನಾನು ಕೃಷಿಎಕ್ಸ್. ಇಂದು ನಿಮ್ಮ ಕೃಷಿಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?' },
+  'assistant_title': { en: 'AgriGuru Assistant', kn: 'ಅಗ್ರಿಗುರು ಸಹಾಯಕ' },
+  'assistant_greeting': { en: 'Namaste! I am AgriGuru. How can I help with your farming today?', kn: 'ನಮಸ್ಕಾರ! ನಾನು ಅಗ್ರಿಗುರು. ಇಂದು ನಿಮ್ಮ ಕೃಷಿಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?' },
   'assistant_placeholder': { en: 'Type your farming question...', kn: 'ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆ ಬರೆಯಿರಿ...' },
   'assistant_listening': { en: 'Listening...', kn: 'ಕೇಳಿಸುತ್ತಿದೆ...' },
 
@@ -148,7 +148,7 @@ const translations: Translations = {
   'dash_profile': { en: 'Farmer Profile', kn: 'ರೈತ ಪ್ರೊಫೈಲ್' },
 
   // Decision System
-  'nav_decision_system': { en: 'Crop Recommendation', kn: 'ಬೆಳೆ ಶಿಫಾರಸು' },
+  'nav_decision_system': { en: 'Crop Plan', kn: 'ಬೆಳೆ ಯೋಜನೆ' },
   'decision_title': { en: 'AI Crop Recommendation', kn: 'AI ಬೆಳೆ ಶಿಫಾರಸು' },
   'decision_subtitle': { en: 'Complete strategy for what to grow and how to profit.', kn: 'ಉತ್ತಮ ಲಾಭಕ್ಕಾಗಿ ಬೆಳೆ ಮತ್ತು ಯೋಜನೆಯ ಸಂಪೂರ್ಣ ಮಾಹಿತಿ.' },
   'input_location': { en: 'Location', kn: 'ಸ್ಥಳ' },
@@ -168,7 +168,7 @@ const translations: Translations = {
   'tag_water_efficient': { en: 'Best for Low Water', kn: 'ಕಡಿಮೆ ನೀರಿಗೆ ಸೂಕ್ತ' },
   'input_prev_crop': { en: 'Previous Crop Grown', kn: 'ಹಿಂದೆ ಬೆಳೆದ ಬೆಳೆ' },
   'label_rotation_benefit': { en: 'Rotation Benefit', kn: 'ಬೆಳೆ ಬದಲಾವಣೆಯ ಲಾಭ' },
-  'irrigation_title': { en: 'Smart Irrigation Plan', kn: 'ಚತುರ ನೀರಾವರಿ ಯೋಜನೆ' },
+  'irrigation_title': { en: 'Irrigation', kn: 'ನೀರಾವರಿ' },
   'label_when_water': { en: 'When to Water', kn: 'ಯಾವಾಗ ನೀರು ಹಾಕಬೇಕು' },
   'label_how_much': { en: 'How Much Water', kn: 'ನೀರಿನ ಪ್ರಮಾಣ' },
   'label_frequency': { en: 'Frequency', kn: 'ಎಷ್ಟು ಬಾರಿ' },
@@ -230,13 +230,13 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('krushix_lang');
+    const saved = localStorage.getItem('agriguru_lang');
     return (saved as Language) || 'en';
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('krushix_lang', lang);
+    localStorage.setItem('agriguru_lang', lang);
   };
 
   const t = (key: string): string => {

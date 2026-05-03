@@ -139,12 +139,33 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
                 <label className="text-xs font-bold text-text/40 uppercase tracking-widest flex items-center gap-2">
                   <Sprout size={14} /> {t('irr_label_crop')} <span className="text-red-500">*</span>
                 </label>
-                <input 
-                  type="text" 
+                <select 
                   value={formData.crop}
                   onChange={(e) => setFormData({...formData, crop: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
-                />
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
+                >
+                  <option value="">Select Crop</option>
+                  <option>Maize</option>
+                  <option>Rice (Paddy)</option>
+                  <option>Wheat</option>
+                  <option>Cotton</option>
+                  <option>Sugarcane</option>
+                  <option>Groundnut</option>
+                  <option>Tomato</option>
+                  <option>Potato</option>
+                  <option>Onion</option>
+                  <option>Soybean</option>
+                  <option>Ragi (Finger Millet)</option>
+                  <option>Bajra (Pearl Millet)</option>
+                  <option>Jowar (Sorghum)</option>
+                  <option>Pigeon Pea (Tur)</option>
+                  <option>Chickpea (Gram)</option>
+                  <option>Sunflower</option>
+                  <option>Mustard</option>
+                  <option>Chili</option>
+                  <option>Brinjal</option>
+                  <option>Watermelon</option>
+                </select>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold text-text/40 uppercase tracking-widest flex items-center gap-2">
@@ -153,7 +174,7 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
                 <select 
                   value={formData.soil}
                   onChange={(e) => setFormData({...formData, soil: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
                 >
                   <option value="Red Soil">Red Soil</option>
                   <option value="Black Soil">Black Soil</option>
@@ -168,7 +189,7 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
                 <select 
                   value={formData.irrigation}
                   onChange={(e) => setFormData({...formData, irrigation: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
                 >
                   <option value="Borewell">Borewell</option>
                   <option value="Drip">Drip</option>
@@ -184,7 +205,7 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
                   type="number" 
                   value={formData.land}
                   onChange={(e) => setFormData({...formData, land: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
                 />
               </div>
               <div className="space-y-2">
@@ -194,7 +215,7 @@ export default function IrrigationPlanner({ onBack, userLocation = "Your Farm - 
                 <select 
                   value={formData.stage}
                   onChange={(e) => setFormData({...formData, stage: e.target.value})}
-                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-medium"
+                  className="w-full p-4 bg-bg border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-black text-sm"
                 >
                   <option>Seedling</option>
                   <option>Vegetative</option>

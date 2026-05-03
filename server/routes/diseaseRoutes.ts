@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
+import { generateOpenRouterMultimodal } from '../openrouter.js';
 
 dotenv.config();
 
@@ -20,63 +21,101 @@ async function performDetection(image: string) {
     // delete detectionCache[imageHash]; // Optional: Force fresh every time
   }
 
-  console.log("🚀 [Ollama] Deep-scanning plant image...");
   let resultData = null;
 
-  const urls = ['http://127.0.0.1:11434/api/generate', 'http://localhost:11434/api/generate'];
-  
-  for (const url of urls) {
-    if (resultData) break;
+  if (process.env.USE_OLLAMA === 'true') {
+    console.log("🚀 [Ollama] Deep-scanning plant image...");
+    const urls = ['http://127.0.0.1:11434/api/generate', 'http://localhost:11434/api/generate'];
+    
+    for (const url of urls) {
+      if (resultData) break;
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(60000),
-        body: JSON.stringify({
-          model: 'llava',
-          prompt: `Analyze this image. What plant is this? Is it healthy or does it have a disease/pest? If diseased, name the disease. Provide a 1-sentence observation. Return ONLY as JSON: {"name": "...", "status": "DISEASED/HEALTHY", "observation": "..."}`,
-          images: [base64Data],
-          stream: false,
-          options: { temperature: 0.2, num_predict: 200, keep_alive: "30m" }
-        })
-      });
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: AbortSignal.timeout(60000),
+          body: JSON.stringify({
+            model: 'llava',
+            prompt: `Expert Pathologist Scan. Identify plant and issue. Status: HEALTHY/DISEASED/PEST. 
+Return ONLY JSON: {"name": "Plant - Issue", "status": "...", "observation": "...", "confidence": "HIGH/MEDIUM/LOW", "details": {"elaborateIssue": "...", "damageExtent": "...", "treatment": "..."}, "medicine": {"name": "...", "dosage": "...", "method": "...", "frequency": "..."}, "prevention": ["...", "...", "..."]}`,
+            images: [base64Data],
+            stream: false,
+            options: { temperature: 0.1, num_predict: 300, keep_alive: "30m" }
+          })
+        });
 
-      if (response.ok) {
-        const ollamaRes = await response.json() as any;
-        const rawResponse = ollamaRes.response || "";
-        console.log("✅ [Ollama] Finished thinking");
-        
-        const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          try {
-            const parsed = JSON.parse(jsonMatch[0]);
-            // Validate it's not just the template
-            if (parsed.status && !parsed.status.includes("|")) {
-              resultData = parsed;
+        if (response.ok) {
+          const ollamaRes = await response.json() as any;
+          const rawResponse = ollamaRes.response || "";
+          console.log("✅ [Ollama] Finished thinking");
+          
+          const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            try {
+              const parsed = JSON.parse(jsonMatch[0]);
+              if (parsed.status && !parsed.status.includes("|")) {
+                resultData = parsed;
+              }
+            } catch (e) {
+              console.warn("⚠️ JSON parse error");
             }
-          } catch (e) {
-            console.warn("⚠️ JSON parse error");
           }
         }
+      } catch (err: any) {
+        console.error(`❌ Connection error:`, err.message);
+      }
+    }
+  }
 
-        // Improved Text Fallback
-        if (!resultData && rawResponse.length > 5) {
-          const lower = rawResponse.toLowerCase();
-          const isHealthy = lower.includes("healthy") && !lower.includes("diseased");
-          const isPest = lower.includes("pest") || lower.includes("insect");
-          
-          resultData = {
-            name: "Plant Analysis",
-            status: isHealthy ? "HEALTHY" : (isPest ? "PEST" : "DISEASED"),
-            confidence: "MEDIUM",
-            observation: rawResponse.substring(0, 150),
-            details: { elaborateIssue: rawResponse, treatment: "Remove affected parts and use organic controls." }
-          };
+  // Fallback to OpenRouter
+  if (!resultData && process.env.USE_OPENROUTER === 'true') {
+    console.log("🚀 [OpenRouter] Scanning plant image with High Precision...");
+    try {
+      const prompt = `You are an expert plant pathologist. Analyze this image with high precision.
+1. Identify the plant species and issue.
+2. Status must be HEALTHY, DISEASED, or PEST.
+3. Provide confidence (HIGH/MEDIUM/LOW).
+4. Suggest organic treatment (medicine) and 3 prevention steps.
+5. Elaborate on the issue and damage extent.
+
+Return ONLY as JSON:
+{
+  "name": "Plant Name - Issue Name",
+  "status": "HEALTHY/DISEASED/PEST",
+  "confidence": "HIGH/MEDIUM/LOW",
+  "observation": "1-sentence summary",
+  "details": {
+    "elaborateIssue": "Detailed description of symptoms",
+    "damageExtent": "Localized/Widespread",
+    "treatment": "Advice for the farmer",
+    "recoveryTimeline": "Estimated days to recovery",
+    "proTip": "One unique pro-farmer tip"
+  },
+  "medicine": {
+    "name": "Medicine/Fertilizer Name",
+    "dosage": "Amount per unit",
+    "method": "Spray/Soil Application",
+    "frequency": "Frequency"
+  },
+  "prevention": ["Step 1", "Step 2", "Step 3"]
+}`;
+      const rawResponse = await generateOpenRouterMultimodal(prompt, base64Data);
+      
+      const jsonMatch = rawResponse.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          const parsed = JSON.parse(jsonMatch[0]);
+          if (parsed.status) {
+            resultData = parsed;
+            console.log("✅ [OpenRouter] Detailed analysis complete");
+          }
+        } catch (e) {
+          console.warn("⚠️ OpenRouter JSON parse error");
         }
       }
     } catch (err: any) {
-      console.error(`❌ Connection error:`, err.message);
+      console.error(`❌ OpenRouter error:`, err.message);
     }
   }
 
@@ -119,10 +158,19 @@ function normalizeResult(rawResult: any) {
     result.medicine = { name: "Organic Control", dosage: "Standard", method: "Foliar Spray", frequency: "Weekly" };
   }
   if (!result.details || typeof result.details !== 'object') {
-    result.details = { elaborateIssue: "Stress detected.", damageExtent: "Local.", treatment: "Standard care." };
+    result.details = { 
+      elaborateIssue: "Stress detected.", 
+      damageExtent: "Local.", 
+      treatment: "Standard care.",
+      recoveryTimeline: "7-14 days",
+      proTip: "Avoid overhead watering to reduce fungal spread."
+    };
+  } else {
+    result.details.recoveryTimeline = result.details.recoveryTimeline || "7-14 days";
+    result.details.proTip = result.details.proTip || "Avoid overhead watering to reduce fungal spread.";
   }
   if (!Array.isArray(result.prevention)) {
-    result.prevention = ["Maintain soil moisture", "Ensure proper spacing"];
+    result.prevention = ["Maintain soil moisture", "Ensure proper spacing", "Use clean tools"];
   }
 
   return result;

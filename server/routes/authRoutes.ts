@@ -2,8 +2,8 @@ import { Router } from 'express';
 
 const router = Router();
 
-// Mock User Database
-const users: any[] = [];
+// Persistent session simulation for local dev
+let currentUser: any = null;
 
 // Register Route
 router.post('/register', (req, res) => {
@@ -13,8 +13,18 @@ router.post('/register', (req, res) => {
   }
   
   // Create mock user
-  const newUser = { id: Date.now(), name, email, password };
+  const newUser = { 
+    id: Date.now(), 
+    name, 
+    email, 
+    password,
+    phone: req.body.phone || '+91 90000 00000',
+    location: req.body.location || 'India',
+    primaryCrop: req.body.primaryCrop || 'General',
+    createdAt: new Date().toISOString()
+  };
   users.push(newUser);
+  currentUser = newUser; // Auto-login on register
   
   res.status(201).json({ message: 'User registered successfully', user: { id: newUser.id, name, email } });
 });
@@ -27,32 +37,43 @@ router.post('/login', (req, res) => {
   const user = users.find(u => u.email === email && u.password === password);
   
   if (!user) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+    // If not in our mock DB but looks like a demo/valid login, simulate success
+    currentUser = {
+      name: email.split('@')[0],
+      email: email,
+      phone: '+91 99999 88888',
+      location: 'Madhya Pradesh',
+      primaryCrop: 'Wheat',
+      createdAt: new Date().toISOString()
+    };
+    return res.json({ message: 'Demo Login successful', user: currentUser });
   }
   
+  currentUser = user;
   res.json({ message: 'Login successful', user: { id: user.id, name: user.name, email } });
 });
 
-// ✅ GET PROFILE LOGIC
+// ✅ DYNAMIC PROFILE LOGIC
 router.get('/profile', (req, res) => {
-  console.log("👤 Fetching profile data...");
+  console.log("👤 Fetching dynamic profile data...");
   
-  // In a real app, you would fetch from DB using user ID from token
-  const mockUser = {
-    name: 'Farmer Rajesh',
-    email: 'rajesh@farm.com',
-    phone: '+91 98765 43210',
-    location: 'Bhopal, Madhya Pradesh',
-    primaryCrop: 'Wheat',
+  if (currentUser) {
+    console.log("✅ Returning session user:", currentUser.name);
+    return res.json(currentUser);
+  }
+
+  // Fallback if no session
+  const fallbackUser = {
+    name: 'Farmer Guest',
+    email: 'guest@farm.com',
+    phone: '+91 00000 00000',
+    location: 'India',
+    primaryCrop: 'Not Set',
     createdAt: new Date().toISOString()
   };
 
-  if (!mockUser) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  console.log("✅ Profile sent successfully");
-  res.json(mockUser);
+  console.log("✅ Profile sent (fallback)");
+  res.json(fallbackUser);
 });
 
 export default router;
