@@ -131,13 +131,5 @@ We believe that the future of farming is open. By utilizing open-source models l
 
 ---
 
-## 👥 Meet the Team
-- **Hemanth**
-- **Chethan**
-- **Bharath**
-- **Mahesh**
-
----
-
 ## 📄 License
 This project is licensed under the MIT License.
