@@ -1,8 +1,8 @@
-# KrishiX – AI-Powered Smart Farming Assistant
+# AgriGuru – AI-Powered Smart Farming Assistant
 *Empowering Farmers with Open-Source Intelligence*
 
 ## 🌍 Overview
-**KrishiX** is a next-generation, climate-smart farming platform designed to provide farmers with real-time, actionable insights. By combining cutting-edge open-source AI with local environmental data, KrishiX offers instant disease detection, smart irrigation guidance, and a bilingual community hub. Our goal is to democratize high-tech agriculture, making it accessible, affordable, and sustainable for every farmer.
+**AgriGuru** is a next-generation, climate-smart farming platform designed to provide farmers with real-time, actionable insights. By combining cutting-edge open-source AI with local environmental data, AgriGuru offers instant disease detection, smart irrigation guidance, and a bilingual community hub. Our goal is to democratize high-tech agriculture, making it accessible, affordable, and sustainable for every farmer.
 
 ### 🏗 Architecture Overview
 ```mermaid
@@ -51,7 +51,7 @@ graph TB
 ---
 
 ## 💡 The Problem & Our Solution
-Farmers today face unpredictable weather, emerging crop diseases, and a lack of localized expert advice. **KrishiX** bridges this gap using a "Local-First" AI approach:
+Farmers today face unpredictable weather, emerging crop diseases, and a lack of localized expert advice. **AgriGuru** bridges this gap using a "Local-First" AI approach:
 - **Instant Diagnosis:** AI-based disease detection using vision models.
 - **Climate Intelligence:** Hyper-localized weather alerts and crop-specific advice.
 - **Resource Optimization:** Data-driven irrigation strategies to save water and costs.
@@ -60,7 +60,7 @@ Farmers today face unpredictable weather, emerging crop diseases, and a lack of 
 ---
 
 ## 🏗 Open-Source Technology Stack
-KrishiX is built on a foundation of powerful open-source technologies, ensuring privacy, scalability, and independence from expensive proprietary platforms.
+AgriGuru is built on a foundation of powerful open-source technologies, ensuring privacy, scalability, and independence from expensive proprietary platforms.
 
 ### 🧠 Artificial Intelligence (The Brain)
 - **[Ollama](https://ollama.com/):** We use Ollama as our primary AI orchestration layer, allowing us to run high-performance models locally.
@@ -98,8 +98,8 @@ KrishiX is built on a foundation of powerful open-source technologies, ensuring 
 ### Installation
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/maheshMadiwalar18/krishiX.git
-   cd krishiX
+   git clone https://github.com/maheshMadiwalar18/krishiX1.git
+   cd krishiX1
    ```
 
 2. **Install dependencies:**
@@ -112,8 +112,7 @@ KrishiX is built on a foundation of powerful open-source technologies, ensuring 
    ```env
    VITE_FIREBASE_API_KEY=your_key
    GEMINI_API_KEY=your_key
-   ACCUWEATHER_API_KEY=your_key
-   USE_OLLAMA=true
+   OPENROUTER_API_KEY=your_key
    ```
 
 4. **Run the project:**
@@ -128,7 +127,7 @@ KrishiX is built on a foundation of powerful open-source technologies, ensuring 
 ---
 
 ## 🌱 Our Vision
-We believe that the future of farming is open. By utilizing open-source models like LLaVA and Open-Meteo, KrishiX ensures that the most advanced agricultural tools remain in the hands of the people who feed the world—the farmers.
+We believe that the future of farming is open. By utilizing open-source models like LLaVA and Open-Meteo, AgriGuru ensures that the most advanced agricultural tools remain in the hands of the people who feed the world—the farmers.
 
 ---
 
