@@ -464,6 +464,27 @@ Think of these trees as a fixed deposit in the bank. After 10 or 15 years, selli
 ನಿಮ್ಮ ಹೊಲದ ಅಂಚುಗಳಲ್ಲಿ ಉಪಯುಕ್ತ ಮರಗಳನ್ನು (ತೇಗ, ಶ್ರೀಗಂಧದಂತಹ) ನೆಡುವುದು ನಿಮ್ಮ ನಿಯಮಿತ ಬೆಳೆಗಳನ್ನು ತಡೆಯುವುದಿಲ್ಲ.
           `
         }
+      },
+      {
+        id: 'mixed-cropping',
+        title: { en: 'Mixed Cropping', kn: 'ಮಿಶ್ರ ಬೆಳೆ ಪದ್ಧತಿ' },
+        summary: { en: 'Grow two or more crops together to reduce risk.', kn: 'ಅಪಾಯವನ್ನು ಕಡಿಮೆ ಮಾಡಲು ಎರಡು ಅಥವಾ ಹೆಚ್ಚಿನ ಬೆಳೆಗಳನ್ನು ಒಟ್ಟಿಗೆ ಬೆಳೆಯಿರಿ.' },
+        content: {
+          en: `
+### Double Your Chances
+Instead of planting only one type of crop, you plant two or more types together in the same field. If the weather is bad for one crop, the other crop might still survive. It's like not keeping all your eggs in one basket.
+
+### Why it helps:
+Different crops take different nutrients from the soil. Some, like legumes, even add nutrients that other crops need. It also makes it harder for pests to spread across the whole field.
+
+### ಕನ್ನಡ ಆವೃತ್ತಿ (Kannada Version)
+ಒಂದೇ ಬೆಳೆಯನ್ನು ಬೆಳೆಯುವ ಬದಲು ಎರಡು ಅಥವಾ ಹೆಚ್ಚಿನ ಬೆಳೆಗಳನ್ನು ಒಟ್ಟಿಗೆ ಬೆಳೆಯುವುದು ಉತ್ತಮ. ಒಂದು ಬೆಳೆಗೆ ಹಾನಿಯಾದರೂ ಮತ್ತೊಂದು ಬೆಳೆ ಕೈಹಿಡಿಯುತ್ತದೆ. ವಿವಿಧ ಬೆಳೆಗಳು ಮಣ್ಣಿನ ವಿಭಿನ್ನ ಪೋಷಕಾಂಶಗಳನ್ನು ಬಳಸುವುದರಿಂದ ಮಣ್ಣಿನ ಆರೋಗ್ಯವೂ ಕಾಪಾಡಲ್ಪಡುತ್ತದೆ.
+          `,
+          kn: `
+### ನಿಮ್ಮ ಅವಕಾಶಗಳನ್ನು ದ್ವಿಗುಣಗೊಳಿಸಿ
+ಕೇವಲ ಒಂದು ರೀತಿಯ ಬೆಳೆಯನ್ನು ನೆಡುವ ಬದಲು, ನೀವು ಒಂದೇ ಹೊಲದಲ್ಲಿ ಎರಡು ಅಥವಾ ಹೆಚ್ಚಿನ ರೀತಿಯ ಬೆಳೆಗಳನ್ನು ಒಟ್ಟಿಗೆ ನೆಡುತ್ತೀರಿ.
+          `
+        }
       }
     ]
   },
@@ -582,6 +603,27 @@ When plants have equal space, they don't fight for water and food. They grow big
           kn: `
 ### ನಿಖರವಾದ ಬಿತ್ತನೆ
 ಬೀಜಗಳನ್ನು ಕೈಯಿಂದ ಎಸೆಯುವ ಬದಲು, ಬಿತ್ತನೆ ಯಂತ್ರವು ಅವುಗಳನ್ನು ನಿಖರವಾದ ಆಳ ಮತ್ತು ಅಂತರದಲ್ಲಿ ಇರಿಸುತ್ತದೆ.
+          `
+        }
+      },
+      {
+        id: 'solar-pumps',
+        title: { en: 'Solar Water Pumps', kn: 'ಸೌರಶಕ್ತಿ ಪಂಪ್‌ಗಳು' },
+        summary: { en: 'Run your water pumps for free using the sun.', kn: 'ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಬಳಸಿ ಉಚಿತವಾಗಿ ನೀರಿನ ಪಂಪ್‌ಗಳನ್ನು ಚಲಾಯಿಸಿ.' },
+        content: {
+          en: `
+### Free Energy
+Tired of waiting for electricity or paying for expensive diesel? Solar water pumps use sunlight to pump water. Once you install it, the daily cost of running the pump is zero.
+
+### Government Subsidies:
+Under the PM-KUSUM scheme, the government provides huge subsidies (up to 60-90%) to farmers for installing solar pumps. It's a one-time investment that pays off for years.
+
+### ಕನ್ನಡ ಆವೃತ್ತಿ (Kannada Version)
+ವಿದ್ಯುತ್ ಕಡಿತ ಅಥವಾ ಡೀಸೆಲ್ ಬೆಲೆಯ ಬಗ್ಗೆ ಚಿಂತಿಸುವ ಅಗತ್ಯವಿಲ್ಲ. ಸೌರಶಕ್ತಿ ಪಂಪ್‌ಗಳು ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಬಳಸಿ ಉಚಿತವಾಗಿ ನೀರು ಒದಗಿಸುತ್ತವೆ. ಪಿಎಂ-ಕುಸುಮ್ ಯೋಜನೆಯಡಿ ಸರ್ಕಾರವು ಸೌರ ಪಂಪ್‌ಗಳನ್ನು ಅಳವಡಿಸಲು ಶೇ. 60-90 ರಷ್ಟು ಸಹಾಯಧನ ನೀಡುತ್ತದೆ.
+          `,
+          kn: `
+### ಉಚಿತ ಶಕ್ತಿ
+ವಿದ್ಯುತ್‌ಗಾಗಿ ಕಾಯಲು ಅಥವಾ ದುಬಾರಿ ಡೀಸೆಲ್‌ಗೆ ಪಾವತಿಸಲು ಸುಸ್ತಾಗಿದ್ದೀರಾ? ಸೌರ ನೀರಿನ ಪಂಪ್‌ಗಳು ನೀರನ್ನು ಪಂಪ್ ಮಾಡಲು ಸೂರ್ಯನ ಬೆಳಕನ್ನು ಬಳಸುತ್ತವೆ.
           `
         }
       }
