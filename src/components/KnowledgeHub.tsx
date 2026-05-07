@@ -5,7 +5,7 @@ import {
   Wind, Beaker, Sprout, Bird, ChevronLeft, 
   Volume2, Square, Bookmark, MessageSquare,
   Languages, Lightbulb, Play, ArrowRight, Sparkles,
-  Zap, Heart, TrendingUp, HelpCircle, Filter
+  Zap, Heart, TrendingUp, HelpCircle, Filter, Share2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
@@ -392,7 +392,8 @@ const UI_STRINGS = {
   proTip: { EN: 'Practical Tip', HI: 'व्यावहारिक सुझाव', KN: 'ಉಪಯುಕ್ತ ಸಲಹೆ' },
   askAi: { EN: 'Ask AI Assistant', HI: 'AI सहायक से पूछें', KN: 'AI ಸಹಾಯ ಕೇಳಿ' },
   questions: { EN: 'Still have questions?', HI: 'अभी भी सवाल हैं?', KN: 'ಇನ್ನೂ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ?' },
-  clear: { EN: 'Clear', HI: 'साफ करें', KN: 'ತೆರವುಗೊಳಿಸಿ' }
+  clear: { EN: 'Clear', HI: 'साफ करें', KN: 'ತೆರವುಗೊಳಿಸಿ' },
+  copied: { EN: 'Copied to clipboard!', HI: 'क्लिपबोर्ड पर कॉपी किया गया!', KN: 'ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲಾಗಿದೆ!' }
 };
 
 export default function KnowledgeHub({ onBack }: { onBack?: () => void }) {
@@ -447,6 +448,25 @@ export default function KnowledgeHub({ onBack }: { onBack?: () => void }) {
     setActiveCategory(catId);
     setActiveTopic(topicId);
     setView('topic');
+  };
+
+  const handleShare = async () => {
+    if (!currentTopicData) return;
+    const shareText = `${currentTopicData.title[lang]}\n\n${currentTopicData.points[lang].join('\n')}\n\nTip: ${currentTopicData.tip[lang]}\n\nShared from AgriGuru Knowledge Hub`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: currentTopicData.title[lang],
+          text: shareText,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(shareText);
+      alert(UI_STRINGS.copied[lang]);
+    }
   };
 
   const s = (key: keyof typeof UI_STRINGS) => UI_STRINGS[key][lang];
@@ -651,8 +671,11 @@ export default function KnowledgeHub({ onBack }: { onBack?: () => void }) {
                       {isPlaying ? <Square size={18} fill="currentColor" /> : <Volume2 size={18} />}
                       {isPlaying ? s('stop') : s('listen')}
                     </button>
-                    <button onClick={() => setIsSaved(!isSaved)} className="p-3 bg-white/20 rounded-xl hover:bg-white/30 transition-colors">
+                    <button onClick={() => setIsSaved(!isSaved)} className="p-3 bg-white/20 rounded-xl hover:bg-white/30 transition-colors" title="Save">
                       <Bookmark size={20} className={isSaved ? "fill-white" : ""} />
+                    </button>
+                    <button onClick={handleShare} className="p-3 bg-white/20 rounded-xl hover:bg-white/30 transition-colors" title="Share">
+                      <Share2 size={20} />
                     </button>
                   </div>
                 </div>
