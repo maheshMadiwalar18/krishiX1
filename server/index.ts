@@ -1,13 +1,13 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import authRoutes from './routes/authRoutes.js';
-import diseaseRoutes from './routes/diseaseRoutes.js';
-import weatherRoutes from './routes/weatherRoutes.js';
-import assistantRoutes from './routes/assistantRoutes.js';
-import analyticsRoutes from './routes/analyticsRoutes.js';
-import irrigationRoutes from './routes/irrigationRoutes.js';
-import communityRoutes from './routes/communityRoutes.js';
-import planningRoutes from './routes/planningRoutes.js';
+import authRoutes from './routes/authRoutes';
+import diseaseRoutes from './routes/diseaseRoutes';
+import weatherRoutes from './routes/weatherRoutes';
+import assistantRoutes from './routes/assistantRoutes';
+import analyticsRoutes from './routes/analyticsRoutes';
+import irrigationRoutes from './routes/irrigationRoutes';
+import communityRoutes from './routes/communityRoutes';
+import planningRoutes from './routes/planningRoutes';
 
 import cors from 'cors';
 
