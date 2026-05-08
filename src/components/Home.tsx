@@ -3,6 +3,7 @@ import Hero from './home/Hero';
 import InstantTry from './home/QuickActions';
 import FeaturesGrid from './home/FeaturesGrid';
 import SmartPreview from './home/DashboardPreview';
+import FarmerReviews from './home/FarmerReviews';
 import Footer from './home/Footer';
 
 interface HomeProps {
@@ -35,6 +36,8 @@ export default function Home({ isLoggedIn, onLogin, onNavigate }: HomeProps) {
         onLogin={onLogin} 
         onViewDashboard={() => onNavigate('disease')} 
       />
+
+      <FarmerReviews />
       
       <Footer onNavigate={(v) => {
         if (v === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
