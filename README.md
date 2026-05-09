@@ -131,5 +131,4 @@ We believe that the future of farming is open. By utilizing open-source models l
 
 ---
 
-## 📄 License
-This project is licensed under the MIT License.
+
