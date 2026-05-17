@@ -5,7 +5,7 @@ const reviews = [
   {
     name: "Ramesh Kumar",
     location: "Karnataka",
-    review: "The KrushiX assistant helped me detect blight early. It literally saved my entire tomato crop this season!",
+    review: "The AgriGuru assistant helped me detect blight early. It literally saved my entire tomato crop this season!",
     rating: 5,
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Ramesh"
   },
@@ -34,7 +34,7 @@ export default function FarmerReviews() {
             What Our Farmers Say
           </h2>
           <p className="text-text/70 max-w-2xl mx-auto">
-            Real stories from farmers across Bharat who have transformed their farming with KrushiX.
+            Real stories from farmers across Bharat who have transformed their farming with AgriGuru.
           </p>
         </div>
         

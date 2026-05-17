@@ -230,7 +230,7 @@ function AppContent() {
         <button 
           onClick={() => handleNavigate('assistant')}
           className="fixed bottom-6 right-6 w-16 h-16 bg-primary rounded-full shadow-[0_4px_20px_rgba(46,125,50,0.4)] hover:shadow-[0_4px_25px_rgba(46,125,50,0.6)] hover:scale-105 transition-all flex items-center justify-center z-50 group border-2 border-primary/10 text-white"
-          aria-label="Ask KrushiX Assistant"
+          aria-label="Ask AgriGuru Assistant"
         >
           <Sprout size={28} className="group-hover:scale-110 transition-transform duration-300" />
         </button>

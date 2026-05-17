@@ -53,7 +53,7 @@ export default function VoiceAssistant({ onBack }: { onBack: () => void }) {
     {
       id: '1',
       role: 'assistant',
-      content: 'Namaste! I am KrushiX. How can I help with your farming today?',
+      content: 'Namaste! I am AgriGuru. How can I help with your farming today?',
       timestamp: new Date()
     }
   ]);

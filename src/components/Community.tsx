@@ -501,7 +501,7 @@ const PostCard = ({ post, onClick, onUpvote, onDelete, userHasUpvoted }: {
     e.stopPropagation();
     if (navigator.share) {
       navigator.share({
-        title: `KrishiX: Problem with ${post.crop}`,
+        title: `AgriGuru: Problem with ${post.crop}`,
         text: post.text,
         url: window.location.href,
       }).catch(console.error);
@@ -648,7 +648,7 @@ function PostDetail({ post, onBack, onUpvote, onDelete, onAddComment, userHasUpv
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: `KrishiX: Problem with ${post.crop}`,
+        title: `AgriGuru: Problem with ${post.crop}`,
         text: post.text,
         url: window.location.href,
       }).catch(console.error);
@@ -775,7 +775,7 @@ function PostDetail({ post, onBack, onUpvote, onDelete, onAddComment, userHasUpv
                   <ThumbsUp size={14} /> {t('comm_helpful')} ({aiAnswer.upvotes})
                 </button>
                 <span className="opacity-30">•</span>
-                <span>Verified by KrushiX AI</span>
+                <span>Verified by AgriGuru AI</span>
               </div>
             </div>
           </div>
